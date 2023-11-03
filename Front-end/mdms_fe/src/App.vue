@@ -1,14 +1,19 @@
 <template>
   <div id="app">
-    <h1>메인페이지</h1>
+    <Header />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
+import Header from '@/Layout/Header.vue'; 
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    Header 
+  }
 }
 </script>
 
-<style>
-</style>
+<style></style>
