@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '@/Page/Login/Login.vue'
 import RegisterPage from '@/Page/Register/Register.vue'
 import MainPage from '@/Page/Main/Main.vue'  
+import store from '@/store'; // Vuex store 임포트
+
 const routes = [
     {
     path: '/',   
@@ -25,4 +27,11 @@ const router = createRouter({
   routes
 })
 
-export default router
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'Login' && !store.state.isLoggedIn) {
+    next({ name: 'Login' });
+  } else {
+    next();
+  }
+});
+export default router;
