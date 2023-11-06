@@ -45,7 +45,6 @@ header {
     background-color: #333;
     color: white;
     border-bottom: 1px solid black;
-
     padding: 1.25rem;  
     margin: 0.9375rem; 
 }
