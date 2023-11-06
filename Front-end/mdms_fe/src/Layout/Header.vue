@@ -60,6 +60,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
+    margin-bottom: 1rem;
     background-color: #2C3E50;
     color: #ecf0f1;
     border-bottom: 2px solid #34495e;
