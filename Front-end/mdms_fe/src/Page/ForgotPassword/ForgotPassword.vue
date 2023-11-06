@@ -5,50 +5,57 @@
             <button @click="showID" :class="{active: isID}">아이디 찾기</button>
             <button @click="showPassword" :class="{active: isPassword}">비밀번호 찾기</button>
         </div>
+        
         <form v-if="isID" @submit.prevent="submitID">
-            <!-- 이름 입력 -->
+            <!-- Name input -->
             <div class="input-group">
                 <label for="name">이름</label>
                 <input type="text" id="name" v-model="name" placeholder="이름 입력" required>
             </div>
-            <!-- 전화번호 입력 -->
+            
+            <!-- Phone input -->
             <div class="input-group">
                 <label for="phone">전화번호</label>
                 <div class="phone-inputs">
-                    <input type="text" id="phone" v-model="phone1" placeholder="010" required maxlength="3" />
+                    <input type="text" id="phone" v-model="phone1" placeholder="010" required maxlength="3" @input="validateNumberInput" />
                     <span>-</span>
-                    <input type="text" v-model="phone2" placeholder="1234" required maxlength="4" />
+                    <input type="text" v-model="phone2" placeholder="1234" required maxlength="4" @input="validateNumberInput" />
                     <span>-</span>
-                    <input type="text" v-model="phone3" placeholder="5678" required maxlength="4" />
+                    <input type="text" v-model="phone3" placeholder="5678" required maxlength="4" @input="validateNumberInput" />
                 </div>
             </div>
+            
             <div class="action-buttons">
                 <button type="submit">확인</button>
                 <button type="button" @click="cancel">취소</button>
             </div>
         </form>
+        
         <form v-if="isPassword" @submit.prevent="submitPassword">
-            <!-- 아이디 입력 -->
+            <!-- Email input -->
             <div class="input-group">
                 <label for="email">아이디</label>
                 <input type="email" id="email" v-model="email" placeholder="아이디 입력" required>
             </div>
-            <!-- 이름 입력 -->
+            
+            <!-- Name input -->
             <div class="input-group">
                 <label for="name">이름</label>
                 <input type="text" id="name" v-model="name" placeholder="이름 입력" required>
             </div>
-            <!-- 전화번호 입력 -->
+            
+            <!-- Phone input -->
             <div class="input-group">
                 <label for="phone">전화번호</label>
                 <div class="phone-inputs">
-                    <input type="text" id="phone" v-model="phone1" placeholder="010" required maxlength="3" />
+                    <input type="text" id="phone" v-model="phone1" placeholder="010" required maxlength="3" @input="validateNumberInput" />
                     <span>-</span>
-                    <input type="text" v-model="phone2" placeholder="1234" required maxlength="4" />
+                    <input type="text" v-model="phone2" placeholder="1234" required maxlength="4" @input="validateNumberInput" />
                     <span>-</span>
-                    <input type="text" v-model="phone3" placeholder="5678" required maxlength="4" />
+                    <input type="text" v-model="phone3" placeholder="5678" required maxlength="4" @input="validateNumberInput" />
                 </div>
             </div>
+            
             <div class="action-buttons">
                 <button type="submit">확인</button>
                 <button type="button" @click="cancel">취소</button>
@@ -56,6 +63,7 @@
         </form>
     </div>
 </template>
+
 
 <script>
 export default {
@@ -72,6 +80,10 @@ export default {
         };
     },
     methods: {
+        validateNumberInput(event) {
+            //전화번호 칸에는 숫자만 가능하게 
+            event.target.value = event.target.value.replace(/[^0-9]/g, '');
+        },
         showID() {
             this.isID = true;
             this.isPassword = false;
@@ -187,5 +199,12 @@ button.active {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
 }
 </style>
