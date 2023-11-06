@@ -45,7 +45,8 @@ export default {
             this.$router.push('/');
         },
         goToForgotPassword() {
-            // 아이디/비밀번호 찾기 페이지로 이동하는 로직 (현재는 비워둠)
+            // 아이디/비밀번호 찾기 페이지로 이동
+            this.$router.push('/forgot-password');
         }
     }
 }
