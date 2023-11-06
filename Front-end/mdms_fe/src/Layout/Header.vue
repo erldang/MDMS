@@ -11,7 +11,7 @@
         <nav v-if="isLoggedIn">
             <ul>
                 <li>{{ username }}</li> <!-- 사용자 이름 -->
-                <li>회원 정보</li>
+                <li @click="profile">회원 정보</li>
                 <li>이력 조회</li>
                 <li>로그아웃</li>
             </ul>
@@ -28,6 +28,12 @@ export default {
             username: '테스트이름' // 로그인한 사용자의 이름
         };
     },
+    methods: {
+            profile() {
+            // 현재는 별도의 확인 없이 바로 로그인 상태로 변경합니다.
+            this.$router.push('/profile');
+        }
+    }
 }
 </script>
 
