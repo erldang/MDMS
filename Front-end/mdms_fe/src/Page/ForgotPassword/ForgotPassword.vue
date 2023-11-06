@@ -70,7 +70,7 @@ export default {
     name: 'ForgotPassword',
     data() {
         return {
-            isID: false,
+            isID: true,
             isPassword: false,
             name: '',
             email: '',

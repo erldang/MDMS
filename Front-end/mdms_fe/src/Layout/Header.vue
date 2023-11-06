@@ -33,10 +33,6 @@ export default {
         ...mapGetters(['isLoggedIn'])
     },
     methods: {
-<<<<<<< HEAD
-        navigateToProfile() {
-            this.$router.push('/profile');
-=======
         ...mapActions(['login', 'logout']),
         navigateToProfile() {
             this.$router.push('/profile');
@@ -51,7 +47,6 @@ export default {
             this.$router.push('/').then(() => {
                 this.$router.go();
             });
->>>>>>> origin/main
         }
     }
 }
@@ -65,18 +60,10 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-<<<<<<< HEAD
-    background-color: #333;
-    color: white;
-    border-bottom: 1px solid black;
-    padding: 1.25rem;  
-    margin: 0.9375rem; 
-=======
     margin-bottom: 1rem;
     background-color: #2C3E50;
     color: #ecf0f1;
     border-bottom: 2px solid #34495e;
->>>>>>> origin/main
 }
 
 .logo-img {
