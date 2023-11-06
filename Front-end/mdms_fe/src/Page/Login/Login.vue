@@ -27,6 +27,9 @@
 </template>
 
 <script>
+// import { useStore } from 'vuex';
+// import { useRouter } from 'vue-router';
+
 export default {
     name: 'LoginPage',
     data() {
@@ -37,7 +40,12 @@ export default {
     },
     methods: {
         handleLogin() {
-            // 로그인 처리 로직
+            // 현재는 별도의 확인 없이 바로 로그인 상태로 변경합니다.
+            this.$store.dispatch('login');
+            this.$router.push('/');
+        },
+        goToForgotPassword() {
+            // 아이디/비밀번호 찾기 페이지로 이동하는 로직 (현재는 비워둠)
         }
     }
 }
