@@ -73,6 +73,7 @@ export default {
     },
     addData() {
       // 데이터 추가 로직
+      this.$router.push('/data-register');
     },
     changePage() {
     //changePage(pageNumber)
