@@ -15,16 +15,16 @@ import lombok.*;
 public class User {
 
     @Id
-    private String id;
+    private String email;
     private String password;
     private String name;
-    private String email;
+    private String phone;
 
     public User(UserDto userDto){
-        this.id = userDto.getId();
-        this.name = userDto.getName();
         this.email = userDto.getEmail();
+        this.name = userDto.getName();
         this.password = userDto.getPassword();
+        this.phone = userDto.getPhone();
 
     }
 
