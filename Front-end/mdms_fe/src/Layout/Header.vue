@@ -39,7 +39,9 @@ header {
     background-color: #333;
     color: white;
     border-bottom: 1px solid black;
-    /* 하단 경계선 추가 */
+    
+    padding: 1.25rem;  
+    margin: 0.9375rem; 
 }
 
 .logo {
