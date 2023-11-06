@@ -30,10 +30,10 @@ export default {
         };
     },
     methods: {
-    navigateToProfile() {
-        this.$router.push('/profile');
+        navigateToProfile() {
+            this.$router.push('/profile');
+        }
     }
-}   
 }
 </script>
 

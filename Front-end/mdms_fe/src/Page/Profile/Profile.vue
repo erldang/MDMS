@@ -17,7 +17,7 @@
             <!-- 비밀번호 수정 -->
             <div class="input-group">
                 <label for="password" class="kind">비밀번호</label>
-                <button @click.prevent="updatePassword">변경하기</button>
+                <button id="changePassword" @click.prevent="updatePassword">변경하기</button>
                 <div v-if="showUpdatePassword">
                     <input type="text" placeholder="비밀번호 입력" />
                     <input type="text" placeholder="비밀번호 재입력" />
@@ -32,7 +32,7 @@
             </div>
 
             <div >
-                <button id="confirm" type="submit" @click="changeProfile">수정하기</button>
+                <button id="confirm" type="submit" @click.prevent="checkChangeProfile">수정하기</button>
                 <button id="withdraw" @click.prevent="withdrawMember">회원탈퇴</button>
             </div>
         </form>
@@ -54,13 +54,22 @@ export default {
     },
     methods: {
         withdrawMember() {
-            // 회원 탈퇴 처리
+            if(confirm('회원탈퇴를 하시겠습니까?')) {
+                // 수락버튼 처리
+                // this.$route.push('/profile')
+            } else {
+                //취소버튼 처리
+            }
         },
-        changeProfile() {
-            // 프로필 변경 처리
+        checkChangeProfile() {
+            if(confirm('회원정보를 수정하시겠습니까?')) {
+                // 수락버튼 처리
+            } else {
+                //취소버튼 처리
+            }
         },
         checkChangePassword(){
-            // 암호 변경 처리
+            // 암호변경 버튼
         },
         updatePassword() {
             this.showUpdatePassword = true;
@@ -101,7 +110,7 @@ label {
 }
 
 input[type="text"] {
-    width: 100%;
+    width: 70%;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -136,4 +145,8 @@ button:hover {
     background-color: #ba2533;
 }
 
+#changePassword{
+    width: 25%;
+    height: 2rem;
+}
 </style>
