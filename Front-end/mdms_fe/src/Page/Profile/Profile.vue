@@ -31,7 +31,7 @@
                 <input type="text" id="phone" placeholder="현재 전화번호 출력될 것" />
             </div>
 
-            <div>
+            <div >
                 <button id="confirm" type="submit" @click="changeProfile">수정하기</button>
                 <button id="withdraw" @click.prevent="withdrawMember">회원탈퇴</button>
             </div>
