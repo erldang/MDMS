@@ -16,13 +16,22 @@
         <div v-for="data in column.dataList.split(', ')" :key="data">
     {{ data }}
   </div>
+  
 </div>
+<button class="remove-button" @click="removeColumn(column.id)">제거</button>
       </div>
+      
     </div>
   </template>
   
   <script>
   export default {
+    methods: {
+        removeColumn(columnId) {
+            // Logic to remove the column from the columns array
+            this.columns = this.columns.filter(column => column.id !== columnId);
+        }
+    },
     data() {
       return {
         columns: [
