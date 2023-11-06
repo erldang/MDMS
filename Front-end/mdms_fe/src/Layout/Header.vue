@@ -1,57 +1,56 @@
 <template>
     <header class="header-container">
-        <!-- Logo & Title Section -->
-        <div class="left-section" @click="navigateToHome">
-            <img src="@/assets/img/test-logo.png" alt="테스트로고" class="logo-img">
-            <div class="title-section">
-                <h1 class="title">MDMS</h1>
-                <p class="subtitle">메타데이터 관리 서비스</p>
-            </div>
+      <!-- Logo & Title Section -->
+      <div class="left-section" @click="navigateToHome">
+        <img src="@/assets/img/test-logo.png" alt="테스트로고" class="logo-img">
+        <div class="title-section">
+          <h1 class="title">MDMS</h1>
+          <p class="subtitle">메타데이터 관리 서비스</p>
         </div>
-
-        <!-- Navbar -->
-        <nav v-if="isLoggedIn" class="navbar-section">
-            <span class="username-text">{{ username }}</span>
-            <button class="nav-btn" @click="navigateToProfile">회원 정보</button>
-            <button class="nav-btn">이력 조회</button>
-            <button class="nav-btn logout-btn" @click="logoutAction">로그아웃</button>
-        </nav>
+      </div>
+  
+      <!-- Navbar -->
+      <nav v-if="isLoggedIn" class="navbar-section">
+        <span class="username-text">{{ username }}</span>
+        <button class="nav-btn" @click="navigateToProfile">회원 정보</button>
+        <button class="nav-btn">이력 조회</button>
+        <button class="nav-btn logout-btn" @click="logoutAction">로그아웃</button>
+      </nav>
     </header>
-</template>
-
-<script>
-import { mapActions, mapGetters } from 'vuex';
-
-export default {
+  </template>
+  
+  <script>
+  import { mapActions, mapGetters } from 'vuex';
+  
+  export default {
     name: 'PageHeader',
     data() {
-        return {
-            username: '유저이름'
-        };
+      return {
+        // 이 부분은 실제로 사용자 정보를 Vuex 스토어나 서버로부터 가져와서 설정해야 합니다.
+        username: '유저이름'
+      };
     },
     computed: {
-        ...mapGetters(['isLoggedIn'])
+      ...mapGetters(['isLoggedIn'])
     },
     methods: {
-        ...mapActions(['login', 'logout']),
-        navigateToProfile() {
-            this.$router.push('/profile');
-        },
-        navigateToHome() {
-            this.$router.push('/').then(() => {
-                this.$router.go(); // 라우터가 재확인하도록 강제
-            });
-        },
-        logoutAction() {
-            this.logout();
-            this.$router.push('/').then(() => {
-                this.$router.go();
-            });
-        }
+      ...mapActions(['logout']), // Vuex에서 logout 액션을 매핑합니다.
+      navigateToProfile() {
+        this.$router.push('/profile');
+      },
+      navigateToHome() {
+        this.$router.push('/');
+      },
+      logoutAction() {
+        this.logout().then(() => { // 로그아웃 액션을 실행하고, 성공적으로 로그아웃한 후에 홈으로 이동합니다.
+          this.$router.push('/').then(() => {
+            window.location.reload(); // 페이지를 새로고침하여 앱 상태를 초기화합니다.
+          });
+        });
+      }
     }
-}
-</script>
-
+  }
+  </script>
 
 
 <style scoped>
