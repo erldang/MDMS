@@ -11,7 +11,11 @@
         <nav v-if="isLoggedIn">
             <ul>
                 <li>{{ username }}</li> <!-- 사용자 이름 -->
+<<<<<<< HEAD
                 <li @click="profile">회원 정보</li>
+=======
+                <li @click="navigateToProfile">회원 정보</li>
+>>>>>>> origin/main
                 <li>이력 조회</li>
                 <li>로그아웃</li>
             </ul>
@@ -20,6 +24,7 @@
 </template>
 
 <script>
+
 export default {
     name: 'PageHeader',
     data() {
@@ -29,11 +34,18 @@ export default {
         };
     },
     methods: {
+<<<<<<< HEAD
             profile() {
             // 현재는 별도의 확인 없이 바로 로그인 상태로 변경합니다.
             this.$router.push('/profile');
         }
     }
+=======
+    navigateToProfile() {
+        this.$router.push('/profile');
+    }
+}   
+>>>>>>> origin/main
 }
 </script>
 
@@ -45,7 +57,7 @@ header {
     background-color: #333;
     color: white;
     border-bottom: 1px solid black;
-    
+
     padding: 1.25rem;  
     margin: 0.9375rem; 
 }
