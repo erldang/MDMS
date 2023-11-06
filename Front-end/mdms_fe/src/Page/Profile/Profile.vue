@@ -19,9 +19,9 @@
                 <label for="password" class="kind">비밀번호</label>
                 <button id="changePassword" @click.prevent="updatePassword">변경하기</button>
                 <div v-if="showUpdatePassword">
-                    <input type="text" placeholder="비밀번호 입력" />
+                    <input style="margin-bottom='1px'" type="text" placeholder="변경시킬 비밀번호 입력" />
                     <input type="text" placeholder="비밀번호 재입력" />
-                    <button @click="checkChangePassword">확인하기</button>
+                    <button @click.prevent="checkChangePassword">변경하기</button>
                 </div>
             </div>
 
@@ -54,14 +54,15 @@ export default {
     },
     methods: {
         withdrawMember() {
+            // 회원 탈퇴 버튼
             if(confirm('회원탈퇴를 하시겠습니까?')) {
                 // 수락버튼 처리
-                // this.$route.push('/profile')
             } else {
                 //취소버튼 처리
             }
         },
         checkChangeProfile() {
+            // 회원정보 수정 버튼
             if(confirm('회원정보를 수정하시겠습니까?')) {
                 // 수락버튼 처리
             } else {
@@ -70,6 +71,12 @@ export default {
         },
         checkChangePassword(){
             // 암호변경 버튼
+            if(confirm('비밀번호를 변경 하시겠습니까?')) {
+                // 수락버튼 처리
+                this.showUpdatePassword = false;
+            } else {
+                //취소버튼 처리
+            }
         },
         updatePassword() {
             this.showUpdatePassword = true;
@@ -131,6 +138,11 @@ button {
 div>button{
     width: 40%;
     margin: 5%;
+}
+
+div>div>input{
+    margin-left: 5px;
+    margin: 2px;
 }
 
 button:hover {
