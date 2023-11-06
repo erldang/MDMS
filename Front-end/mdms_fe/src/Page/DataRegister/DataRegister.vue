@@ -185,7 +185,5 @@ export default {
     border-radius: 12px;
     outline: none; /* Optional: removes the outline */
   }
-
-  
 </style>
   
