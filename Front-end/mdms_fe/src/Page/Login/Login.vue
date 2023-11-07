@@ -48,15 +48,15 @@ export default {
     async handleLogin() {
       try {
         const response = await axios.post('http://localhost:3001/user/login', {
-          email: this.email,
-          password: this.password
+          "email": this.email,
+          "password": this.password
         });
 
         if (response.data.ok === 'ok') {
           // 로그인 성공, JWT 토큰을 로컬 스토리지에 저장
-          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('token', response.data.message);
           // Vuex Store에 상태 저장
-          this.store.dispatch('login', response.data.token);
+          this.store.dispatch('login', response.data.message);
           this.router.push('/');
         } else {
           // 로그인 실패 처리
