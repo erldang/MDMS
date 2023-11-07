@@ -34,21 +34,25 @@
       ...mapGetters(['isLoggedIn'])
     },
     methods: {
-      ...mapActions(['logout']), // Vuex에서 logout 액션을 매핑합니다.
-      navigateToProfile() {
-        this.$router.push('/profile');
-      },
-      navigateToHome() {
-        this.$router.push('/');
-      },
-      logoutAction() {
-        this.logout().then(() => { // 로그아웃 액션을 실행하고, 성공적으로 로그아웃한 후에 홈으로 이동합니다.
-          this.$router.push('/').then(() => {
-            window.location.reload(); // 페이지를 새로고침하여 앱 상태를 초기화합니다.
-          });
-        });
-      }
-    }
+  ...mapActions(['logout']), // Vuex에서 logout 액션을 매핑합니다.
+  navigateToProfile() {
+    this.$router.push('/profile');
+  },
+  navigateToHome() {
+    this.$router.push('/');
+  },
+  logoutAction() {
+    this.logout().then(() => { // 로그아웃 액션을 실행
+      localStorage.removeItem('token'); // 로컬 스토리지에서 JWT 토큰 삭제
+      this.$router.push('/').then(() => {
+        window.location.reload(); // 페이지를 새로고침하여 앱 상태를 초기화합니다.
+      });
+    }).catch(error => {
+      console.error('Logout failed', error);
+      // 로그아웃 실패시 적절한 사용자 피드백을 제공할 수 있습니다.
+    });
+  }
+}
   }
   </script>
 
