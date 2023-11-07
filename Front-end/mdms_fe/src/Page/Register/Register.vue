@@ -51,7 +51,8 @@
   
   <script>
   import axios from 'axios';
-  import { useRouter } from 'vue-router';
+  //import { useRouter } from 'vue-router';
+  import './Register.css';
   
   export default {
     name: 'RegisterPage',
@@ -141,90 +142,3 @@
     }
   };
 </script>
-  
-<style scoped>
-.phone-inputs {
-    display: flex;
-    align-items: center;
-}
-
-.phone-inputs input {
-    width: calc((100% - 2rem) / 3);
-    margin-right: 0.5rem;
-}
-
-.phone-inputs input:last-child {
-    margin-right: 0;
-}
-
-.phone-inputs span {
-    margin-right: 0.5rem;
-}
-.register-container {
-    width: 100%;
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1.5rem;
-    color: #333;
-}
-
-.input-group {
-    margin-bottom: 1.5rem;
-}
-
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #555;
-}
-
-input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #eaeaea;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    transition: border 0.3s;
-}
-
-input:focus {
-    border-color: #007BFF;
-    outline: none;
-}
-
-button {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: 600;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-input-group>button {
-    margin-top: 0.5rem;
-}
-
-.passwordMismatch {
-    color: red;
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
-}
-</style>

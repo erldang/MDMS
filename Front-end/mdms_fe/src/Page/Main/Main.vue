@@ -45,6 +45,7 @@
   
 
 <script>
+import './Main.css'
 export default {
     name: 'MainPage',
     components: {
@@ -83,102 +84,4 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.search-filter {
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.search-filter input[type="date"],
-.search-filter input[type="text"],
-.search-filter select {
-  margin-right: 0.5rem;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
-}
-
-.search-filter button {
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
-
-.search-filter button:hover {
-  background-color: #0056b3;
-}
-
-h1 {
-  display: inline-block;
-  margin-right: 1rem;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #218838;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-table, th, td {
-  border: 1px solid #ddd;
-}
-
-th, td {
-  text-align: left;
-  padding: 0.5rem;
-}
-
-th {
-  background-color: #f8f9fa;
-}
-
-.pagination {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: center;
-}
-
-.pagination span {
-  margin: 0 0.5rem;
-  cursor: pointer;
-  color: #007bff;
-}
-
-.pagination span:hover {
-  text-decoration: underline;
-}
-.button-group button {
-  margin-left: 0.5rem; /* 버튼 간격 조정 */
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  background-color: white;
-  color: #333;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.button-group button:hover {
-  background-color: #f2f2f2; /* 호버 효과 */
-}
-</style>
 
