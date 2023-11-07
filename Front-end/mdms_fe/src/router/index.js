@@ -55,7 +55,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // 로그인, 회원가입, 비밀번호 찾기 페이지는 로그인 여부와 상관없이 이동 가능
-  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' ||to.name === "DataRegister") {
+  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword') {
     next();
   } else if (!store.state.isLoggedIn) {
     next({ name: 'Login' });
