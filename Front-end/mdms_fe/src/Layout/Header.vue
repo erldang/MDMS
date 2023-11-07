@@ -34,6 +34,12 @@
       ...mapGetters(['isLoggedIn'])
     },
     methods: {
+      logout() {
+    return new Promise((resolve) => {
+      localStorage.removeItem('token');
+      resolve();
+    });
+  },
   ...mapActions(['logout']), // Vuex에서 logout 액션을 매핑합니다.
   navigateToProfile() {
     this.$router.push('/profile');
