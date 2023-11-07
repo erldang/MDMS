@@ -27,30 +27,53 @@
 </template>
 
 <script>
-// import { useStore } from 'vuex';
-// import { useRouter } from 'vue-router';
+import axios from 'axios';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
-    name: 'LoginPage',
-    data() {
-        return {
-            email: '',
-            password: ''
-        }
-    },
-    methods: {
-        handleLogin() {
-            // 현재는 별도의 확인 없이 바로 로그인 상태로 변경합니다.
-            this.$store.dispatch('login');
-            this.$router.push('/');
-        },
-        goToForgotPassword() {
-            // 아이디/비밀번호 찾기 페이지로 이동
-            this.$router.push('/forgot-password');
-        }
+  name: 'LoginPage',
+  data() {
+    return {
+      email: '',
+      password: ''
     }
+  },
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    return { store, router };
+  },
+  methods: {
+    async handleLogin() {
+      try {
+        const response = await axios.post('http://localhost:8080/user/login', {
+          email: this.email,
+          password: this.password
+        });
+
+        if (response.data.ok === 'ok') {
+          // 로그인 성공, JWT 토큰을 로컬 스토리지에 저장
+          localStorage.setItem('token', response.data.token);
+          // Vuex Store에 상태 저장
+          this.store.dispatch('login', response.data.token);
+          this.router.push('/');
+        } else {
+          // 로그인 실패 처리
+          alert('로그인 실패: ' + response.data.message);
+        }
+      } catch (error) {
+        console.error('로그인 에러:', error);
+        alert('로그인 에러');
+      }
+    },
+    goToForgotPassword() {
+      this.router.push('/forgot-password');
+    }
+  }
 }
 </script>
+
 
 <style scoped>
 .login-container {
