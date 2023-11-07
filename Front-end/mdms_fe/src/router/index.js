@@ -6,7 +6,8 @@ import MainPage from '@/Page/Main/Main.vue';
 import ForgotPassword from '@/Page/ForgotPassword/ForgotPassword.vue';
 import DataDetail from '@/Page/DataDetail/DataDetail.vue';
 import DataRegister from '@/Page/DataRegister/DataRegister.vue'
-
+import AdminMainPage from '@/Page/AdminMain/AdminMain.vue'
+import AdminCustomPage from '@/Page/AdminCustom/AdminCustom.vue'
 import store from '@/store'; // Vuex store 임포트
 
 const routes = [
@@ -45,6 +46,16 @@ const routes = [
     path: '/data-register',
     name: 'DataRegister',
     component: DataRegister,
+  },
+  {
+    path: '/admin-main',
+    name: 'AdminMainPage',
+    component: AdminMainPage,
+  },
+  {
+    path: '/custom-standard-terms',
+    name: 'AdminCustomPage',
+    component: AdminCustomPage,
   }
 ];
 
@@ -55,7 +66,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // 로그인, 회원가입, 비밀번호 찾기 페이지는 로그인 여부와 상관없이 이동 가능
-  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword') {
+  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword'|| to.name === 'AdminCustomPage' || to.name === 'AdminMainPage') {
     next();
   } else if (!store.state.isLoggedIn) {
     next({ name: 'Login' });
