@@ -8,6 +8,8 @@ import DataDetail from '@/Page/DataDetail/DataDetail.vue';
 import DataRegister from '@/Page/DataRegister/DataRegister.vue'
 import AdminMainPage from '@/Page/AdminMain/AdminMain.vue'
 import AdminCustomPage from '@/Page/AdminCustom/AdminCustom.vue'
+import AdminDataMapPage from '@/Page/AdminDataMap/AdminDataMap.vue'
+import AdminUserRecordPage from '@/Page/AdminUserRecord/AdminUserRecord.vue'
 import store from '@/store'; // Vuex store 임포트
 
 const routes = [
@@ -56,6 +58,16 @@ const routes = [
     path: '/custom-standard-terms',
     name: 'AdminCustomPage',
     component: AdminCustomPage,
+  },
+  {
+    path: '/admin-datamap',
+    name: 'AdminDataMapPage',
+    component: AdminDataMapPage,
+  },
+  {
+    path: '/admin-user-record',
+    name: 'AdminUserRecordPage',
+    component: AdminUserRecordPage,
   }
 ];
 
@@ -65,8 +77,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // 로그인, 회원가입, 비밀번호 찾기 페이지는 로그인 여부와 상관없이 이동 가능
-  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword'|| to.name === 'AdminCustomPage' || to.name === 'AdminMainPage') {
+  // 로그인, 회원가입, 비밀번호 찾기 페이지는 로그인 여부와 상관없이 이동 가능 //  to.name === 'AdminUserRecordPage' || to.name === 'AdminDataMapPage' 는 테스트를 위한 코드입니다 발견하면 지워주시길 바랍니다.
+  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword'|| to.name === 'AdminUserRecordPage' || to.name === 'AdminDataMapPage') {
     next();
   } else if (!store.state.isLoggedIn) {
     next({ name: 'Login' });
