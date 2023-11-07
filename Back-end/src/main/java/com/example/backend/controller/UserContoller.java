@@ -4,6 +4,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.EmailCodeDto;
 import com.example.backend.dto.ResponseDto;
 import com.example.backend.dto.UserDto;
+import com.example.backend.entity.User;
 import com.example.backend.service.EmailService;
 import com.example.backend.security.JwtProvider;
 import com.example.backend.service.UserService;
@@ -12,9 +13,13 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "*")
 public class UserContoller {
 
 
@@ -60,16 +65,18 @@ public class UserContoller {
     public ResponseDto<Object> logIn( @RequestBody UserDto userDto) throws Exception {
 
         System.out.println("로그인 contoller 시작");
-        String token = userService.logIn(userDto);
+        String message = userService.logIn(userDto);
 //        String token = null;
 //        if(message.equals("로그인 성공")){
 //            token = JwtProvider.generateToken(userDto.getEmail());
 //        }
 
+        UserDto user = userService.findByEmail(userDto);
+
 
 
         //System.out.println(token);
-        ResponseDto<Object> response = ResponseDto.builder().ok("ok").message(token).build();
+        ResponseDto<Object> response = ResponseDto.builder().data(user).ok("ok").message(message).build();
         return response;
 
     }
@@ -95,6 +102,15 @@ public class UserContoller {
 
     }
 
+    @PostMapping("/check")
+    public ResponseDto<Object> deleteCheck(@RequestBody UserDto userDto,
+                                           @RequestParam("token") String token){
+
+        Boolean message = userService.userCheckByToken(userDto , token);
+
+        return ResponseDto.builder().ok("ok").data(message).message("검사 완료").build();
+    }
+
     @DeleteMapping("/delete")
     public ResponseDto<Object> delete(@RequestBody UserDto userDto){
 
@@ -112,5 +128,46 @@ public class UserContoller {
         //userService.getAllUsers();
         return ResponseDto.builder().ok("ok").data(userService.getAllUsers()).build();
     }
+
+
+    @GetMapping("/specific")
+    public ResponseDto<Object> getSpeicifyUser(@RequestParam("token") String token){
+
+        String email = jwtProvider.getEmailFromToken(token);
+
+        UserDto user = userService.findByEmail(UserDto.builder().email(email).build());
+
+        return ResponseDto.builder().ok("ok").data(user).build();
+
+    }
+
+    @PostMapping("/findId")
+    public ResponseDto<Object> findId(@RequestBody UserDto userDto){
+
+        List<UserDto> userDtoList = userService.findByNameAndPhone(userDto);
+        List<UserDto> data = new ArrayList<UserDto>();
+        for(UserDto user : userDtoList){
+            data.add(UserDto.builder().email(user.getEmail()).build());
+        }
+
+
+        return ResponseDto.builder().ok("ok").data(data).build();
+    }
+
+    @PostMapping("/findPwd")
+    public ResponseDto<Object> findPwd(@RequestBody UserDto userDto){
+
+        UserDto user = userService.findPassword(userDto);
+
+        user.setName(null);
+        user.setEmail(null);
+        user.setAdmin(null);
+        user.setPhone(null);
+
+        return ResponseDto.builder().ok("ok").data(user).build();
+    }
+
+
+
 
 }

@@ -1,7 +1,6 @@
 package com.example.backend.security;
 
-import com.example.backend.repository.UserRepository;
-import io.jsonwebtoken.SignatureAlgorithm;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,10 +14,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.filter.GenericFilterBean;
+
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.BufferedReader;
@@ -45,12 +44,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
 
-    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //Token에서 Claim 꺼내기
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")){      //header에 AUTHORIZATION이 없거나, Bearer로 시작하지 않으면 filter
-            log.error("header가 없거나, 형식이 틀립니다. - {}", authorizationHeader);
+        //System.out.println("확인 : " + authorizationHeader );
+        if(authorizationHeader == null ||
+                !authorizationHeader.startsWith("Bearer ") ||
+                authorizationHeader.equals("Bearer null") )
+        {      //header에 AUTHORIZATION이 없거나, Bearer로 시작하지 않으면 filter
+            //log.error("header가 없거나, 형식이 틀립니다. - {}", authorizationHeader);
+            System.out.println("header가 없거나 형식이 틀립니다");
             filterChain.doFilter(request, response);
             return;
         }
@@ -80,19 +83,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //userName 넣기, 문 열어주기
         String email = jwtProvider.getEmailFromToken(token);
-        //User user = userService.getUserByUserName(userName);
 
-        //로그인 유무 체크 & 디버그
-        String isLogout = (String)redisTemplate.opsForValue().get(email);
-        System.out.println("로그인 했노? " + isLogout);
-        System.out.println("fileter에서 확인한 토큰" + redisTemplate.opsForValue().get(token));
 
-        if (ObjectUtils.isEmpty(isLogout)) {
-            System.out.println("이새낀 로그인 안함");
-            filterChain.doFilter(request,response);
-        }
-
-        //AuthenticationToken 만들기
         UsernamePasswordAuthenticationToken authenticationToken =  new UsernamePasswordAuthenticationToken(email, null, List.of(new SimpleGrantedAuthority(email)));
         //디테일 설정하기
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

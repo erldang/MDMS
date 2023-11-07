@@ -167,6 +167,53 @@ public class UserService {
         return "삭제완료";
     }
 
+    public UserDto findByEmail(UserDto userDto){
+        String email = userDto.getEmail();
+
+        UserDto u = new UserDto(userRepository.findById(email).get());
+        return u;
+    }
+
+    //UserDto 2개를 받아서 비교하기 같으면 true 아니면 false
+    public Boolean userCheckByToken(UserDto tmp1 , String token){
+
+        String emailFromToken = jwtProvider.getEmailFromToken(token);
+
+        User userTmp= userRepository.findById(emailFromToken).get();
+
+        UserDto tmp2 = new UserDto(userTmp);
 
 
+        if(tmp1.getPassword().equals(tmp2.getPassword()) &&
+                tmp1.getEmail().equals(tmp2.getEmail())){
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public List<UserDto> findByNameAndPhone(UserDto userDto) {
+
+
+        //User u =  userRepository.findByNameAndPhone(userDto.getEmail() , userDto.getPhone());
+        List<User> userList = userRepository.findByNameAndPhone(userDto.getName() , userDto.getPhone());
+        System.out.println(userList.toString());
+        List<UserDto> userDtoList =new ArrayList<UserDto>();
+        for(User user : userList){
+            userDtoList.add(new UserDto(user));
+        }
+
+
+        return userDtoList;
+
+    }
+
+    public UserDto findPassword(UserDto userDto) {
+
+        User user = userRepository.findPassword(userDto.getEmail(),userDto.getName(),userDto.getPhone());
+
+
+        return  new UserDto(user);
+    }
 }
