@@ -13,4 +13,4 @@ if (token) {
 // Axios 기본값 설정
 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-const app = createApp(App).use(router).use(store).mount('#app');
+createApp(App).use(router).use(store).mount('#app');
