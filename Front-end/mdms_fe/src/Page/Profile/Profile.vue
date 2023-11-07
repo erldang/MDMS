@@ -73,19 +73,27 @@
       async fetchUserProfile() {
         try {
           const token = localStorage.getItem('token');
-          console.log("token" , token);
-          const response = await fetch("http://localhost:3001/user/specific?token=" + token);
+          console.log("token", token);
+
+          const requestOptions = {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          };
+
+          const apiUrl = `http://localhost:3001/user/specific?token=${token}`;
+
+          const response = await fetch(apiUrl, requestOptions);
           const data = await response.json();
-          //client : baser token header + specific token 둘다 있어야 요청 가능
-          console.log(token , "token");
+
+          console.log(token, "token");
+
           if (data && data.data) {
             this.name = data.data.name;
             this.email = data.data.email;
             this.phone = data.data.phone;
           }
-
-
-
         } catch (error) {
           console.error('프로필을 가져오는 데 오류가 발생하였습니다:', error);
         }
