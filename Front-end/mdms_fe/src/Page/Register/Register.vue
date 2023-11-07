@@ -84,7 +84,7 @@
       },
       async handleEmailVerification() {
         try {
-          const response = await axios.post('http://localhost:8080/user/authentication/send', {
+          const response = await axios.post('http://localhost:3001/user/authentication/send', {
             email: this.email
           });
   
@@ -126,7 +126,7 @@
         };
   
         try {
-          const response = await axios.post('http://localhost:8080/user/register', userData);
+          const response = await axios.post('http://localhost:3001/user/register', userData);
           if (response.data.success) {
             alert('회원가입이 완료되었습니다.');
             this.$router.push('/login');

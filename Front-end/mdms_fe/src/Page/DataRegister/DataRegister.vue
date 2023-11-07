@@ -136,20 +136,20 @@ export default {
   }
 
   .add-button {
-    margin: 0 auto; /* This will center the "+" button */
-    display: flex; /* Use flex to center content inside the button */
-    align-items: center; /* Center content vertically */
-    justify-content: center; /* Center content horizontally */
-    padding: 10px; /* Add some padding */
-    background-color: #4CAF50; /* Use a distinct color */
-    color: white; /* Text color */
-    font-size: 24px; /* Make it larger */
-    border-radius: 50%; /* Circle shape */
-    width: 40px; /* Fixed width */
-    height: 40px; /* Fixed height */
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white; 
+    font-size: 24px;
+    border-radius: 50%; 
+    width: 40px; 
+    height: 40px; 
     cursor: pointer;
-    border: none; /* No border */
-    outline: none; /* No outline */
+    border: none; 
+    outline: none; 
   }
 
   .data-column {
