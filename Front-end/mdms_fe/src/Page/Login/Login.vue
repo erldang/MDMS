@@ -45,28 +45,34 @@ export default {
     return { store, router };
   },
   methods: {
-    async handleLogin() {
-      try {
-        const response = await axios.post('http://localhost:3001/user/login', {
-          "email": this.email,
-          "password": this.password
-        });
+    async handleLogin() { //만약 이걸로 관리자 사용자 구분이 되지 않는다면 router 에 관리자 사용자 구분을 위해 store 에 관리자 유무를 저장하고 이를 가지고 판단하여 이동시키기
+        try {
+          const response = await axios.post('http://localhost:3001/user/login', {
+            "email": this.email,
+            "password": this.password
+          });
 
-        if (response.data.ok === 'ok') {
-          // 로그인 성공, JWT 토큰을 로컬 스토리지에 저장
-          localStorage.setItem('token', response.data.message);
-          // Vuex Store에 상태 저장
-          this.store.dispatch('login', response.data.message);
-          this.router.push('/');
-        } else {
-          // 로그인 실패 처리
-          alert('로그인 실패: ' + response.data.message);
+          if (response.data.ok === 'ok') {
+            // 로그인 성공, JWT 토큰을 로컬 스토리지에 저장
+            localStorage.setItem('token', response.data.message);
+            // Vuex Store에 상태 저장
+            this.store.dispatch('login', response.data.message);
+
+            // 관리자 여부에 따라 리다이렉션 경로 변경
+            if (response.data.data.admin) {
+              this.router.push('/admin-main');
+            } else {
+              this.router.push('/');
+            }
+          } else {
+            // 로그인 실패 처리
+            alert('로그인 실패: ' + response.data.message);
+          }
+        } catch (error) {
+          console.error('로그인 에러:', error);
+          alert('로그인 에러');
         }
-      } catch (error) {
-        console.error('로그인 에러:', error);
-        alert('로그인 에러');
-      }
-    },
+      },
     goToForgotPassword() {
       this.router.push('/forgot-password');
     }
