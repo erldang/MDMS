@@ -1,43 +1,57 @@
 <template>
     <div>
       <div class="search-filter">
-        <!-- 검색 및 필터링 섹션 -->
         <input type="date" v-model="startDate" />
         <input type="date" v-model="endDate" />
-        <select v-model="selectedCategory">
-          <option value="">카테고리</option>
-          <!-- 카테고리 옵션 -->
+        <select v-model="searchtype">
+          <option value="검색 타입">검색 타입</option>
+          <option value="검색 타입1">타입1</option>
+          <option value="검색 타입2">타입2</option>
         </select>
         <input type="text" v-model="searchQuery" placeholder="검색어" />
         <button @click="searchData">검색</button>
       </div>
   
       <h1>관리자 페이지</h1>
-      <button @click="addData">등록</button>
+      <h2>표준 용어 관리</h2>
       <div class="button-group">
-        <button @click="navigateToTable">테이블</button>
-        <button @click="navigateToDataMap">데이터맵</button>
+        <button @click="navigateToStandard">표준 용어</button>
+        <button @click="navigateToCustomStandard">커스텀 표준 용어</button>
+        <button @click="navigateToDataMap">데이터 맵</button>
+        <button @click="navigateToUserRecord">사용자 이력 조회</button>
       </div>
-      <table>
-        <!-- 데이터 테이블 -->
+      <table> 
         <tr>
           <th>No</th>
-          <th>제목</th>
-          <th>상황</th>
+          <th>공통표준용어명</th>
+          <th>생성자</th>
           <th>등록일</th>
-          <th>카테고리</th>
+          <th>영문약어명</th>
+          <th>도메인명</th>
+          <th>허용값</th>
+          <th>저장 형식</th>
+          <th>표현 방식</th>
+          <th>행정 표준코드</th>
+          <th>소관 기관 명</th>
         </tr>
-        <tr v-for="(item, index) in dataList" :key="index">
-          <td>{{ index + 1 }}</td>
-          <td>{{ item.title }}</td>
-          <td>{{ item.status }}</td>
-          <td>{{ item.date }}</td>
-          <td>{{ item.category }}</td>
-        </tr>
+        <!-- 데이터 로우를 반복해서 추가하세요. 예시: -->
+        <!-- <tr>
+          <td>1</td>
+          <td>예시 용어</td>
+          <td>홍길동</td>
+          <td>2023-01-01</td>
+          <td>EXMP</td>
+          <td>정보관리</td>
+          <td>Y/N</td>
+          <td>문자열</td>
+          <td>라디오 버튼</td>
+          <td>0001</td>
+          <td>정보관리처</td>
+        </tr> -->
+        <!--나중에 페이지가 마운트 될 때마다 Fetch 하는 방식으로 수정할 예정-->
       </table>
-  
+
       <div class="pagination">
-        <!-- 페이지네이션 컨트롤 -->
         <span @click="changePage(page)" v-for="page in pages" :key="page">{{ page }}</span>
       </div>
     </div>
@@ -45,9 +59,7 @@
   
 
   <script>
-  import './AdminMain.css';
-  // 추가적인 의존성이 필요하면 여기에 임포트하세요
-  
+  import './AdminMain.css';  
   export default {
     name: 'AdminMainPage',
     data() {
@@ -75,40 +87,26 @@
       }
     },
     methods: {
-      navigateToTable() {
-        // '표준 용어' 페이지로 이동하는 로직
-        //this.$router.push('/standard-terms'); 
-      },
+      navigateToStandard(){
+            //'표준 용어' 페이지로 이동하는 로직
+            this.$router.push('/admin-main');
+        },
+
       navigateToCustomStandard() {
-        // '커스텀 표준 용어' 페이지로 이동하는 로직
-        //this.$router.push('/custom-standard-terms'); 
+        //'커스텀 표준 용어' 페이지로 이동하는 로직
+        this.$router.push('/custom-standard-terms');
       },
       navigateToDataMap() {
-        // '데이터 맵' 페이지로 이동하는 로직
-        //this.$router.push('/data-map'); 
+        //'데이터맵' 페이지로 이동하는 로직
+      },
+      navigateToUserRecord(){
+        //'사용자 이력 조회' 페이지로 이동하는 로직
       },
       searchData() {
-        // 여기에 검색 로직을 구현하세요
-        // 일반적으로 검색 조건에 따라 데이터를 가져오기 위한 API 호출을 포함합니다
+        // 여기에 검색 로직을 구현
+        // 일반적으로 검색 조건에 따라 데이터를 가져오기 위한 API 호출을 포함
         console.log('검색 버튼 클릭');
       },
-      addData() {
-        // 새로운 데이터를 추가하는 로직
-        console.log('등록 버튼 클릭');
-      },
-      changePage(page) {
-        // 현재 페이지를 변경하는 메소드
-        this.currentPage = page;
-      }
     },
-    // 컴포넌트가 마운트될 때 데이터를 로드해야하는 경우
-    mounted() {
-      this.fetchData();
-    },
-    methods: {
-      fetchData() {
-        // dataList를 위한 초기 데이터를 가져오는 작업
-      },
-    }
   };
   </script>
