@@ -120,15 +120,15 @@
         }
   
         const userData = {
-          name: this.name,
-          phone: this.phone,
-          email: this.email,
-          password: this.password,
+          "name": this.name,
+          "phone": this.phone,
+          "email": this.email,
+          "password": this.password,
         };
   
         try {
-          const response = await axios.post('http://localhost:3001/user/register', userData);
-          if (response.data.success) {
+          const response = await axios.post('http://localhost:3001/user/signup', userData);
+          if (response.data.message === "ok") {
             alert('회원가입이 완료되었습니다.');
             this.$router.push('/login');
           } else {

@@ -56,6 +56,9 @@ export default {
             // 로그인 성공, JWT 토큰을 로컬 스토리지에 저장
             localStorage.setItem('token', response.data.message);
             // Vuex Store에 상태 저장
+
+            console.log('login시 token : ' , response.data.message);
+
             this.store.dispatch('login', response.data.message);
 
             // 관리자 여부에 따라 리다이렉션 경로 변경
