@@ -10,6 +10,7 @@ import AdminMainPage from '@/Page/AdminMain/AdminMain.vue'
 import AdminCustomPage from '@/Page/AdminCustom/AdminCustom.vue'
 import AdminDataMapPage from '@/Page/AdminDataMap/AdminDataMap.vue'
 import AdminUserRecordPage from '@/Page/AdminUserRecord/AdminUserRecord.vue'
+import EditProfilePage from '@/Page/EditProfilePage/EditProfilePage.vue'
 import store from '@/store'; // Vuex store 임포트
 
 const routes = [
@@ -68,7 +69,12 @@ const routes = [
     path: '/admin-user-record',
     name: 'AdminUserRecordPage',
     component: AdminUserRecordPage,
-  }
+  },
+  {
+    path: '/edit-profile',
+    name: 'EditProfilePage',
+    component: EditProfilePage
+  },
 ];
 
 const router = createRouter({

@@ -18,34 +18,17 @@
           <input type="text" id="phone" v-model="profile.data.phone" readonly />
         </div>
         <!-- 수정 버튼 -->
-        <button @click="openEditProfileForm">프로필 수정</button>
-        <button @click="confirmDeleteUser">탈퇴하기</button>
+        <button type="button" @click="openEditProfileForm">프로필 수정</button>
+        <button type="button" @click="confirmDeleteUser">탈퇴하기</button>
       </form>
     </div>
 
     <!-- 오류 메시지 -->
     <div v-if="error" class="error-message">{{ error }}</div>
-
-    <!-- 프로필 수정 폼 -->
-    <EditProfile
-      v-if="showEditProfile"
-      :initialProfile="profile.data"
-      @profile-updated="fetchProfile"
-      @profile-canceled="cancelEditProfileForm"
-      class="edit-profile-form"
-    />
-    
-    <!-- 탈퇴 다이얼로그 -->
-    <div v-if="showDeleteConfirmation">
-      <p>정말로 탈퇴하시겠습니까?</p>
-      <button @click="deleteUser">확인</button>
-      <button @click="cancelDelete">취소</button>
-    </div>
   </div>
 </template>
 
 <script>
-import EditProfile from './EditProfile.vue'; 
 import './Profile.css';
 export default {
   data() {
@@ -54,12 +37,12 @@ export default {
         data: {
           email: '',
           name: '',
-          phone: ''
+          phone: '',
+          password:'',
+          admin:''
         }
       },
       error: null,
-      showEditProfile: false,
-      showDeleteConfirmation: false,
     };
   },
   methods: {
@@ -67,7 +50,7 @@ export default {
       const token = localStorage.getItem('token');
       
       if (!token) {
-        //this.$router.push('/login'); // 라우팅 처리 수정
+        this.$router.push('/login'); 
         return;
       }
 
@@ -82,7 +65,7 @@ export default {
         const data = await response.json();
 
         if (data.ok === "ok") {
-          this.profile.data = data.data; // 데이터 할당 이동
+          this.profile.data = data.data; 
         } else {
           this.error = "프로필을 불러오는 데 문제가 발생했습니다.";
         }
@@ -91,55 +74,59 @@ export default {
       }
     },
     openEditProfileForm() {
-      this.showEditProfile = true; 
+      this.$router.push('/edit-profile'); // 페이지 이동을 위한 라우터 push
     },
     confirmDeleteUser() {
-      this.showDeleteConfirmation = true;
-    },
-    cancelDelete() {
-      this.showDeleteConfirmation = false;
+      // confirm 함수를 사용하여 사용자에게 탈퇴 확인
+      if (confirm("정말로 탈퇴하시겠습니까?")) {
+        this.deleteUser();
+      }
     },
     async deleteUser() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token'); // 인증을 위한 토큰을 로컬 스토리지에서 가져옴
 
-      const url = 'http://localhost:3001/user/delete';
+      if (!token) {
+        this.error = "인증 토큰이 없습니다. 다시 로그인해주세요.";
+        return;
+      }
+
+      const url = `http://localhost:3001/user/delete`;
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       };
-      const body = JSON.stringify({ email: this.profile.email });
+      
+      const body = JSON.stringify({
+        email: this.profile.data.email // 프로필에서 이메일을 가져와 요청 본문에 포함
+      });
 
       try {
         const response = await fetch(url, {
           method: 'DELETE',
-          headers,
-          body,
+          headers: headers,
+          body: body
         });
         const data = await response.json();
 
-        if (data.ok === 'ok') {
-          // 탈퇴 성공 시 처리
-          alert('탈퇴가 완료되었습니다.');
-          this.router.push('/login');
+        if (data.ok === "ok") {
+          alert(data.message); // 성공 메시지를 alert로 보여줌
+          // 여기에서 로그아웃 로직을 실행하거나, 로그인 페이지로 리다이렉트 등의 후속 조치를 취할 수 있음
+          this.$router.push('/login');
         } else {
-          // 탈퇴 실패 시 처리
-          alert('탈퇴에 실패했습니다. 다시 시도하세요.');
-          // 오류 메시지를 표시하거나 페이지를 리로딩하십시오.
+          this.error = data.message || "삭제 과정에 문제가 발생했습니다.";
         }
       } catch (error) {
-        // 서버와 통신 중 오류 발생 시 처리
-        alert('서버와 통신 중 오류가 발생했습니다.');
+        this.error = "서버와의 통신 중 오류가 발생했습니다.";
       }
-    },
-    cancelEditProfileForm() {
-      this.showEditProfile = false; 
-    },
+    }
   },
   mounted() {
     this.fetchProfile();
   },
-  components: {
-    EditProfile,
-  },
 };
 </script>
+
+
+
+
+
