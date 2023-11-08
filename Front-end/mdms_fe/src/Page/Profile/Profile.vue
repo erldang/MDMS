@@ -1,197 +1,139 @@
 <template>
-    <div class="profile-container">
-      <h1>회원정보</h1>
-      <form @submit.prevent="changeProfile">
-        <div class="input-group">
-          <label for="name" class="kind">이름</label>
-          <input type="text" id="name" v-model="name" :disabled="!isEditing" />
-        </div>
-  
-        <div class="input-group">
-          <label for="email" class="kind">이메일</label>
-          <label for="email">{{ email }}</label>
-        </div>
-  
-        <div class="input-group">
-          <label for="password" class="kind">비밀번호</label>
-          <button @click.prevent="updatePassword">변경하기</button>
-          <div v-if="showUpdatePassword">
-            <input type="password" v-model="newPassword" placeholder="새로운 비밀번호 입력" />
-            <input type="password" v-model="confirmNewPassword" placeholder="비밀번호 재입력" />
-            <button @click="checkChangePassword">확인하기</button>
-          </div>
-        </div>
-  
-        <div class="input-group">
-          <label for="Phone" class="kind">전화번호</label>
-          <input type="text" id="phone" v-model="phone" :disabled="!isEditing" />
-        </div>
-  
+  <div>
+    <!-- 프로필 폼 -->
+    <div v-if="profile">
+      <h2>프로필 정보</h2>
+      <form>
+        <!-- 프로필 정보 표시 부분 -->
         <div>
-          <button id="edit" type="button" @click="toggleEditing">{{ isEditing ? '수정 완료' : '수정하기' }}</button>
-          <button id="withdraw" @click="showDeleteConfirmation">회원탈퇴</button>
+          <label for="email">이메일:</label>
+          <input type="text" id="email" v-model="profile.data.email" readonly />
         </div>
+        <div>
+          <label for="name">이름:</label>
+          <input type="text" id="name" v-model="profile.data.name" readonly />
+        </div>
+        <div>
+          <label for="phone">전화번호:</label>
+          <input type="text" id="phone" v-model="profile.data.phone" readonly />
+        </div>
+        <!-- 수정 버튼 -->
+        <button @click="openEditProfileForm">프로필 수정</button>
+        <button @click="confirmDeleteUser">탈퇴하기</button>
       </form>
-  
-      <div v-if="showDeleteDialog" class="delete-dialog">
-        <p>비밀번호를 입력해 주세요.</p>
-        <input type="password" v-model="deletePassword" placeholder="비밀번호 입력" />
-        <div>
-          <button @click="confirmDelete">확인</button>
-          <button @click="cancelDelete">취소</button>
-        </div>
-      </div>
     </div>
-  </template>
-  
-  <script>
-  import './Profile.css'
-  export default {
-    name: 'ProfilePage',
-    data() {
-      return {
-        name: '',
-        email: '',
-        password: '', 
-        showUpdatePassword: false,
-        phone: '',
-        newPassword: '',
-        confirmNewPassword: '',
-        isEditing: false,
-        errorMessage: '',
-        showDeleteDialog: false,
-        deletePassword: '',
+
+    <!-- 오류 메시지 -->
+    <div v-if="error" class="error-message">{{ error }}</div>
+
+    <!-- 프로필 수정 폼 -->
+    <EditProfile
+      v-if="showEditProfile"
+      :initialProfile="profile.data"
+      @profile-updated="fetchProfile"
+      @profile-canceled="cancelEditProfileForm"
+      class="edit-profile-form"
+    />
+    
+    <!-- 탈퇴 다이얼로그 -->
+    <div v-if="showDeleteConfirmation">
+      <p>정말로 탈퇴하시겠습니까?</p>
+      <button @click="deleteUser">확인</button>
+      <button @click="cancelDelete">취소</button>
+    </div>
+  </div>
+</template>
+<script>
+import EditProfile from './EditProfile.vue'; 
+import './Profile.css';
+export default {
+  data() {
+    return {
+      profile: null,
+      error: null,
+      showEditProfile: false,
+      showDeleteConfirmation: false, 
+    };
+  },
+  methods: {
+    async fetchProfile() {
+      const token = localStorage.getItem('token'); 
+
+      if (!token) {
+        this.$router('/login');
+        return;
+      }
+
+      const url = `http://localhost:3001/user/specific?token=${token}`;
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      };
+
+      try {
+        const response = await fetch(url, { headers });
+        const data = await response.json();
+
+        if (data.ok === "ok") {
+          this.profile = data.data;
+        } else {
+          this.error = "프로필을 불러오는 데 문제가 발생했습니다.";
+        }
+      } catch (error) {
+        this.error = "서버와 통신 중 오류가 발생했습니다.";
       }
     },
-    methods: {
-      logout() {
-        return new Promise((resolve) => {
-          localStorage.removeItem('token');
-          resolve();
-        });
-      },
-      async fetchUserProfile() {
-        try {
-          const token = localStorage.getItem('token');
-          console.log("token", token);
-
-          const requestOptions = {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          };
-
-          const apiUrl = `http://localhost:3001/user/specific?token=${token}`;
-
-          const response = await fetch(apiUrl, requestOptions);
-          const data = await response.json();
-
-          console.log(token, "token");
-
-          if (data && data.data) {
-            this.name = data.data.name;
-            this.email = data.data.email;
-            this.phone = data.data.phone;
-          }
-        } catch (error) {
-          console.error('프로필을 가져오는 데 오류가 발생하였습니다:', error);
-        }
-      },
-      async changeProfile() {
-        try {
-          const token = localStorage.getItem('token');
-          const dataToUpdate = {
-            "email": this.email,
-            "name": this.name,
-            "phone": this.phone,
-            "password": this.password
-          };
-  
-          if (this.showUpdatePassword) {
-            dataToUpdate.password = this.newPassword;
-          }
-  
-          const response = await fetch('/user/modify', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(dataToUpdate)
-          });
-  
-          const data = await response.json();
-          if (data && data.ok === 'ok') {
-            alert('프로필이 성공적으로 업데이트되었습니다.');
-            this.isEditing = false;
-            this.errorMessage = '';
-          } else {
-            this.errorMessage = '프로필 업데이트 중 오류가 발생하였습니다.';
-          }
-        } catch (error) {
-          console.error('프로필 업데이트 중 오류가 발생하였습니다:', error);
-          this.errorMessage = '프로필 업데이트 중 오류가 발생하였습니다.';
-        }
-      },
-      checkChangePassword() {
-        this.changeProfile();
-      },
-      updatePassword() {
-        this.showUpdatePassword = true;
-      },
-      toggleEditing() {
-        this.isEditing = !this.isEditing;
-      },
-      showDeleteConfirmation() {
-        this.showDeleteDialog = true;
-      },
-      confirmDelete() {
-        if (this.deletePassword === this.password) {
-          this.deleteUser().then(() => {
-            this.logout().then(() => {
-              alert('회원 탈퇴가 완료되었습니다.');
-              this.$router.push('/login');
-            }).catch(error => {
-              console.error('Logout failed', error);
-            });
-          });
-        } else {
-          alert('비밀번호가 일치하지 않습니다.');
-        }
-      },
-      cancelDelete() {
-        this.showDeleteDialog = false;
-      },
-      async deleteUser() {
-        try {
-          const token = localStorage.getItem('token');
-          const response = await fetch('localhost:3001/user/delete', {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-              email: this.email
-            })
-          });
-          const data = await response.json();
-          if (data && data.ok === 'ok') {
-            alert('회원 탈퇴가 완료되었습니다.');
-            this.router.push('/login');
-          } else {
-            this.errorMessage = '회원 탈퇴 중 오류가 발생하였습니다.';
-          }
-        } catch (error) {
-          console.error('회원 탈퇴 중 오류가 발생하였습니다:', error);
-          this.errorMessage = '회원 탈퇴 중 오류가 발생하였습니다.';
-        }
-      },
+    openEditProfileForm() {
+      this.showEditProfile = true;
     },
-    created() {
-      this.fetchUserProfile();
-    }
-  }
-  </script>
-  
+    confirmDeleteUser() {
+      this.showDeleteConfirmation = true;
+    },
+    cancelDelete() {
+      this.showDeleteConfirmation = false;
+    },
+    async deleteUser() {
+      const token = localStorage.getItem('token');
+
+      const url = 'http://localhost:3001/user/delete';
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      };
+      const body = JSON.stringify({ email: this.profile.email });
+
+      try {
+        const response = await fetch(url, {
+          method: 'DELETE',
+          headers,
+          body,
+        });
+        const data = await response.json();
+
+        if (data.ok === 'ok') {
+          // 탈퇴 성공 시 처리
+          alert('탈퇴가 완료되었습니다.');
+          // 로그아웃 처리 또는 리다이렉트 등을 추가하세요.
+        } else {
+          // 탈퇴 실패 시 처리
+          alert('탈퇴에 실패했습니다. 다시 시도하세요.');
+          // 오류 메시지를 표시하거나 페이지를 리로딩하십시오.
+        }
+      } catch (error) {
+        // 서버와 통신 중 오류 발생 시 처리
+        alert('서버와 통신 중 오류가 발생했습니다.');
+      }
+    },
+    cancelEditProfileForm() {
+      this.showEditProfile = false;
+    },
+  },
+  mounted() {
+    this.fetchProfile();
+  },
+  components: {
+    EditProfile,
+  },
+};
+</script>
