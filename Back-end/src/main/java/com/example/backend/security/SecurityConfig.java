@@ -29,6 +29,8 @@ public class SecurityConfig {
                                 .requestMatchers("/user/authentication/send").permitAll()
                                 .requestMatchers("/user/findId").permitAll()
                                 .requestMatchers("/user/findPwd").permitAll()
+                                .requestMatchers("/user/duplicationCheck").permitAll()
+
                                 .anyRequest().authenticated()
 
 

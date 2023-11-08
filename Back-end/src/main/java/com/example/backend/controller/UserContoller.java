@@ -7,6 +7,7 @@ import com.example.backend.dto.UserDto;
 import com.example.backend.entity.User;
 import com.example.backend.service.EmailService;
 import com.example.backend.security.JwtProvider;
+import com.example.backend.service.HistoryService;
 import com.example.backend.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
@@ -32,9 +33,14 @@ public class UserContoller {
     @Autowired
     JwtProvider jwtProvider;
 
+    @Autowired
+    HistoryService historyService;
+
+    //일반사용자가입
     @PostMapping("/signup")
     public ResponseDto<Object> signUpUser(@RequestBody UserDto userDto) {
 
+        userDto.setAdmin(false);
         String response = userService.signUpUser(userDto);
 
         return ResponseDto.builder().message(response).ok("ok").build();
@@ -167,6 +173,16 @@ public class UserContoller {
         return ResponseDto.builder().ok("ok").data(user).build();
     }
 
+    //아이디 중복확인
+    @PostMapping("/duplicationCheck")
+    public ResponseDto<Object> duplicationCheck(@RequestBody UserDto userDto){
+
+        Boolean isDuplicated = userService.duplicationCheck(userDto);
+
+        String message = isDuplicated ? "중복" : "미중복";
+
+        return ResponseDto.builder().data(isDuplicated).message(message).build();
+    }
 
 
 

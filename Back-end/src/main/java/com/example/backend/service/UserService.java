@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -215,5 +217,22 @@ public class UserService {
 
 
         return  new UserDto(user);
+    }
+
+    public Boolean duplicationCheck(UserDto userDto) {
+
+        String email = userDto.getEmail();
+
+        Optional<User> u = userRepository.findById(email);
+
+        System.out.println(u.isEmpty());
+
+        if(u.isEmpty()){
+            return false;
+        }
+        else{
+            return true;
+        }
+
     }
 }
