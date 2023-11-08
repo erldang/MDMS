@@ -107,8 +107,10 @@ export default {
         return;
       }
       const submitData = {
-        name: this.profile.name,
-        phone: this.profile.phone
+        "name": this.profile.name,
+        "phone": this.profile.phone, //수정 로직 json data 에 "" 붙일 것, email 과 password 도 함께 보내는 로직으로 수정 
+        // "email": this.this.profile.email,
+        // "password":this.this.this.profile.password
       };
       if (this.profile.email !== this.originalEmail) {
         submitData.email = this.profile.email;
