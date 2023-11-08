@@ -1,4 +1,4 @@
-import ProfilePage from '@/Page/Profile/Profile.vue'
+import ProfilePage from '@/Page/Profile/UserProfile.vue'
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginPage from '@/Page/Login/Login.vue';
 import RegisterPage from '@/Page/Register/Register.vue';

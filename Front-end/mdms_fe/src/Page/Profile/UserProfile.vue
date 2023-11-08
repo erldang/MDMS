@@ -43,29 +43,35 @@
     </div>
   </div>
 </template>
+
 <script>
 import EditProfile from './EditProfile.vue'; 
 import './Profile.css';
 export default {
   data() {
     return {
-      profile: null,
+      profile: {
+        data: {
+          email: '',
+          name: '',
+          phone: ''
+        }
+      },
       error: null,
       showEditProfile: false,
-      showDeleteConfirmation: false, 
+      showDeleteConfirmation: false,
     };
   },
   methods: {
     async fetchProfile() {
-      const token = localStorage.getItem('token'); 
-
+      const token = localStorage.getItem('token');
+      
       if (!token) {
-        this.$router('/login');
+        //this.$router.push('/login'); // 라우팅 처리 수정
         return;
       }
 
       const url = `http://localhost:3001/user/specific?token=${token}`;
-
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -76,7 +82,7 @@ export default {
         const data = await response.json();
 
         if (data.ok === "ok") {
-          this.profile = data.data;
+          this.profile.data = data.data; // 데이터 할당 이동
         } else {
           this.error = "프로필을 불러오는 데 문제가 발생했습니다.";
         }
@@ -85,7 +91,7 @@ export default {
       }
     },
     openEditProfileForm() {
-      this.showEditProfile = true;
+      this.showEditProfile = true; 
     },
     confirmDeleteUser() {
       this.showDeleteConfirmation = true;
@@ -126,7 +132,7 @@ export default {
       }
     },
     cancelEditProfileForm() {
-      this.showEditProfile = false;
+      this.showEditProfile = false; 
     },
   },
   mounted() {
