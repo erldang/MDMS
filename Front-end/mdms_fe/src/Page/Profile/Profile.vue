@@ -114,7 +114,7 @@ export default {
         if (data.ok === 'ok') {
           // 탈퇴 성공 시 처리
           alert('탈퇴가 완료되었습니다.');
-          // 로그아웃 처리 또는 리다이렉트 등을 추가하세요.
+          this.router.push('/login');
         } else {
           // 탈퇴 실패 시 처리
           alert('탈퇴에 실패했습니다. 다시 시도하세요.');
