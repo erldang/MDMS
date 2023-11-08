@@ -42,6 +42,7 @@
 </template>
   
 <script>
+import './DataRegister.css'
 import DataColumn from '@/Layout/DataColumn.vue';
 export default {
     components: {

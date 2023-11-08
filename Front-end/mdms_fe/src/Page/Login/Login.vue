@@ -27,81 +27,58 @@
 </template>
 
 <script>
-// import { useStore } from 'vuex';
-// import { useRouter } from 'vue-router';
-
+import axios from 'axios';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import './Login.css'
 export default {
-    name: 'LoginPage',
-    data() {
-        return {
-            email: '',
-            password: ''
-        }
-    },
-    methods: {
-        handleLogin() {
-            // 현재는 별도의 확인 없이 바로 로그인 상태로 변경합니다.
-            this.$store.dispatch('login');
-            this.$router.push('/');
-        },
-        goToForgotPassword() {
-            // 아이디/비밀번호 찾기 페이지로 이동
-            this.$router.push('/forgot-password');
-        }
+  name: 'LoginPage',
+  data() {
+    return {
+      email: '',
+      password: ''
     }
+  },
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+    return { store, router };
+  },
+  methods: {
+    async handleLogin() { //만약 이걸로 관리자 사용자 구분이 되지 않는다면 router 에 관리자 사용자 구분을 위해 store 에 관리자 유무를 저장하고 이를 가지고 판단하여 이동시키기
+        try {
+          const response = await axios.post('http://localhost:3001/user/login', {
+            "email": this.email,
+            "password": this.password
+          });
+
+          if (response.data.ok === 'ok') {
+            // 로그인 성공, JWT 토큰을 로컬 스토리지에 저장
+            localStorage.setItem('token', response.data.message);
+            // Vuex Store에 상태 저장
+
+            console.log('login시 token : ' , response.data.message);
+
+            this.store.dispatch('login', response.data.message);
+
+            // 관리자 여부에 따라 리다이렉션 경로 변경
+            if (response.data.data.admin) {
+              this.router.push('/admin-main');
+            } else {
+              this.router.push('/');
+            }
+          } else {
+            // 로그인 실패 처리
+            alert('로그인 실패: ' + response.data.message);
+          }
+        } catch (error) {
+          console.error('로그인 에러:', error);
+          alert('로그인 에러');
+        }
+      },
+    goToForgotPassword() {
+      this.router.push('/forgot-password');
+    }
+  }
 }
 </script>
-
-<style scoped>
-.login-container {
-    width: 300px;
-    margin: 0 auto;
-    padding: 2rem;
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.input-group {
-    margin-bottom: 1rem;
-}
-
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-}
-
-input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #eaeaea;
-    border-radius: 4px;
-}
-
-button {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.links {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: space-between;
-}
-</style>

@@ -2,25 +2,25 @@ import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    isLoggedIn: false
+    isLoggedIn: false,
+    token: ''
   },
   mutations: {
-    login(state) {
-      state.isLoggedIn = true;
-    },
-    logout(state) {
-      state.isLoggedIn = false;
+    setLoginState(state, payload) {
+      state.isLoggedIn = payload.status;
+      state.token = payload.token;
     }
   },
   actions: {
-    login({ commit }) {
-      commit('login');
+    login({ commit }, token) {
+      commit('setLoginState', { status: true, token: token });
     },
     logout({ commit }) {
-      commit('logout');
+      commit('setLoginState', { status: false, token: '' });
     }
   },
   getters: {
-    isLoggedIn: (state) => state.isLoggedIn
+    isLoggedIn: state => state.isLoggedIn,
+    token: state => state.token
   }
 });
