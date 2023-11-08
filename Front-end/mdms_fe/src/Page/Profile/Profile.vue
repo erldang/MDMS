@@ -104,8 +104,8 @@
           const dataToUpdate = {
             "email": this.email,
             "name": this.name,
-            "phone": this.phone
-            //password 도 필요한 가?
+            "phone": this.phone,
+            "password": this.password
           };
   
           if (this.showUpdatePassword) {
