@@ -7,6 +7,7 @@ import com.example.backend.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,6 +26,14 @@ public class HistoryController {
 
 
         return ResponseDto.builder().data(historyDtoList).build();
+    }
+
+    @GetMapping("/join")
+    public ResponseDto<Object> findHistoryByEmail(@RequestParam("email") String email){
+
+        List<HistoryDto> historyDtoList = historyService.findHistoryByEmail(email);
+        return ResponseDto.builder().data(historyDtoList).build();
+
     }
 
 

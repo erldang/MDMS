@@ -23,17 +23,24 @@ public class History {
     private int no;
 
     @Column(nullable = false)
-    private String tableName;
+    private String logicalTableName;
+
+    @Column(nullable = false)
+    private String physicalTableName;
 
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+
+
+   //@Column(nullable = false)
     private Date registrationDate;
+
 
     public History(HistoryDto historyDto){
         this.no = historyDto.getNo();
-        this.tableName = historyDto.getTableName();
+        this.logicalTableName = historyDto.getLogicalTableName();
+        this.physicalTableName = historyDto.getPhysicalTableName();
         this.email = historyDto.getEmail();
         this.registrationDate = historyDto.getRegistrationDate();
     }

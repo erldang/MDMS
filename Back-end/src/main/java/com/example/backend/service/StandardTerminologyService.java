@@ -15,6 +15,8 @@ public class StandardTerminologyService {
     @Autowired
     StandardTerminologyRepository stdRepository;
 
+    @Autowired
+    DomainService domainService;
 
     public List<StandardTerminologyDto> findAllTerminology(){
 

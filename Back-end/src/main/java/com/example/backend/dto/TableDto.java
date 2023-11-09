@@ -14,6 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
 @NoArgsConstructor
 public class TableDto {
     private String email;
-    private String tableName;
+    private String logicalTableName;
+    private String physicalTableName;
     private String query;
 }

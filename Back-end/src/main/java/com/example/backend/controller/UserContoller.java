@@ -4,7 +4,6 @@ package com.example.backend.controller;
 import com.example.backend.dto.EmailCodeDto;
 import com.example.backend.dto.ResponseDto;
 import com.example.backend.dto.UserDto;
-import com.example.backend.entity.User;
 import com.example.backend.service.EmailService;
 import com.example.backend.security.JwtProvider;
 import com.example.backend.service.HistoryService;
@@ -90,7 +89,7 @@ public class UserContoller {
     @PostMapping("/modify")
     public ResponseDto<Object> modify(@RequestBody UserDto userDto){
 
-
+        System.out.println(userDto.toString());
         String message = userService.modifyUser(userDto);
         return ResponseDto.builder().ok("ok").message(message).build();
     }
@@ -137,7 +136,7 @@ public class UserContoller {
 
 
     @GetMapping("/specific")
-    public ResponseDto<Object> getSpeicifyUser(@RequestParam("token") String token){
+    public ResponseDto<Object> getSpecifyUser(@RequestParam("token") String token){
 
         String email = jwtProvider.getEmailFromToken(token);
 

@@ -20,15 +20,16 @@ public class HistoryDto {
 
     private int no;
 
-    private String tableName;
-
+    private String physicalTableName;
+    private String logicalTableName;
     private String email;
 
     private Date registrationDate;
 
     public HistoryDto(History history){
         this.no = history.getNo();
-        this.tableName = history.getTableName();
+        this.physicalTableName = history.getPhysicalTableName();
+        this.logicalTableName = history.getLogicalTableName();
         this.email = history.getEmail();
         this.registrationDate = history.getRegistrationDate();
     }

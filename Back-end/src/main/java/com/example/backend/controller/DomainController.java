@@ -43,17 +43,17 @@ public class DomainController {
     //밑에 쳐박아 두기
     @GetMapping("/inputData")
     public void inputData() {
-        String path = "C://Users//lixixi//Desktop//WEBKIT//TeamProjectStudy//";
-
+        //String path = "C://Users//lixixi//Desktop//WEBKIT//TeamProjectStudy//";
+        String path = "Back-end//src//main//resources//공공데이터 공통표준용어(2021.12월).xlsx";
         try {
-            File file = new File(path + "공공데이터 공통표준도메인(2021.12월).xlsx");
+            File file = new File(path);
 
             FileInputStream fis = new FileInputStream(file);
             Workbook workBook = new XSSFWorkbook(fis);
             int rowIndex = 0;
             int colindex = 0;
 
-            Sheet sheet = workBook.getSheetAt(0);
+            Sheet sheet = workBook.getSheetAt(2);
             DataFormatter formatter = new DataFormatter();
             //sheet.getPhysicalNumberOfRows()
             for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
@@ -61,18 +61,18 @@ public class DomainController {
 
                 DomainDto data = new DomainDto();
                 data.setNo((int) row.getCell(0).getNumericCellValue());
-                data.setClassificationName(formatter.formatCellValue(row.getCell(1)));
-                data.setDomain(formatter.formatCellValue(row.getCell(2)));
-                data.setDescription(formatter.formatCellValue(row.getCell(3)));
-                data.setDataType(formatter.formatCellValue(row.getCell(4)));
-                data.setDataLength(formatter.formatCellValue(row.getCell(5)));
-                data.setDecimalPointLength(formatter.formatCellValue(row.getCell(6)));
-                data.setSaveFormat(formatter.formatCellValue(row.getCell(7)));
-                data.setExpressionForm(formatter.formatCellValue(row.getCell(8)));
-                data.setUnitName(formatter.formatCellValue(row.getCell(9)));
-                data.setTolerance(formatter.formatCellValue(row.getCell(10)));
-                data.setDegree(formatter.formatCellValue(row.getCell(11)));
-
+                data.setDegree(formatter.formatCellValue(row.getCell(1)));
+                data.setGroupName(formatter.formatCellValue(row.getCell(2)));
+                data.setClassificationName(formatter.formatCellValue(row.getCell(3)));
+                data.setName(formatter.formatCellValue(row.getCell(4)));
+                data.setDescription(formatter.formatCellValue(row.getCell(5)));
+                data.setDataType(formatter.formatCellValue(row.getCell(6)));
+                data.setDataLength(formatter.formatCellValue(row.getCell(7)));
+                data.setDecimalPointLength(formatter.formatCellValue(row.getCell(8)));
+                data.setSaveFormat(formatter.formatCellValue(row.getCell(9)));
+                data.setExpressionForm(formatter.formatCellValue(row.getCell(10)));
+                data.setUnit(formatter.formatCellValue(row.getCell(11)));
+                data.setTolerance(formatter.formatCellValue(row.getCell(12)));
                 domainService.addData(data);
             }
 

@@ -1,8 +1,11 @@
 package com.example.backend.controller;
 
 
+import com.example.backend.dto.DomainDto;
 import com.example.backend.dto.ResponseDto;
 import com.example.backend.dto.StandardTerminologyDto;
+import com.example.backend.entity.Domain;
+import com.example.backend.service.DomainService;
 import com.example.backend.service.StandardTerminologyService;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,6 +30,8 @@ public class StandardTerminologyController {
     @Autowired
     StandardTerminologyService stdService;
 
+    @Autowired
+    DomainService domainService;
 
     @GetMapping
     public ResponseDto<Object> findAllTerminology(){
@@ -52,10 +57,9 @@ public class StandardTerminologyController {
     //아래 쳐박아 두기
     @GetMapping("/inputData")
     public void inputData(){
-        String path = "C://Users//lixixi//Desktop//WEBKIT//TeamProjectStudy//";
-
+        String path = "Back-end//src//main//resources//공공데이터 공통표준용어(2021.12월).xlsx";
         try{
-            File file  = new File(path + "공공데이터 공통표준용어(2021.12월)_DB제작을 위한것.xlsx");
+            File file  = new File(path);
 
             FileInputStream fis = new FileInputStream(file);
             Workbook workBook = new XSSFWorkbook(fis);
@@ -74,14 +78,19 @@ public class StandardTerminologyController {
                 data.setStandardTerminology(formatter.formatCellValue(row.getCell(2)));
                 data.setDescription(formatter.formatCellValue(row.getCell(3)));
                 data.setEnglishAbbreviation(formatter.formatCellValue(row.getCell(4)));
-                data.setDomain(formatter.formatCellValue(row.getCell(5)));
-                data.setTolerance(formatter.formatCellValue(row.getCell(6)));
-                data.setSaveFormat(formatter.formatCellValue(row.getCell(7)));
-                data.setExpressionForm(formatter.formatCellValue(row.getCell(8)));
+                String domainName = formatter.formatCellValue(row.getCell(5));
+
+                DomainDto domainDto = domainService.findDomainByName(domainName);
+                Domain domain = new Domain(domainDto);
+                data.setDomain(domain);
+
+
+             //   data.setTolerance(formatter.formatCellValue(row.getCell(6)));
+             //   data.setSaveFormat(formatter.formatCellValue(row.getCell(7)));
+             //   data.setExpressionForm(formatter.formatCellValue(row.getCell(8)));
                 data.setStandardCode(formatter.formatCellValue(row.getCell(9)));
-
                 data.setRelevantOrganization(formatter.formatCellValue(row.getCell(10)));
-
+                data.setIsCustom(false);
                 stdService.addData(data);
             }
 

@@ -14,24 +14,26 @@ import lombok.*;
 public class Domain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int no;
-    private String classificationName; //분류명
-    private String domain; //도메인명
 
+    private int no;
+    private String degree; //재정차수
+    private String groupName; //공통표준도메인 그룹명
     @Column(length = 1000)
+    private String classificationName; //분류명
+    private String name; //도메인명
     private String description; //설명
     private String dataType; //데이터 타입명
     private String dataLength; //데이터 길이
     private String decimalPointLength; //데이터 소수점 길이
     private String saveFormat; //저장 형식
     private String expressionForm; // 표현 형식
-    private String unitName; //단위명
+    private String unit; //단위명
     private String tolerance; //허용값
-    private String degree; //재정차수
 
     public Domain(DomainDto domainDto){
         this.no = domainDto.getNo();
-        this.domain = domainDto.getDomain();
+        this.groupName = domainDto.getGroupName();
+        this.name = domainDto.getName();
         this.classificationName = domainDto.getClassificationName();
         this.description = domainDto.getDescription();
         this.dataType = domainDto.getDataType();
@@ -39,7 +41,7 @@ public class Domain {
         this.decimalPointLength = domainDto.getDecimalPointLength();
         this.saveFormat = domainDto.getSaveFormat();
         this.expressionForm = domainDto.getExpressionForm();
-        this.unitName = domainDto.getUnitName();
+        this.unit = domainDto.getUnit();
         this.tolerance = domainDto.getTolerance();
         this.degree = domainDto.getDegree();
     }

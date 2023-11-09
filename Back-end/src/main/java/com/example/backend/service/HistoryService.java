@@ -32,4 +32,18 @@ public class HistoryService {
         return historyDtoList;
     }
 
+    public List<HistoryDto> findHistoryByEmail(String email) {
+
+        List<History> historyList = historyRepository.findHistoryByEmail(email);
+
+        System.out.println(historyList.toString());
+
+        List<HistoryDto> historyDtoList = new ArrayList<HistoryDto>();
+        for(History history : historyList){
+            historyDtoList.add(new HistoryDto(history));
+        }
+
+        return historyDtoList;
+
+    }
 }
