@@ -84,7 +84,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // 로그인, 회원가입, 비밀번호 찾기 페이지는 로그인 여부와 상관없이 이동 가능
-  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword') {
+  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' || to.name === 'DataRegister') {
     next();
   } else {
     // 토큰을 로컬 스토리지에서 확인합니다.

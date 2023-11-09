@@ -1,190 +1,248 @@
 <template>
-    <div class="data-register-container">
-      <h1 class="data-register-title">데이터 제목(수정가능)</h1>
-      <div class="process-steps">
-        <div class="process-step">
-          <div class="step-content">
-            <p>편집 기능 추가 예정</p>
-            <button @click="showModal = true">편집</button>
-          </div>
-        </div>
-        <div class="process-arrow">
-          <p>➡️</p>
-        </div>
-        <div class="process-step">
-          <div class="step-content">
-            <p>생성된 DDL 표기</p>
-          </div>
-        </div>
-        <div class="process-arrow">
-          <p>➡️</p>
-        </div>
-        <div class="process-step">
-          <div class="step-content">
-            <p>테이블 등록</p>
-          </div>
-        </div>
-      </div>
-      <div v-if="showModal" class="modal-overlay" @click="closeModal">
-        <div class="modal-content" @click.stop>
-        <h2>편집 창</h2>
-        <div class="data-columns-container">
-            <data-column v-for="(column, index) in dataColumns" :key="index">
-            <button @click="removeDataColumn(index)">제거</button> 
-            </data-column>
-            <button class="add-button" @click="addDataColumn">+</button>
-        </div>
+  <div>
+    <form @submit.prevent="generateCreateStatement">
+      <label for="tableName">Enter Table Name (English Only):</label>
+      <input type="text" id="tableName" v-model="tableName" required>
+
+      <button type="button" @click="addDataType">Add Column</button>
+
+      <div v-for="(dataType, index) in dataTypes" :key="dataType.id">
+        <label for="dataType">Choose Data Type:</label>
+        <select v-model="dataType.selected" required>
+          <option disabled value="">Please Select</option>
+          <option v-for="type in dataTypeOptions" :value="type" :key="type">
+            {{ type }}
+          </option>
+        </select>
+
+        <label for="search">Search Column Name:</label>
+        <input type="search" v-model="dataType.search" @input="searchDataType(dataType)">
+
+        <!-- 검색 결과를 리스트로 표시하고 선택 가능하게 합니다. -->
+        <ul v-if="dataType.searchResults.length">
+          <li v-for="result in dataType.searchResults" :key="result.no">
+            <button type="button" @click="selectRecommendation(index, result.classificationName)">
+              {{ result.classificationName }}
+            </button>
+            <label>{{ result.description }}</label>
+            <label>{{ result.dataType }}</label>
+          </li>
+        </ul>
         
-        <button class="close-button" @click="closeModal">닫기</button>
+        <!-- 검색 결과가 5개 이하일 때, 그 아래에 사용자 정의 추가 버튼을 표시합니다. -->
+        <div v-if="dataType.searchResults.length && dataType.searchResults.length <= 5">
+          <button type="button" @click="customAdd(index)">
+            Custom Add
+          </button>
         </div>
-    </div>
+
+        <button type="button" @click="removeDataType(index)">Remove Column</button>
+      </div>
+      
+      <button type="submit">Generate CREATE Statement</button>
+      <button type="button" @click="registerTable">Register</button>
+      <button type="button" @click="cancel">Cancel</button>
+    </form>
   </div>
 </template>
-  
+
 <script>
-import './DataRegister.css'
-import DataColumn from '@/Layout/DataColumn.vue';
 export default {
-    components: {
-    DataColumn 
-  },
   data() {
     return {
-      showModal: false,
-      dataColumns: [
-        {}, {}, {} // 초기에 3개의 DataColumn을 표시
+      tableName: '',
+      dataTypes: [],
+      dataTypeOptions: ['INT', 'VARCHAR', 'TEXT', 'DATE', 'CHAR'],
+      serverData: [
+        {
+          "no": 1,
+          "classificationName": "코드",
+          "domain": "코드C12",
+          "description": "정보를 나타내기 위한 기호 체계로 고정된 데이터 길이로 표현한 것",
+          "dataType": "CHAR",
+          "dataLength": "12",
+          "decimalPointLength": "0",
+          "saveFormat": "12자리 문자",
+          "expressionForm": "-",
+          "unitName": "-",
+          "tolerance": "-",
+          "degree": "2"
+        },
+        {
+          "no": 2,
+          "classificationName": "이름",
+          "domain": "이름N20",
+          "description": "사람의 이름을 표기하는 데 사용되는 문자열",
+          "dataType": "VARCHAR",
+          "dataLength": "20",
+          "decimalPointLength": "0",
+          "saveFormat": "최대 20자리 문자",
+          "expressionForm": "-",
+          "unitName": "-",
+          "tolerance": "-",
+          "degree": "1"
+        },
+        {
+          "no": 3,
+          "classificationName": "주소",
+          "domain": "주소A50",
+          "description": "거주지를 표시하는 데 사용되는 문자열",
+          "dataType": "VARCHAR",
+          "dataLength": "50",
+          "decimalPointLength": "0",
+          "saveFormat": "최대 50자리 문자",
+          "expressionForm": "-",
+          "unitName": "-",
+          "tolerance": "-",
+          "degree": "1"
+        }
       ],
     };
-    
   },
   methods: {
-    closeModal() {
-      this.showModal = false;
+    addDataType() {
+      this.dataTypes.push({
+        id: Date.now(),
+        selected: '',
+        search: '',
+        searchResults: []
+      });
     },
-    addDataColumn() {
-      this.dataColumns.push({}); // 새 DataColumn 객체를 추가
+    searchDataType(dataType) {
+      if (dataType.search) {
+        let searchString = dataType.search.toLowerCase();
+        dataType.searchResults = this.serverData.filter(item =>
+          item.classificationName.toLowerCase().includes(searchString)
+        );
+      } else {
+        // 검색어가 비어있을 때 처리할 내용 추가
+        dataType.searchResults = [];
+      }
     },
-    removeDataColumn(index) {
-        this.dataColumns.splice(index, 1); 
+    selectRecommendation(index, recommendation) {
+    // 선택된 추천 값을 해당 데이터 타입의 선택된 값으로 설정
+    this.dataTypes[index].selected = recommendation;
+    // 검색 결과를 비우고 검색 입력을 추천된 값으로 설정 (옵션)
+    this.dataTypes[index].searchResults = [];
+    this.dataTypes[index].search = recommendation;
+    },
+    removeDataType(index) {
+      this.dataTypes.splice(index, 1);
+    },
+    generateCreateStatement() {
+      // 테이블 이름 가져오기
+      const tableName = this.tableName.trim();
+      
+      // 테이블 이름이 비어있을 경우 예외 처리
+      if (!tableName) {
+        alert("Please enter a table name.");
+        return;
+      }
+      
+      // CREATE TABLE 문 생성
+      let createStatement = `CREATE TABLE ${tableName} (\n`;
+      
+      // ID 열 추가 (기본키, 자동 증가)
+      createStatement += "  ID INT PRIMARY KEY AUTO_INCREMENT,\n";
+      
+      // DataType 열 추가
+      for (const dataType of this.dataTypes) {
+        const columnName = dataType.search.trim();
+        const dataTypeValue = dataType.selected;
+        
+        // Column Name이 비어있을 경우 예외 처리
+        if (!columnName) {
+          alert("Please enter a column name for all data types.");
+          return;
+        }
+        
+        createStatement += `  ${columnName} ${dataTypeValue},\n`;
+      }
+      
+      // 마지막 쉼표와 개행 문자 제거
+      createStatement = createStatement.slice(0, -2) + "\n";
+      
+      // CREATE TABLE 문 마무리
+      createStatement += ");";
+      
+      // 생성된 CREATE TABLE 문을 콘솔에 출력하거나 필요한 방식으로 사용할 수 있습니다.
+      console.log("Generated CREATE TABLE statement:");
+      console.log(createStatement);
+    },
+
+    registerTable() {
+      // 여기에 테이블 등록 로직을 구현하세요.
+    },
+    cancel() {
+      // 여기에 취소 로직을 구현하세요.
+    },
+    customAdd(){
+      console.log("커스텀 버튼 눌림");
     }
-  }
+  },
+  watch: {
+    // 검색어(dataType.search)의 변화를 감지
+    'dataTypes': {
+      handler: 'searchDataType',
+      deep: true,
+    },
+  },
 };
 </script>
-  
-<style scoped>
-  .data-register-container {
-    text-align: center;
-  }
-  
-  .data-register-title {
-    margin-bottom: 20px;
-  }
-  
-  .process-steps {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .process-step {
-    border: 2px solid #4CAF50;
-    border-radius: 15px;
+
+<style>
+  /* 스타일을 수정하거나 추가하세요 */
+  .container {
+    margin: 20px;
     padding: 20px;
-    width: 150px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 10px;
-  }
-  
-  .process-arrow {
-    font-size: 24px;
-    color: #333;
-  }
-  
-  .step-content p {
-    margin: 0;
-  }
-  
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-    z-index: 100;
-  }
-  
-  .data-columns-container {
-    display: flex;
-    justify-content: flex-start; /* Changed to flex-start to align children to the start */
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding-left: 20px; /* Adding padding to ensure "+" button does not stick to the side */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f8f8;
   }
 
-  .add-button {
-    margin: 0 auto; /* This will center the "+" button */
-    display: flex; /* Use flex to center content inside the button */
-    align-items: center; /* Center content vertically */
-    justify-content: center; /* Center content horizontally */
-    padding: 10px; /* Add some padding */
-    background-color: #4CAF50; /* Use a distinct color */
-    color: white; /* Text color */
-    font-size: 24px; /* Make it larger */
-    border-radius: 50%; /* Circle shape */
-    width: 40px; /* Fixed width */
-    height: 40px; /* Fixed height */
-    cursor: pointer;
-    border: none; /* No border */
-    outline: none; /* No outline */
+  form {
+    display: flex;
+    flex-direction: column;
   }
 
-  .data-column {
-    margin: 10px;
-    padding: 20px;
-    flex: 1;
-    min-width: 150px;
-    max-width: 300px;
+  label {
+    margin-top: 10px;
   }
-  
-  .data-column button {
-    background-color: #f44336; /* A red color for visibility */
-    color: white; /* White text for contrast */
-    padding: 10px 24px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    outline: none; /* Removes the outline */
-    margin-top: 10px; /* Add some space above the remove button */
-    width: 100%; /* Make the button full width */
+
+  input[type="text"],
+  input[type="search"],
+  select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   }
-  .process-step button {
-    background-color: #4CAF50; /* Green */
+
+  button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #0074d9;
+    color: #fff;
     border: none;
-    color: white;
-    padding: 10px 24px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
+    border-radius: 3px;
     cursor: pointer;
-    border-radius: 12px;
-    outline: none; /* Optional: removes the outline */
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  li button {
+    background-color: #33cc33;
+    margin-right: 10px;
   }
 </style>
-  
