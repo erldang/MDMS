@@ -52,7 +52,7 @@ export default {
     return {
       tableName: '',
       dataTypes: [],
-      dataTypeOptions: ['INT', 'VARCHAR', 'TEXT', 'DATE', 'CHAR'],
+      dataTypeOptions: ['INT', 'VARCHAR(255)', 'TEXT', 'DATE', 'CHAR(255)'],
       serverData: [
         {
           "no": 1,
