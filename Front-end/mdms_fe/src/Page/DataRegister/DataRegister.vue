@@ -2,10 +2,18 @@
   <div class="data-register">
     <h2>SQL 테이블 생성</h2>
     <form @submit.prevent="generateAndRegisterTable">
+      <!-- 물리적 테이블 이름 입력 -->
       <div class="input-group">
-        <label for="tableName">테이블 이름 입력:</label>
-        <input type="text" id="tableName" v-model="tableName" @input="validateTableName" />
+        <label for="physicalTableName">물리적 테이블 이름 입력:</label>
+        <input type="text" id="physicalTableName" v-model="tableName" @input="validateTableName" />
       </div>
+
+      <!-- 논리적 테이블 이름 입력 -->
+      <div class="input-group">
+        <label for="logicalTableName">논리적 테이블 이름 입력:</label>
+        <input type="text" id="logicalTableName" v-model="logicalTableName" />
+      </div>
+
 
       <div class="columns">
         <div class="column" v-for="(column, index) in columns" :key="index">
@@ -26,11 +34,13 @@
 
       <button type="button" @click="addColumn">컬럼 추가</button>
 
+      <!-- 액션 버튼들 -->
       <div class="actions">
         <button type="button" @click="generateCreateStatement" :disabled="!tableName">SQL DDL 생성</button>
-        <button type="submit" :disabled="!tableName || columns.length === 0">등록하기</button>
+        <button type="submit" :disabled="!tableName || !logicalTableName || columns.length === 0">등록하기</button>
       </div>
 
+      <!-- 생성된 SQL 쿼리 표시 -->
       <div v-if="createdSQL" class="created-sql">
         <h3>생성된 SQL 쿼리:</h3>
         <textarea v-model="createdSQL" readonly></textarea>
@@ -48,10 +58,13 @@ export default {
   data() {
     return {
       tableName: '',
+      logicalTableName: '',
       columns: [],
       searchResults: {},
       serverData: [],
-      createdSQL: '', // 생성된 SQL 쿼리문을 저장하는 변수
+      createdSQL: '',
+      token: localStorage.getItem('token'), // 토큰을 로컬 스토리지에서 미리 가져옵니다.
+      email: localStorage.getItem('email'), // 이메일을 로컬 스토리지에서 미리 가져옵니다.
     };
   },
   created() {
@@ -173,18 +186,73 @@ export default {
 
       return dataTypeString;
     },
-    // 입력 폼을 초기화하는 함수
+    // 등록하기 버튼 클릭 시 호출되는 메소드
+    async generateAndRegisterTable() {
+      if (!this.tableName.trim() || !this.logicalTableName.trim()) {
+        alert('테이블 이름과 논리적 테이블 이름을 입력해주세요.');
+        return;
+      }
+      if (!/^[A-Za-z_]+$/.test(this.tableName.trim())) {
+        alert('물리적 테이블 이름은 영문과 밑줄(_)만 포함할 수 있습니다.');
+        return;
+      }
+      if (this.columns.length === 0) {
+        alert('컬럼을 하나 이상 추가해주세요.');
+        return;
+      }
+
+      // 서버로 전송할 데이터 생성
+      const payload = {
+        email: this.email,
+        physicalTableName: this.tableName.trim(),
+        logicalTableName: this.logicalTableName.trim(),
+        query: this.createdSQL,
+        standardTerminologyList: this.columns.map(column => {
+          return {
+            no: column.no,
+            degree: column.degree,
+            standardTerminology: column.standardTerminology,
+            description: column.description,
+            englishAbbreviation: column.englishAbbreviation,
+            domain: column.domain,
+          };
+        }),
+      };
+
+      try {
+        // 서버로 POST 요청 보내기
+        const response = await axios.post('http://localhost:3001/table/create', payload, {
+          headers: { Authorization: `Bearer ${this.token}` },
+        });
+
+        // 성공적으로 데이터가 전송되면 응답 처리
+        if (response.data.ok === 'ok') {
+          alert(response.data.message);
+          // 폼 초기화 및 기타 작업 수행
+          //this.resetForm();
+        } else {
+          // 서버에서 에러 메시지가 올 경우 사용자에게 알림
+          alert(response.data.message);
+        }
+      } catch (error) {
+        console.error('서버 통신 중 오류가 발생했습니다:', error);
+        alert('서버 통신 중 오류가 발생했습니다.');
+      }
+    },
+
+    // 폼을 초기화하는 메소드
     resetForm() {
       this.tableName = '';
+      this.logicalTableName = '';
       this.columns = [];
       this.searchResults = {};
-    }
+      this.createdSQL = '';
+    },
   }
 };
 </script>
 
 
-<!-- 커밋 테스트 주석 -->
 <style scoped>
 .data-register {
   max-width: 800px;
@@ -205,17 +273,19 @@ export default {
   border-bottom: 2px solid #ecf0f1;
 }
 
-.input-group label,
-.column label {
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
   display: block;
   margin-bottom: 10px;
   font-weight: 600;
   color: #34495e;
+  font-size: 18px;
 }
 
-.input-group input[type="text"],
-.column input[type="text"],
-.column select {
+.input-group input[type="text"] {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
@@ -225,9 +295,7 @@ export default {
   transition: border-color 0.3s;
 }
 
-.input-group input[type="text"]:focus,
-.column input[type="text"]:focus,
-.column select:focus {
+.input-group input[type="text"]:focus {
   border-color: #3498db;
   outline: none;
 }
@@ -239,11 +307,19 @@ export default {
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: background-color 0.3s, transform 0.2s;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 
-.button:hover {
+.button:not(:disabled):hover {
   background-color: #2980b9;
   transform: translateY(-2px);
+}
+
+.button:disabled {
+  background-color: #7f8c8d;
 }
 
 .button:active {
@@ -261,9 +337,49 @@ export default {
   background-color: #ecf0f1;
   border-radius: 5px;
   transition: background-color 0.3s;
+  cursor: pointer;
 }
 
 .search-results li:hover {
   background-color: #d6dbdf;
+}
+
+.column-info {
+  background-color: #f2f3f4;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.created-sql {
+  margin-top: 20px;
+  background-color: #f2f3f4;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.created-sql h3 {
+  margin-bottom: 10px;
+}
+
+.created-sql textarea {
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.created-sql button {
+  padding: 10px 15px;
+  background-color: #27ae60;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.created-sql button:hover {
+  background-color: #229954;
 }
 </style>
