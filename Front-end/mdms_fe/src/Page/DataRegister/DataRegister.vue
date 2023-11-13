@@ -119,11 +119,18 @@ export default {
       // columns 배열의 해당 인덱스에 컬럼 정보 업데이트
       this.columns[index] = {
         ...this.columns[index],
+        no: result.no,
+        degree: result.degree,
         name: result.englishAbbreviation,
         type: typeFormat,
         standardTerminology: result.standardTerminology,
-        description: result.description
+        description: result.description,
+        standardCode: result.standardCode,
+        relevantOrganization: result.relevantOrganization,
+        isCustom: result.isCustom,
+        domain: result.domain // 이렇게 domain 전체를 저장해야 합니다.
       };
+
 
       // 검색 결과 초기화
       this.searchResults = {};
