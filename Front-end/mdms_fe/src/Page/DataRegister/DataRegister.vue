@@ -127,9 +127,27 @@ export default {
       }
 
       let createStatement = `CREATE TABLE ${this.tableName} (\n`;
-      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY,\n`;
-      // 컬럼 정의 로직
-      this.createdSQL = createStatement; // 생성된 SQL 쿼리문을 저장
+      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY,\n`; // 테이블 기본 키 설정
+
+      // columns 배열을 순회하면서 각 컬럼의 SQL 문을 생성
+      this.columns.forEach((column, index) => {
+        const columnData = this.serverData.find(item => item.englishAbbreviation === column.name);
+        if (columnData) {
+          let dataTypeString = this.getDataTypeString(columnData.domain);
+
+          // 컬럼 정의 추가
+          createStatement += `${column.name} ${dataTypeString}`;
+          if (index < this.columns.length - 1) {
+            createStatement += ',\n'; // 마지막 컬럼이 아니라면 쉼표를 추가
+          }
+        } else {
+          // 일치하는 데이터가 없는 경우 경고 출력
+          console.warn(`No matching data found for column ${column.name}`);
+        }
+      });
+
+      createStatement += '\n);'; // SQL 문 마무리
+      this.createdSQL = createStatement; // 생성된 SQL 쿼리문을 data 모델의 createdSQL에 저장
     },
     copyToClipboard() {
       if (this.createdSQL) {
