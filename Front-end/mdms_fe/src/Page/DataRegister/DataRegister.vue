@@ -224,6 +224,7 @@ export default {
         const response = await axios.post('http://localhost:3001/table/create', payload, {
           headers: { Authorization: `Bearer ${this.token}` },
         });
+        console.log(response);
 
         // 성공적으로 데이터가 전송되면 응답 처리
         if (response.data.ok === 'ok') {
