@@ -129,9 +129,7 @@ export default {
         relevantOrganization: result.relevantOrganization,
         isCustom: result.isCustom,
         domain: {
-          ...result.domain,
-          englishAbbreviation: result.domain.englishAbbreviation // 여기서 확인
-        }
+          ...result.domain        }
       };
       // 검색 결과 초기화
       this.searchResults = {};
@@ -221,7 +219,7 @@ export default {
             "degree": column.degree,
             "standardTerminology": column.standardTerminology,
             "description": column.description,
-            "englishAbbreviation": column.englishAbbreviation,
+            "englishAbbreviation": column.name,
             "domain": column.domain,
             "standardCode":column.standardCode,
             "relevantOrganization":column.relevantOrganization,
