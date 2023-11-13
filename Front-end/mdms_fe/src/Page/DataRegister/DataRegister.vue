@@ -21,7 +21,7 @@
           
           <ul class="search-results" v-if="searchResults[index]">
             <li v-for="result in searchResults[index]" :key="result.no" @click="selectColumnName(result, index)">
-              {{ result.classificationName }} - {{ result.description }}, {{ result.dataType }}
+              {{ result.standardTerminology }} - {{ result.description }}, {{ result.domain.dataType }}
             </li>
           </ul>
         </div>
@@ -76,14 +76,12 @@ export default {
       this.columns.splice(index, 1);
     },
     searchColumnName(index) {
-      const searchQuery = this.columns[index].name.toLowerCase();
+      const searchQuery = this.columns[index].name;
       const filteredResults = this.serverData.filter(item =>
-        item.standardTerminology.toLowerCase().includes(searchQuery) ||
-        item.domain.classificationName.toLowerCase().includes(searchQuery)
+        item.standardTerminology.includes(searchQuery)
       );
       this.searchResults = { ...this.searchResults, [index]: filteredResults };
     },
-
     selectColumnName(result, columnIndex) {
       this.columns[columnIndex].name = result.standardTerminology;
       this.columns[columnIndex].type = this.formatDataType(result.domain.dataType);
@@ -97,10 +95,17 @@ export default {
     },
     generateCreateStatement() {
       let createStatement = `CREATE TABLE ${this.tableName} (`;
+      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY, `; // 기본 키 추가
+
       this.columns.forEach((column, index) => {
-        createStatement += `${column.name} ${column.type}`;
+        // englishAbbreviation을 사용하여 DDL 문 생성
+        const selectedData = this.serverData.find(item => item.standardTerminology === column.name);
+        const columnName = selectedData ? selectedData.englishAbbreviation : column.name;
+        createStatement += `${columnName} ${column.type}`;
+
         if (index < this.columns.length - 1) createStatement += ', ';
       });
+
       createStatement += ');';
       console.log(createStatement);
     },
