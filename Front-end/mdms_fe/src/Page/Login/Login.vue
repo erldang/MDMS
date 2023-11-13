@@ -48,12 +48,16 @@ export default {
     async handleLogin() {
       try {
         const response = await axios.post('http://localhost:3001/user/login', {
-          email: this.email,
-          password: this.password,
+          "email": this.email,
+          "password": this.password,
         });
 
         if (response.data.ok === 'ok') {
-          const { token, admin, username } = response.data.data;
+          console.log(response);
+          const token = response.data.message;
+          const admin = response.data.data.admin;
+          const username = response.data.data.name;
+          
 
           localStorage.setItem('token', token);
           localStorage.setItem('username', username);
