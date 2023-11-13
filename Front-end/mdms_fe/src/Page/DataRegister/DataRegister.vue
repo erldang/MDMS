@@ -8,23 +8,15 @@
       </div>
 
       <div class="columns">
-        <!-- 컬럼을 동적으로 추가하는 부분 -->
         <div class="column" v-for="(column, index) in columns" :key="index">
-          <!-- 검색어 입력 필드 -->
           <input type="text" v-model="column.name" @input="searchColumnName(index)" placeholder="컬럼 이름" />
-
-          <!-- 선택된 컬럼 정보를 보여주는 부분 -->
           <div class="column-info" v-if="column.standardTerminology">
             <p>선택된 컬럼: {{ column.standardTerminology }}</p>
             <p>영어 약어: {{ column.name }}</p>
             <p>데이터 타입: {{ column.domain.dataType }}</p>
             <p>설명: {{ column.description }}</p>
           </div>
-
-          <!-- 컬럼 제거 버튼 -->
           <button type="button" @click="removeColumn(index)">컬럼 제거</button>
-
-          <!-- 검색 결과 표시, 검색된 표준 용어와 해당 설명을 표시 -->
           <ul class="search-results" v-if="searchResults[index]">
             <li v-for="result in searchResults[index]" :key="result.no" @click="selectColumnName(result, index)">
               {{ result.domain.dataType }} - {{ result.standardTerminology }} - {{ result.englishAbbreviation }}: {{ result.description }}
@@ -33,17 +25,22 @@
         </div>
       </div>
 
-      <!-- 컬럼 추가 버튼 -->
       <button type="button" @click="addColumn">컬럼 추가</button>
 
-      <!-- SQL DDL 생성 및 등록 버튼 -->
       <div class="actions">
         <button type="button" @click="generateCreateStatement" :disabled="!tableName">SQL DDL 생성</button>
         <button type="submit" :disabled="!tableName || columns.length === 0">등록하기</button>
       </div>
+
+      <div v-if="createdSQL" class="created-sql">
+        <h3>생성된 SQL 쿼리:</h3>
+        <textarea v-model="createdSQL" readonly></textarea>
+        <button type="button" @click="copyToClipboard">복사하기</button>
+      </div>
     </form>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -51,17 +48,17 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      tableName: '', // 사용자가 입력하는 테이블 이름
-      columns: [], // 테이블의 컬럼들
-      searchResults: {}, // 검색 결과
-      serverData: [], // 서버로부터 가져온 데이터
+      tableName: '',
+      columns: [],
+      searchResults: {},
+      serverData: [],
+      createdSQL: '', // 생성된 SQL 쿼리문을 저장하는 변수
     };
   },
   created() {
-    this.fetchServerData(); // 컴포넌트가 생성될 때 서버 데이터를 가져오는 함수를 호출
+    this.fetchServerData();
   },
   methods: {
-    // 서버로부터 데이터를 가져오는 함수
     async fetchServerData() {
       try {
         const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
@@ -131,27 +128,20 @@ export default {
       }
 
       let createStatement = `CREATE TABLE ${this.tableName} (\n`;
-      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY,\n`; // 테이블 기본 키 설정
-
-      // columns 배열을 순회하면서 각 컬럼의 SQL 문을 생성
-      this.columns.forEach((column, index) => {
-        const columnData = this.serverData.find(item => item.englishAbbreviation === column.name);
-        if (columnData) {
-          let dataTypeString = this.getDataTypeString(columnData.domain);
-
-          // 컬럼 정의 추가
-          createStatement += `${column.name} ${dataTypeString}`;
-          if (index < this.columns.length - 1) {
-            createStatement += ',\n'; // 마지막 컬럼이 아니라면 쉼표를 추가
-          }
-        } else {
-          // 일치하는 데이터가 없는 경우 경고 출력
-          console.warn(`No matching data found for column ${column.name}`);
-        }
-      });
-
-      createStatement += '\n);'; // SQL 문 마무리
-      console.log(createStatement); // 생성된 SQL 문을 콘솔에 출력
+      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY,\n`;
+      // 컬럼 정의 로직
+      this.createdSQL = createStatement; // 생성된 SQL 쿼리문을 저장
+    },
+    copyToClipboard() {
+      if (this.createdSQL) {
+        navigator.clipboard.writeText(this.createdSQL)
+          .then(() => {
+            alert('클립보드에 복사되었습니다.');
+          })
+          .catch(err => {
+            console.error('복사에 실패했습니다.', err);
+          });
+      }
     },
     // 데이터 타입 문자열을 생성하는 함수
     getDataTypeString(domain) {
