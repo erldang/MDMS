@@ -7,18 +7,23 @@
         <input type="text" id="tableName" v-model="tableName" @input="validateTableName" />
       </div>
 
-      <!-- 컬럼을 동적으로 추가하는 부분 -->
       <div class="columns">
+        <!-- 컬럼을 동적으로 추가하는 부분 -->
         <div class="column" v-for="(column, index) in columns" :key="index">
           <!-- 검색어 입력 필드 -->
           <input type="text" v-model="column.name" @input="searchColumnName(index)" placeholder="컬럼 이름" />
 
-          <!-- 데이터 타입 레이블, 검색을 통해 자동으로 설정됨 -->
-          <label v-if="column.type">데이터 타입: {{ column.type }}</label>
+          <!-- 선택된 컬럼 정보를 보여주는 부분 -->
+          <div class="column-info" v-if="column.standardTerminology">
+            <p>선택된 컬럼: {{ column.standardTerminology }}</p>
+            <p>영어 약어: {{ column.name }}</p>
+            <p>데이터 타입: {{ column.domain.dataType }}</p>
+            <p>설명: {{ column.description }}</p>
+          </div>
 
           <!-- 컬럼 제거 버튼 -->
           <button type="button" @click="removeColumn(index)">컬럼 제거</button>
-          
+
           <!-- 검색 결과 표시, 검색된 표준 용어와 해당 설명을 표시 -->
           <ul class="search-results" v-if="searchResults[index]">
             <li v-for="result in searchResults[index]" :key="result.no" @click="selectColumnName(result, index)">
