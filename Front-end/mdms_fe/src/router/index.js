@@ -6,13 +6,12 @@ import MainPage from '@/Page/Main/Main.vue';
 import ForgotPassword from '@/Page/ForgotPassword/ForgotPassword.vue';
 import DataDetail from '@/Page/DataDetail/DataDetail.vue';
 import DataRegister from '@/Page/DataRegister/DataRegister.vue'
-import DataRegisterCsv from '@/Page/DataRegister/DataRegisterCsv.vue'
 import AdminMainPage from '@/Page/AdminMain/AdminMain.vue'
 import AdminCustomPage from '@/Page/AdminCustom/AdminCustom.vue'
 import AdminDataMapPage from '@/Page/AdminDataMap/AdminDataMap.vue'
 import AdminUserRecordPage from '@/Page/AdminUserRecord/AdminUserRecord.vue'
 import EditProfilePage from '@/Page/EditProfilePage/EditProfilePage.vue'
-import store from '@/store'; // Vuex store 임포트
+import store from '@/store';
 
 const routes = [
   {
@@ -36,25 +35,20 @@ const routes = [
     component: ProfilePage
   },
   {
-    path: '/forgot-password', // 비밀번호 찾기 경로 추가
+    path: '/forgot-password',
     name: 'ForgotPassword',
     component: ForgotPassword
   },
   {
-    path: '/data-detail/:id', // Assuming you want to have an ID parameter
+    path: '/data-detail/:id', 
     name: 'DataDetail',
     component: DataDetail,
-    props: true, // This allows us to pass the route params as props to the component
+    props: true, 
   },
   {
     path: '/data-register',
     name: 'DataRegister',
     component: DataRegister,
-  },
-  {
-    path: '/data-register-csv',
-    name: 'DataRegisterCsv',
-    component: DataRegisterCsv,
   },
   {
     path: '/admin-main',
@@ -89,19 +83,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // 로그인, 회원가입, 비밀번호 찾기 페이지는 로그인 여부와 상관없이 이동 가능
-  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' || to.name === 'DataRegisterCsv') {
+  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword') {
     next();
   } else {
-    // 토큰을 로컬 스토리지에서 확인합니다.
+    // 토큰을 로컬 스토리지에서 확인
     const token = localStorage.getItem('token');
     
-    // 로그인이 필요한 페이지에 접근할 때 토큰 또는 Vuex 상태를 체크합니다.
+    // 로그인이 필요한 페이지에 접근할 때 토큰 또는 Vuex 상태를 체크
     if (token || store.state.isLoggedIn) {
-      // 토큰이 있거나, Vuex 상태가 로그인 상태라면 다음 페이지로 이동합니다.
+      // 토큰이 있거나, Vuex 상태가 로그인 상태라면 다음 페이지로 이동
       next();
     } else {
-      // 토큰이 없거나, Vuex 상태가 로그인 상태가 아니라면 로그인 페이지로 리다이렉트합니다.
+      // 토큰이 없거나, Vuex 상태가 로그인 상태가 아니라면 로그인 페이지로 리다이렉트
       next({ name: 'Login' });
     }
   }

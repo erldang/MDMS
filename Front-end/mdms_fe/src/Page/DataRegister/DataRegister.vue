@@ -1,248 +1,210 @@
 <template>
-  <div>
-    <form @submit.prevent="generateCreateStatement">
-      <label for="tableName">Enter Table Name (English Only):</label>
-      <input type="text" id="tableName" v-model="tableName" required>
-
-      <button type="button" @click="addDataType">Add Column</button>
-
-      <div v-for="(dataType, index) in dataTypes" :key="dataType.id">
-        <label for="dataType">Choose Data Type:</label>
-        <select v-model="dataType.selected" required>
-          <option disabled value="">Please Select</option>
-          <option v-for="type in dataTypeOptions" :value="type" :key="type">
-            {{ type }}
-          </option>
-        </select>
-
-        <label for="search">Search Column Name:</label>
-        <input type="search" v-model="dataType.search" @input="searchDataType(dataType)">
-
-        <!-- 검색 결과를 리스트로 표시하고 선택 가능하게 합니다. -->
-        <ul v-if="dataType.searchResults.length">
-          <li v-for="result in dataType.searchResults" :key="result.no">
-            <button type="button" @click="selectRecommendation(index, result.classificationName)">
-              {{ result.classificationName }}
-            </button>
-            <label>{{ result.description }}</label>
-            <label>{{ result.dataType }}</label>
-          </li>
-        </ul>
-        
-        <!-- 검색 결과가 5개 이하일 때, 그 아래에 사용자 정의 추가 버튼을 표시합니다. -->
-        <div v-if="dataType.searchResults.length && dataType.searchResults.length <= 5">
-          <button type="button" @click="customAdd(index)">
-            Custom Add
-          </button>
-        </div>
-
-        <button type="button" @click="removeDataType(index)">Remove Column</button>
+  <div class="data-register">
+    <h2>SQL 테이블 생성</h2>
+    <form @submit.prevent="registerTable">
+      <div class="input-group">
+        <label for="tableName">테이블 이름 입력:</label>
+        <input type="text" id="tableName" v-model="tableName" />
       </div>
-      
-      <button type="submit">Generate CREATE Statement</button>
-      <button type="button" @click="registerTable">Register</button>
-      <button type="button" @click="cancel">Cancel</button>
+
+      <div class="columns">
+        <div class="column" v-for="(column, index) in columns" :key="index">
+          <input type="text" v-model="column.name" @input="searchColumnName(index)" placeholder="컬럼 이름" />
+          <select v-model="column.type">
+            <option value="INT">INT</option>
+            <option value="VARCHAR(255)">VARCHAR(255)</option>
+            <option value="TEXT">TEXT</option>
+            <option value="DATE">DATE</option>
+            <option value="CHAR(255)">CHAR(255)</option>
+          </select>
+          <button type="button" @click="removeColumn(index)">컬럼 제거</button>
+          
+          <ul class="search-results" v-if="searchResults[index]">
+            <li v-for="result in searchResults[index]" :key="result.no" @click="selectColumnName(result, index)">
+              {{ result.classificationName }} - {{ result.description }}, {{ result.dataType }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <button type="button" @click="addColumn">컬럼 추가</button>
+
+      <div class="actions">
+        <button type="button" @click="generateCreateStatement">SQL DDL 생성</button>
+        <button type="submit">등록하기</button>
+      </div>
     </form>
   </div>
 </template>
 
+
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       tableName: '',
-      dataTypes: [],
-      dataTypeOptions: ['INT', 'VARCHAR(255)', 'TEXT', 'DATE', 'CHAR(255)'],
-      serverData: [
-        {
-          "no": 1,
-          "classificationName": "코드",
-          "domain": "코드C12",
-          "description": "정보를 나타내기 위한 기호 체계로 고정된 데이터 길이로 표현한 것",
-          "dataType": "CHAR",
-          "dataLength": "12",
-          "decimalPointLength": "0",
-          "saveFormat": "12자리 문자",
-          "expressionForm": "-",
-          "unitName": "-",
-          "tolerance": "-",
-          "degree": "2"
-        },
-        {
-          "no": 2,
-          "classificationName": "이름",
-          "domain": "이름N20",
-          "description": "사람의 이름을 표기하는 데 사용되는 문자열",
-          "dataType": "VARCHAR",
-          "dataLength": "20",
-          "decimalPointLength": "0",
-          "saveFormat": "최대 20자리 문자",
-          "expressionForm": "-",
-          "unitName": "-",
-          "tolerance": "-",
-          "degree": "1"
-        },
-        {
-          "no": 3,
-          "classificationName": "주소",
-          "domain": "주소A50",
-          "description": "거주지를 표시하는 데 사용되는 문자열",
-          "dataType": "VARCHAR",
-          "dataLength": "50",
-          "decimalPointLength": "0",
-          "saveFormat": "최대 50자리 문자",
-          "expressionForm": "-",
-          "unitName": "-",
-          "tolerance": "-",
-          "degree": "1"
-        }
-      ],
+      columns: [{ name: '', type: 'INT' }],
+      searchResults: {},
+      serverData: [],
     };
   },
+  created() {
+    this.fetchServerData();
+  },
   methods: {
-    addDataType() {
-      this.dataTypes.push({
-        id: Date.now(),
-        selected: '',
-        search: '',
-        searchResults: []
-      });
-    },
-    searchDataType(dataType) {
-      if (dataType.search) {
-        let searchString = dataType.search.toLowerCase();
-        dataType.searchResults = this.serverData.filter(item =>
-          item.classificationName.toLowerCase().includes(searchString)
-        );
-      } else {
-        // 검색어가 비어있을 때 처리할 내용 추가
-        dataType.searchResults = [];
+    async fetchServerData() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3001/terminology', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        this.serverData = response.data.data;
+      } catch (error) {
+        alert('데이터를 불러오는 중 에러가 발생했습니다.');
+        this.goBack();
       }
     },
-    selectRecommendation(index, recommendation) {
-    // 선택된 추천 값을 해당 데이터 타입의 선택된 값으로 설정
-    this.dataTypes[index].selected = recommendation;
-    // 검색 결과를 비우고 검색 입력을 추천된 값으로 설정 (옵션)
-    this.dataTypes[index].searchResults = [];
-    this.dataTypes[index].search = recommendation;
+    goBack() {
+      window.history.back();
     },
-    removeDataType(index) {
-      this.dataTypes.splice(index, 1);
+    addColumn() {
+      this.columns.push({ name: '', type: 'INT' });
+    },
+    removeColumn(index) {
+      this.columns.splice(index, 1);
+    },
+    searchColumnName(index) {
+      const searchQuery = this.columns[index].name.toLowerCase();
+      const filteredResults = this.serverData.filter(item =>
+        item.classificationName.toLowerCase().includes(searchQuery)
+      );
+      this.searchResults = { ...this.searchResults, [index]: filteredResults };
+    },
+    selectColumnName(result, columnIndex) {
+      this.columns[columnIndex].name = result.classificationName;
+      this.columns[columnIndex].type = this.formatDataType(result.dataType);
+      this.searchResults = {}; // 선택 후 검색 결과를 초기화합니다.
+    },
+    formatDataType(dataType) {
+      if (dataType.toUpperCase() === 'CHAR') {
+        return 'CHAR(255)';
+      }
+      return dataType.toUpperCase();
     },
     generateCreateStatement() {
-      // 테이블 이름 가져오기
-      const tableName = this.tableName.trim();
-      
-      // 테이블 이름이 비어있을 경우 예외 처리
-      if (!tableName) {
-        alert("Please enter a table name.");
-        return;
-      }
-      
-      // CREATE TABLE 문 생성
-      let createStatement = `CREATE TABLE ${tableName} (\n`;
-      
-      // ID 열 추가 (기본키, 자동 증가)
-      createStatement += "  ID INT PRIMARY KEY AUTO_INCREMENT,\n";
-      
-      // DataType 열 추가
-      for (const dataType of this.dataTypes) {
-        const columnName = dataType.search.trim();
-        const dataTypeValue = dataType.selected;
-        
-        // Column Name이 비어있을 경우 예외 처리
-        if (!columnName) {
-          alert("Please enter a column name for all data types.");
-          return;
-        }
-        
-        createStatement += `  ${columnName} ${dataTypeValue},\n`;
-      }
-      
-      // 마지막 쉼표와 개행 문자 제거
-      createStatement = createStatement.slice(0, -2) + "\n";
-      
-      // CREATE TABLE 문 마무리
-      createStatement += ");";
-      
-      // 생성된 CREATE TABLE 문을 콘솔에 출력하거나 필요한 방식으로 사용할 수 있습니다.
-      console.log("Generated CREATE TABLE statement:");
+      let createStatement = `CREATE TABLE ${this.tableName} (`;
+      this.columns.forEach((column, index) => {
+        createStatement += `${column.name} ${column.type}`;
+        if (index < this.columns.length - 1) createStatement += ', ';
+      });
+      createStatement += ');';
       console.log(createStatement);
     },
-
-    registerTable() {
-      // 여기에 테이블 등록 로직을 구현하세요.
-    },
-    cancel() {
-      // 여기에 취소 로직을 구현하세요.
-    },
-    customAdd(){
-      console.log("커스텀 버튼 눌림");
+    resetForm() {
+      this.tableName = '';
+      this.columns = [{ name: '', type: 'INT' }];
+      this.searchResults = [];
     }
-  },
-  watch: {
-    // 검색어(dataType.search)의 변화를 감지
-    'dataTypes': {
-      handler: 'searchDataType',
-      deep: true,
-    },
   },
 };
 </script>
 
-<style>
-  /* 스타일을 수정하거나 추가하세요 */
-  .container {
-    margin: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f8f8f8;
-  }
 
-  form {
-    display: flex;
-    flex-direction: column;
-  }
+<style scoped>
+.data-register {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  label {
-    margin-top: 10px;
-  }
+.data-register h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
 
-  input[type="text"],
-  input[type="search"],
-  select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
+.input-group,
+.columns,
+.actions {
+  margin-bottom: 15px;
+}
 
-  button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #0074d9;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
+.input-group label,
+.column label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
-  ul {
-    list-style: none;
-    padding: 0;
-  }
+.input-group input[type="text"],
+.column input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
 
-  li {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-  }
+.column select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
 
-  li button {
-    background-color: #33cc33;
-    margin-right: 10px;
-  }
+.button {
+  display: inline-block;
+  padding: 10px 15px;
+  margin-right: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.button[type="submit"] {
+  background-color: #28a745;
+}
+
+.button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.button[type="button"] {
+  background-color: #dc3545;
+}
+
+.button[type="button"]:hover {
+  background-color: #c82333;
+}
+
+.search-results ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.search-results li {
+  padding: 8px;
+  margin-bottom: 5px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background-color: #dee2e6;
+}
+
 </style>
