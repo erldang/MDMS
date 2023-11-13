@@ -13,7 +13,6 @@
           <div class="column-info" v-if="column.standardTerminology">
             <p>선택된 컬럼: {{ column.standardTerminology }}</p>
             <p>영어 약어: {{ column.name }}</p>
-            <p>데이터 타입: {{ column.domain.dataType }}</p>
             <p>설명: {{ column.description }}</p>
           </div>
           <button type="button" @click="removeColumn(index)">컬럼 제거</button>
