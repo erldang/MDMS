@@ -12,17 +12,17 @@
         <div class="column" v-for="(column, index) in columns" :key="index">
           <!-- 검색어 입력 필드 -->
           <input type="text" v-model="column.name" @input="searchColumnName(index)" placeholder="컬럼 이름" />
-          <!-- 데이터 타입 선택 드롭다운, 서버에서 가져온 데이터 타입으로 채워짐 -->
-          <select v-model="column.type">
-            <option v-for="type in dataTypes" :key="type" :value="type">{{ type }}</option>
-          </select>
+
+          <!-- 데이터 타입 레이블, 검색을 통해 자동으로 설정됨 -->
+          <label v-if="column.type">데이터 타입: {{ column.type }}</label>
+
           <!-- 컬럼 제거 버튼 -->
           <button type="button" @click="removeColumn(index)">컬럼 제거</button>
           
           <!-- 검색 결과 표시, 검색된 표준 용어와 해당 설명을 표시 -->
           <ul class="search-results" v-if="searchResults[index]">
             <li v-for="result in searchResults[index]" :key="result.no" @click="selectColumnName(result, index)">
-              {{ result.standardTerminology }} - {{ result.description }}, {{ result.domain.dataType }}
+              {{ result.domain.dataType }} - {{ result.standardTerminology }} - {{ result.englishAbbreviation }}: {{ result.description }}
             </li>
           </ul>
         </div>
@@ -39,231 +39,180 @@
     </form>
   </div>
 </template>
-
-
-
 <script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
-      tableName: '', // 테이블 이름을 위한 반응형 데이터
-      columns: [{ name: '', type: 'INT' }], // 사용자가 추가하는 컬럼들을 위한 배열
-      searchResults: {}, // 각 컬럼 검색 결과를 저장하는 객체
-      serverData: [], // 서버로부터 가져온 도메인 데이터
-      dataTypes: [], // 드롭다운 메뉴에 사용될 데이터 타입 목록
+      tableName: '', // 사용자가 입력하는 테이블 이름
+      columns: [], // 테이블의 컬럼들
+      searchResults: {}, // 검색 결과
+      serverData: [], // 서버로부터 가져온 데이터
     };
   },
   created() {
-    this.fetchServerData(); // 컴포넌트 생성 시 서버 데이터를 가져옴
+    this.fetchServerData();
   },
   methods: {
-    // 서버 데이터를 가져오는 메소드
     async fetchServerData() {
       try {
-        const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰을 가져옴
+        const token = localStorage.getItem('token');
         const response = await axios.get('http://localhost:3001/terminology', {
-          headers: { 'Authorization': `Bearer ${token}` } // 토큰을 Authorization 헤더에 추가
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-        this.serverData = response.data.data; // 서버 데이터를 저장
-        this.extractDataTypes(); // 데이터 타입을 추출하여 dataTypes 배열을 생성
+        this.serverData = response.data.data;
       } catch (error) {
         alert('데이터를 불러오는 중 에러가 발생했습니다.');
-        this.goBack(); // 에러 발생 시 이전 페이지로 이동
+        this.goBack();
       }
     },
-    // 이전 페이지로 이동하는 메소드
     goBack() {
       window.history.back();
     },
-    // 새 컬럼을 추가하는 메소드
     addColumn() {
-      this.columns.push({ name: '', type: 'INT' });
+      this.columns.push({ name: '', type: '', standardTerminology: '', description: '' });
     },
-    // 특정 인덱스의 컬럼을 제거하는 메소드
     removeColumn(index) {
       this.columns.splice(index, 1);
     },
-    // 컬럼 이름에 따라 서버 데이터를 검색하는 메소드
     searchColumnName(index) {
-      const searchQuery = this.columns[index].name;
-      const filteredResults = this.serverData.filter(item =>
+      const searchQuery = this.columns[index].name.toLowerCase();
+      this.searchResults[index] = this.serverData.filter(item =>
         item.standardTerminology.includes(searchQuery)
       );
-      this.searchResults = { ...this.searchResults, [index]: filteredResults };
     },
-    // 검색된 결과를 선택하여 컬럼 이름과 타입을 설정하는 메소드
-    selectColumnName(result, columnIndex) {
-      // 사용자가 선택한 표준 용어를 컬럼 이름으로 설정합니다.
-      this.columns[columnIndex].name = result.standardTerminology;
-
-      // 서버로부터 가져온 데이터 타입을 현재 컬럼의 데이터 타입으로 설정합니다.
-      // 데이터 타입이 'NUMERIC'이고 소수점 길이가 정의되어 있으면 해당 포맷을 사용합니다.
-      const dataType = result.domain.dataType.toUpperCase();
+    selectColumnName(result, index) {
+      const dataType = this.formatDataType(result.domain.dataType);
       const dataLength = result.domain.dataLength;
       const decimalPointLength = result.domain.decimalPointLength;
-      let typeFormat;
+      let typeFormat = dataType;
 
       if (dataType === 'NUMERIC' && decimalPointLength !== '-') {
         typeFormat = `NUMERIC(${dataLength}, ${decimalPointLength})`;
       } else if (dataType === 'CHAR' || dataType === 'VARCHAR') {
         typeFormat = `${dataType}(${dataLength})`;
-      } else {
-        typeFormat = dataType;
       }
 
-      // 컬럼 타입을 업데이트합니다.
-      this.columns[columnIndex].type = typeFormat;
+      this.columns[index] = {
+        ...this.columns[index],
+        name: result.englishAbbreviation,
+        type: typeFormat,
+        standardTerminology: result.standardTerminology,
+        description: result.description
+      };
 
-      // 검색 결과를 초기화합니다.
       this.searchResults = {};
     },
-    // 서버 데이터에 따라 적절한 데이터 타입 문자열을 생성하는 메소드
     formatDataType(dataType) {
-      if (dataType.toUpperCase() === 'CHAR') {
-        return 'CHAR(255)';
-      }
       return dataType.toUpperCase();
     },
-    // SQL CREATE TABLE 문을 생성하는 메소드
     generateCreateStatement() {
-      let createStatement = `CREATE TABLE ${this.tableName} (`;
-      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY, `; // 기본 키 추가
+      let createStatement = `CREATE TABLE ${this.tableName} (\n`;
+      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY,\n`;
 
       this.columns.forEach((column, index) => {
-        const columnData = this.serverData.find(item => item.englishAbbreviation === column.name);
-        if (columnData) {
-          let dataTypeString = columnData.domain.dataType.toUpperCase();
-          if (dataTypeString === 'NUMERIC' && columnData.domain.decimalPointLength !== "-") {
-            // NUMERIC 타입에 대해 소수점 길이를 포함하여 타입 문자열 생성
-            dataTypeString = `NUMERIC(${columnData.domain.dataLength}, ${columnData.domain.decimalPointLength})`;
-          } else if (dataTypeString !== 'DATETIME') {
-            // DATETIME을 제외한 다른 타입에 대해서는 일반적으로 데이터 길이를 포함
-            dataTypeString = `${dataTypeString}(${columnData.domain.dataLength})`;
-          }
-          
-          createStatement += `${columnData.englishAbbreviation} ${dataTypeString}`;
-          if (index < this.columns.length - 1) {
-            createStatement += ', ';
-          }
+        createStatement += `${column.name} ${column.type}`;
+        if (index !== this.columns.length - 1) {
+          createStatement += ',\n';
         }
       });
 
-      createStatement += ');';
+      createStatement += '\n);';
       console.log(createStatement);
     },
-    // 폼을 초기화하는 메소드
     resetForm() {
       this.tableName = '';
-      this.columns = [{ name: '', type: 'INT' }];
+      this.columns = [];
       this.searchResults = {};
-    },
-    // 서버 데이터로부터 데이터 타입을 추출하여 dataTypes 배열에 저장하는 메소드
-    extractDataTypes() {
-      const typesSet = new Set();
-      this.serverData.forEach(item => {
-        typesSet.add(item.domain.dataType); // dataType을 Set에 추가하여 고유한 값을 확보
-      });
-      this.dataTypes = Array.from(typesSet); // Set을 배열로 변환하여 dataTypes에 할당
-    },
-  },
+    }
+  }
 };
 </script>
 
+
 <style scoped>
 .data-register {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px; /* 너비를 조정하여 가독성 향상 */
+  margin: 40px auto; /* 상단과 하단의 마진을 추가하여 더 많은 공간을 확보 */
+  padding: 40px; /* 내부 패딩을 늘려 요소들 간의 공간 확보 */
+  background-color: #ffffff; /* 밝은 배경색을 사용하여 깔끔한 외관 제공 */
+  border-radius: 15px; /* 모서리 둥글기를 적용하여 현대적인 느낌 제공 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 그림자를 추가하여 입체감 부여 */
+  border: 1px solid #e0e0e0; /* 경계선을 추가하여 구조적 외관 강화 */
 }
 
 .data-register h2 {
   text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.input-group,
-.columns,
-.actions {
-  margin-bottom: 15px;
+  color: #2c3e50; /* 타이틀 색상 변경 */
+  font-size: 24px; /* 타이틀 폰트 크기를 늘려 더 눈에 띄게 함 */
+  margin-bottom: 30px; /* 타이틀과 내용 사이의 여백 증가 */
+  padding-bottom: 10px; /* 타이틀 아래에 패딩 추가 */
+  border-bottom: 2px solid #ecf0f1; /* 타이틀 아래 경계선 추가 */
 }
 
 .input-group label,
 .column label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 10px; /* 레이블과 입력 필드 사이의 여백 증가 */
+  font-weight: 600; /* 레이블 폰트 가중치를 높여 중요성 강조 */
+  color: #34495e; /* 레이블 색상 변경 */
 }
 
 .input-group input[type="text"],
-.column input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
+.column input[type="text"],
 .column select {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
+  padding: 12px; /* 입력 필드 패딩 증가 */
+  margin-bottom: 15px; /* 입력 필드 간의 여백 증가 */
+  border: 1px solid #bdc3c7; /* 입력 필드 경계선 색상 변경 */
+  border-radius: 5px; /* 입력 필드 모서리 둥글기 적용 */
+  box-sizing: border-box; /* 박스 크기 결정 방법 변경 */
+  transition: border-color 0.3s; /* 입력 필드 포커스 시 부드러운 색상 변화 효과 */
+}
+
+.input-group input[type="text"]:focus,
+.column input[type="text"]:focus,
+.column select:focus {
+  border-color: #3498db; /* 입력 필드 포커스 시 경계선 색상 변경 */
+  outline: none; /* 기본 아웃라인 제거 */
 }
 
 .button {
-  display: inline-block;
-  padding: 10px 15px;
-  margin-right: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  /* 버튼 스타일 변경 */
+  padding: 12px 20px; /* 버튼 패딩 증가 */
+  font-size: 16px; /* 버튼 폰트 크기 증가 */
+  font-weight: 600; /* 버튼 폰트 가중치 증가 */
+  text-transform: uppercase; /* 버튼 텍스트를 대문자로 변경 */
+  letter-spacing: 1px; /* 버튼 글자 사이 간격 증가 */
+  transition: background-color 0.3s, transform 0.2s; /* 배경색과 변형에 대한 전환 효과 추가 */
 }
 
 .button:hover {
-  background-color: #0056b3;
+  background-color: #2980b9; /* 버튼 호버 시 배경색 변경 */
+  transform: translateY(-2px); /* 버튼 호버 시 약간 위로 이동하여 클릭감 향상 */
 }
 
-.button[type="submit"] {
-  background-color: #28a745;
-}
-
-.button[type="submit"]:hover {
-  background-color: #218838;
-}
-
-.button[type="button"] {
-  background-color: #dc3545;
-}
-
-.button[type="button"]:hover {
-  background-color: #c82333;
+/* 버튼을 위한 추가적인 호버 효과와 활성화 효과 추가 */
+.button:active {
+  transform: translateY(0);
 }
 
 .search-results ul {
-  list-style: none;
+  /* 검색 결과 스타일 변경 */
   padding-left: 0;
+  margin-top: 10px; /* 검색 결과 상단 여백 증가 */
 }
 
 .search-results li {
-  padding: 8px;
-  margin-bottom: 5px;
-  background-color: #e9ecef;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 10px; /* 검색 결과 항목 패딩 증가 */
+  margin-bottom: 8px; /* 검색 결과 항목 간 여백 증가 */
+  background-color: #ecf0f1; /* 검색 결과 배경색 변경 */
+  border-radius: 5px; /* 검색 결과 모서리 둥글기 적용 */
+  transition: background-color 0.3s; /* 검색 결과 호버 시 배경색 변화 효과 */
 }
 
 .search-results li:hover {
-  background-color: #dee2e6;
+  background-color: #d6dbdf; /* 검색 결과 호버 시 배경색 변경 */
 }
-
 </style>
