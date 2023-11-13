@@ -95,9 +95,29 @@ export default {
     },
     // 검색된 결과를 선택하여 컬럼 이름과 타입을 설정하는 메소드
     selectColumnName(result, columnIndex) {
+      // 사용자가 선택한 표준 용어를 컬럼 이름으로 설정합니다.
       this.columns[columnIndex].name = result.standardTerminology;
-      this.columns[columnIndex].type = this.formatDataType(result.domain.dataType);
-      this.searchResults = {}; // 선택 후 검색 결과를 초기화
+
+      // 서버로부터 가져온 데이터 타입을 현재 컬럼의 데이터 타입으로 설정합니다.
+      // 데이터 타입이 'NUMERIC'이고 소수점 길이가 정의되어 있으면 해당 포맷을 사용합니다.
+      const dataType = result.domain.dataType.toUpperCase();
+      const dataLength = result.domain.dataLength;
+      const decimalPointLength = result.domain.decimalPointLength;
+      let typeFormat;
+
+      if (dataType === 'NUMERIC' && decimalPointLength !== '-') {
+        typeFormat = `NUMERIC(${dataLength}, ${decimalPointLength})`;
+      } else if (dataType === 'CHAR' || dataType === 'VARCHAR') {
+        typeFormat = `${dataType}(${dataLength})`;
+      } else {
+        typeFormat = dataType;
+      }
+
+      // 컬럼 타입을 업데이트합니다.
+      this.columns[columnIndex].type = typeFormat;
+
+      // 검색 결과를 초기화합니다.
+      this.searchResults = {};
     },
     // 서버 데이터에 따라 적절한 데이터 타입 문자열을 생성하는 메소드
     formatDataType(dataType) {
