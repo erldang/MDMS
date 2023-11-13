@@ -26,15 +26,18 @@ import { mapActions, mapGetters } from 'vuex';
 export default {
   name: 'PageHeader',
   computed: {
-    // Vuex 스토어의 'isLoggedIn'과 'username' 상태를 computed 속성으로 매핑
-    ...mapGetters(['isLoggedIn', 'username']),
+    // Vuex 스토어의 로그인 상태 또는 로컬 스토리지의 토큰 존재 여부를 통해 로그인 여부를 확인
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn || !!localStorage.getItem('token');
+    },
+    ...mapGetters(['username']), // Vuex 스토어에서 username을 가져옴
   },
   methods: {
     // 로그아웃 액션 실행
     logoutAction() {
       this.logout().then(() => {
-        localStorage.removeItem('token');
-        this.$router.push('/').then(() => {
+        localStorage.removeItem('token'); // 로컬 스토리지의 토큰 삭제
+        this.$router.push('/login').then(() => {
           window.location.reload(); // 페이지 새로고침으로 앱 상태 초기화
         });
       }).catch(error => {
@@ -51,6 +54,7 @@ export default {
   },
 }
 </script>
+
 
 
 <style scoped>

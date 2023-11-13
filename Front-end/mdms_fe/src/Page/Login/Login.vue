@@ -1,36 +1,36 @@
 <template>
-    <div class="login-container">
-        <h1>로그인</h1>
+  <div class="login-container">
+    <h1>로그인</h1>
+    <form @submit.prevent="handleLogin">
+      <!-- 이메일(ID) 입력 -->
+      <div class="input-group">
+        <label for="email">이메일(ID)</label>
+        <input type="email" id="email" v-model="email" placeholder="이메일 입력" required />
+      </div>
 
-        <form @submit.prevent="handleLogin">
-            <!-- 이메일(ID) 입력 -->
-            <div class="input-group">
-                <label for="email">이메일(ID)</label>
-                <input type="email" id="email" v-model="email" placeholder="이메일 입력" required />
-            </div>
+      <!-- 비밀번호 입력 -->
+      <div class="input-group">
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" v-model="password" placeholder="비밀번호 입력" required />
+      </div>
 
-            <!-- 비밀번호 입력 -->
-            <div class="input-group">
-                <label for="password">비밀번호</label>
-                <input type="password" id="password" v-model="password" placeholder="비밀번호 입력" required />
-            </div>
+      <!-- 로그인 버튼 -->
+      <button type="submit">로그인</button>
+    </form>
 
-            <!-- 로그인 버튼 -->
-            <button type="submit">로그인</button>
-        </form>
-
-        <div class="links">
-            <a href="#" @click.prevent="goToForgotPassword">아이디/비밀번호 찾기</a>
-            <router-link to="/register">회원가입</router-link>
-        </div>
+    <div class="links">
+      <a href="#" @click.prevent="goToForgotPassword">아이디/비밀번호 찾기</a>
+      <router-link to="/register">회원가입</router-link>
     </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import './Login.css'
+import './Login.css';
+
 export default {
   name: 'LoginPage',
   data() {
@@ -53,29 +53,27 @@ export default {
         });
 
         if (response.data.ok === 'ok') {
-          console.log(response);
-          const token = response.data.message;
-          const admin = response.data.data.admin;
-          const username = response.data.data.name;
+          const { token, admin, name: username } = response.data.data;
+
+          // 쿠키에 토큰 저장
+          document.cookie = `token=${token}; path=/; secure`;
           
-
-          localStorage.setItem('token', token);
-          localStorage.setItem('username', username);
-          localStorage.setItem('email', this.email);
-
+          // Vuex Store에 로그인 정보 저장
           this.store.dispatch('login', {
-            token: token,
+            token,
             email: this.email,
-            username: username, 
+            username,
+            admin,
           });
 
+          // 관리자 여부에 따라 다른 페이지로 리다이렉션
           if (admin) {
             this.router.push('/admin-main');
           } else {
-            this.router.push('/'); 
+            this.router.push('/');
           }
         } else {
-          alert('로그인 실패: ' + response.data.message);
+          alert(`로그인 실패: ${response.data.message}`);
         }
       } catch (error) {
         console.error('로그인 에러:', error);
