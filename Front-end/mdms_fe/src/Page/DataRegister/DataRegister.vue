@@ -128,10 +128,11 @@ export default {
         standardCode: result.standardCode,
         relevantOrganization: result.relevantOrganization,
         isCustom: result.isCustom,
-        domain: result.domain // 이렇게 domain 전체를 저장해야 합니다.
+        domain: {
+          ...result.domain,
+          englishAbbreviation: result.domain.englishAbbreviation // 여기서 확인
+        }
       };
-
-
       // 검색 결과 초기화
       this.searchResults = {};
     },
