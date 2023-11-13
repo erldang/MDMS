@@ -167,7 +167,7 @@ export default {
 </script>
 
 
-
+<!-- 커밋 테스트 주석 -->
 <style scoped>
 .data-register {
   max-width: 800px;
