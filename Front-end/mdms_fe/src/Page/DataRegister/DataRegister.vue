@@ -78,14 +78,16 @@ export default {
     searchColumnName(index) {
       const searchQuery = this.columns[index].name.toLowerCase();
       const filteredResults = this.serverData.filter(item =>
-        item.classificationName.toLowerCase().includes(searchQuery)
+        item.standardTerminology.toLowerCase().includes(searchQuery) ||
+        item.domain.classificationName.toLowerCase().includes(searchQuery)
       );
       this.searchResults = { ...this.searchResults, [index]: filteredResults };
     },
+
     selectColumnName(result, columnIndex) {
-      this.columns[columnIndex].name = result.classificationName;
-      this.columns[columnIndex].type = this.formatDataType(result.dataType);
-      this.searchResults = {}; // 선택 후 검색 결과를 초기화합니다.
+      this.columns[columnIndex].name = result.standardTerminology;
+      this.columns[columnIndex].type = this.formatDataType(result.domain.dataType);
+      this.searchResults = {};
     },
     formatDataType(dataType) {
       if (dataType.toUpperCase() === 'CHAR') {
