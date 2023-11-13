@@ -139,8 +139,8 @@ export default {
         return;
       }
 
-      let createStatement = `CREATE TABLE ${this.tableName} (\n`;
-      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY,\n`; // 테이블 기본 키 설정
+      let createStatement = `CREATE TABLE ${this.tableName} (`;
+      createStatement += `No INT AUTO_INCREMENT PRIMARY KEY,`; // 테이블 기본 키 설정
 
       // columns 배열을 순회하면서 각 컬럼의 SQL 문을 생성
       this.columns.forEach((column, index) => {
@@ -151,7 +151,7 @@ export default {
           // 컬럼 정의 추가
           createStatement += `${column.name} ${dataTypeString}`;
           if (index < this.columns.length - 1) {
-            createStatement += ',\n'; // 마지막 컬럼이 아니라면 쉼표를 추가
+            createStatement += ','; // 마지막 컬럼이 아니라면 쉼표를 추가
           }
         } else {
           // 일치하는 데이터가 없는 경우 경고 출력
@@ -159,7 +159,7 @@ export default {
         }
       });
 
-      createStatement += '\n);'; // SQL 문 마무리
+      createStatement += ');'; // SQL 문 마무리
       this.createdSQL = createStatement; // 생성된 SQL 쿼리문을 data 모델의 createdSQL에 저장
     },
     copyToClipboard() {
@@ -203,18 +203,21 @@ export default {
 
       // 서버로 전송할 데이터 생성
       const payload = {
-        email: this.email,
-        physicalTableName: this.tableName.trim(),
-        logicalTableName: this.logicalTableName.trim(),
-        query: this.createdSQL,
-        standardTerminologyList: this.columns.map(column => {
+        "email": this.email,
+        "physicalTableName": this.tableName.trim(),
+        "logicalTableName": this.logicalTableName.trim(),
+        "query": this.createdSQL,
+        "standardTerminologyList": this.columns.map(column => {
           return {
-            no: column.no,
-            degree: column.degree,
-            standardTerminology: column.standardTerminology,
-            description: column.description,
-            englishAbbreviation: column.englishAbbreviation,
-            domain: column.domain,
+            "no": column.no,
+            "degree": column.degree,
+            "standardTerminology": column.standardTerminology,
+            "description": column.description,
+            "englishAbbreviation": column.englishAbbreviation,
+            "domain": column.domain,
+            "standardCode":column.standardCode,
+            "relevantOrganization":column.relevantOrganization,
+            "isCustom":column.isCustom,
           };
         }),
       };
@@ -224,7 +227,7 @@ export default {
         const response = await axios.post('http://localhost:3001/table/create', payload, {
           headers: { Authorization: `Bearer ${this.token}` },
         });
-        console.log(response);
+        console.log(payload);
 
         // 성공적으로 데이터가 전송되면 응답 처리
         if (response.data.ok === 'ok') {
