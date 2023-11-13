@@ -49,17 +49,19 @@ export default {
     async handleLogin() {
       try {
         const response = await axios.post('http://localhost:3001/user/login', {
-          email: this.email,
-          password: this.password,
+          "email": this.email,
+          "password": this.password,
         });
-
         if (response.data.ok === 'ok') {
-          const { token, admin, name: username } = response.data.data;
+          const { name: username } = response.data.data;
+          const token = response.data.message;
+          const admin = response.data.data.admin;
 
           // 로컬 스토리지에 토큰과 사용자 정보 저장
           localStorage.setItem('token', token);
           localStorage.setItem('username', username);
           localStorage.setItem('email', this.email);
+          localStorage.setItem('admin', admin);
 
           // Vuex Store에 로그인 정보 저장
           this.store.dispatch('login', {

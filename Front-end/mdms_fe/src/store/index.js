@@ -33,6 +33,7 @@ export default createStore({
       localStorage.removeItem('token'); 
       localStorage.removeItem('email'); 
       localStorage.removeItem('username');
+      localStorage.removeItem('admin');
     }
   },
   getters: {

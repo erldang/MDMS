@@ -11,7 +11,7 @@ import AdminCustomPage from '@/Page/AdminCustom/AdminCustom.vue'
 import AdminDataMapPage from '@/Page/AdminDataMap/AdminDataMap.vue'
 import AdminUserRecordPage from '@/Page/AdminUserRecord/AdminUserRecord.vue'
 import EditProfilePage from '@/Page/EditProfilePage/EditProfilePage.vue'
-import store from '@/store';
+// import store from '@/store';
 
 const routes = [
   {
@@ -89,7 +89,7 @@ router.beforeEach((to, from, next) => {
   } else {
     // 토큰을 로컬 스토리지에서 확인
     const token = localStorage.getItem('token');
-    const isAdmin = store.getters.isAdmin; // Vuex store에서 관리자 여부를 가져옵니다.
+    const isAdmin = localStorage.getItem('admin'); // Vuex store에서 관리자 여부를 가져옵니다.
 
     if (token) {
       // 관리자 전용 페이지에 접근 시도 시 관리자 여부를 체크합니다.
