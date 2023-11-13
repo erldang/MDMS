@@ -21,17 +21,22 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'PageHeader',
   computed: {
-    // Vuex 스토어의 로그인 상태 또는 로컬 스토리지의 토큰 존재 여부를 통해 로그인 여부를 확인
+    // 로그인 여부 확인
     isLoggedIn() {
       return this.$store.getters.isLoggedIn || !!localStorage.getItem('token');
     },
-    ...mapGetters(['username']), // Vuex 스토어에서 username을 가져옴
+    // 사용자 이름 가져오기
+    username() {
+      // Vuex 스토어에서 username을 가져옴
+      return this.$store.getters.username || localStorage.getItem('username');
+    },
   },
+
   methods: {
     // 로그아웃 액션 실행
     logoutAction() {

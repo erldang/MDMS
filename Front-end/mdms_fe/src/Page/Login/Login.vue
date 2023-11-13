@@ -45,19 +45,22 @@ export default {
     return { store, router };
   },
   methods: {
+    // 로그인 처리
     async handleLogin() {
       try {
         const response = await axios.post('http://localhost:3001/user/login', {
-          "email": this.email,
-          "password": this.password,
+          email: this.email,
+          password: this.password,
         });
 
         if (response.data.ok === 'ok') {
           const { token, admin, name: username } = response.data.data;
 
-          // 쿠키에 토큰 저장
-          document.cookie = `token=${token}; path=/; secure`;
-          
+          // 로컬 스토리지에 토큰과 사용자 정보 저장
+          localStorage.setItem('token', token);
+          localStorage.setItem('username', username);
+          localStorage.setItem('email', this.email);
+
           // Vuex Store에 로그인 정보 저장
           this.store.dispatch('login', {
             token,
