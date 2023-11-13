@@ -230,7 +230,7 @@ export default {
         if (response.data.ok === 'ok') {
           alert(response.data.message);
           // 폼 초기화 및 기타 작업 수행
-          //this.resetForm();
+          this.resetForm();
         } else {
           // 서버에서 에러 메시지가 올 경우 사용자에게 알림
           alert(response.data.message);

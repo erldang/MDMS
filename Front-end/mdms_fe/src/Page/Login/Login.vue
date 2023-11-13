@@ -56,7 +56,8 @@ export default {
           const { token, admin, username } = response.data.data;
 
           localStorage.setItem('token', token);
-          localStorage.setItem('username', username); 
+          localStorage.setItem('username', username);
+          localStorage.setItem('email', this.email);
 
           this.store.dispatch('login', {
             token: token,
