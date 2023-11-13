@@ -82,19 +82,29 @@ const router = createRouter({
   routes
 });
 
+// 라우터 가드에서 관리자 여부를 체크하여 리다이렉션
 router.beforeEach((to, from, next) => {
   if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword') {
     next();
   } else {
     // 토큰을 로컬 스토리지에서 확인
     const token = localStorage.getItem('token');
-    
-    // 로그인이 필요한 페이지에 접근할 때 토큰 또는 Vuex 상태를 체크
-    if (token || store.state.isLoggedIn) {
-      // 토큰이 있거나, Vuex 상태가 로그인 상태라면 다음 페이지로 이동
-      next();
+    const isAdmin = store.getters.isAdmin; // Vuex store에서 관리자 여부를 가져옵니다.
+
+    if (token) {
+      // 관리자 전용 페이지에 접근 시도 시 관리자 여부를 체크합니다.
+      if (to.path.startsWith('/admin') && !isAdmin) {
+        // 관리자가 아닌데 관리자 페이지에 접근하려 하면 메인 페이지로 리다이렉트합니다.
+        next({ name: 'Main' });
+      } else if (!to.path.startsWith('/admin') && isAdmin) {
+        // 관리자인데 일반 사용자 페이지에 접근하려 하면 관리자 메인 페이지로 리다이렉트합니다.
+        next({ name: 'AdminMainPage' });
+      } else {
+        // 그 외의 경우에는 요청한 페이지로 정상 이동합니다.
+        next();
+      }
     } else {
-      // 토큰이 없거나, Vuex 상태가 로그인 상태가 아니라면 로그인 페이지로 리다이렉트
+      // 토큰이 없다면 로그인 페이지로 리다이렉트합니다.
       next({ name: 'Login' });
     }
   }
