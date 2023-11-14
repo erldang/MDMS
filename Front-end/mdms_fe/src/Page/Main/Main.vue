@@ -3,7 +3,6 @@
     <div class="page_btn">
       <button :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">데이터 목록</button>
       <button :class="{ active: isCurrentPage('/user-data-map') }" @click="navigateTo('/user-data-map')">데이터 맵</button>
-      <button :class="{ active: isCurrentPage('/user-history') }" @click="navigateTo('/user-history')">이력 조회</button>
     </div>
     <div class="search-filter">
       <input type="date" v-model="startDate" />
