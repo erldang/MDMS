@@ -73,3 +73,18 @@
   background-color: #fce4e4;
   border-radius: 5px;
 }
+
+
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.table-info {
+  width: 30%;
+}
+
+.terms-section {
+  width: 70%;
+}

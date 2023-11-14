@@ -1,18 +1,24 @@
 <template>
   <div class="data-detail-container">
-    <h1 class="title">테이블 상세 정보</h1>
-    <p class="info">테이블 명: {{ itemData.logicalTableName }}</p>
-    <p class="info">물리명: {{ itemData.physicalTableName }}</p>
-    <p class="info">테이블 고유 번호: {{ itemData.no }}</p>
-    <p class="info">생성일자: {{ formatDate(itemData.registrationDate) }}</p>
-    <p class="info">테이블 튜플 개수: {{ tableData.length }}</p>
-    <p class="info">데이터 테이블 용량: {{ tableDataSize }}</p>
-    <h3 class="subtitle">사용된 속성 표준 용어</h3>
-    <ul class="term-list" v-if="filteredTableHeaders.length > 0">
-      <li class="term-item" v-for="header in filteredTableHeaders" :key="header">
-        {{ header }}: {{ getTerminologyInfo(header).description }}
-      </li>
-    </ul>
+    <div class="top-section">
+      <div class="table-info">
+        <h1 class="title">테이블 상세 정보</h1>
+        <p class="info">테이블 명: {{ itemData.logicalTableName }}</p>
+        <p class="info">물리명: {{ itemData.physicalTableName }}</p>
+        <p class="info">테이블 고유 번호: {{ itemData.no }}</p>
+        <p class="info">생성일자: {{ formatDate(itemData.registrationDate) }}</p>
+        <p class="info">테이블 튜플 개수: {{ tableData.length }}</p>
+        <p class="info">데이터 테이블 용량: {{ tableDataSize }}</p>
+      </div>
+      <div class="terms-section">
+        <h3 class="subtitle">사용된 속성 표준 용어</h3>
+        <ul class="term-list" v-if="filteredTableHeaders.length > 0">
+          <li class="term-item" v-for="header in filteredTableHeaders" :key="header">
+            {{ header }}: {{ getTerminologyInfo(header).description }}
+          </li>
+        </ul>
+      </div>
+    </div>
     <h2 class="subtitle">테이블 데이터</h2>
     <div class="loading" v-if="loading">데이터 로딩중...</div>
     <div class="error" v-if="error">{{ error }}</div>
