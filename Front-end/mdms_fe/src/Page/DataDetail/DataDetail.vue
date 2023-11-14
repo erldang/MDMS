@@ -1,6 +1,3 @@
-<!-- 사용된 속성 표준 용어에서 NO가 표시된다 이를 제거할 필요가 있음
-테이블에서 NO(unknown) 이라고 뜬다 예외 처리 필요 
-헤더 부분에서 이름이 2줄로 표기된다 이를 해결할 필요 있음  -->
 <template>
   <div class="data-detail-container">
     <h1 class="title">테이블 상세 정보</h1>
@@ -11,8 +8,8 @@
     <p class="info">테이블 튜플 개수: {{ tableData.length }}</p>
     <p class="info">데이터 테이블 용량: {{ tableDataSize }}</p>
     <h3 class="subtitle">사용된 속성 표준 용어</h3>
-    <ul class="term-list" v-if="tableHeaders.length > 0">
-      <li class="term-item" v-for="header in tableHeaders" :key="header">
+    <ul class="term-list" v-if="filteredTableHeaders.length > 0">
+      <li class="term-item" v-for="header in filteredTableHeaders" :key="header">
         {{ header }}: {{ getTerminologyInfo(header).description }}
       </li>
     </ul>
@@ -41,6 +38,7 @@
 
 <script>
 import axios from 'axios';
+import './DataDetail.css';
 
 export default {
   name: 'DataDetail',
@@ -61,6 +59,12 @@ export default {
     }
     this.fetchData();
     this.fetchTerminologyData();
+  },
+  computed: {
+    filteredTableHeaders() {
+      // 'No'를 제외한 tableHeaders 배열 반환
+      return this.tableHeaders.filter(header => header !== 'No');
+    }
   },
   methods: {
     fetchData() {
@@ -99,6 +103,9 @@ export default {
       });
     },
     getTerminologyInfo(attributeName) {
+      if (attributeName === 'NO') {
+        return { dataType: 'INT', description: '튜플에 대한 고유 번호입니다.' }; // 'NO'에 대한 특별 처리
+      }
       const term = this.terminologyData.find(term => term.englishAbbreviation === attributeName);
       return term ? { dataType: term.domain.dataType, description: term.description } : { dataType: 'Unknown', description: 'No description available' };
     },
@@ -109,69 +116,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.data-detail-container {
-  font-family: 'Arial', sans-serif;
-  color: #333;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.title, .subtitle {
-  color: #2C3E50;
-}
-
-.info {
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.data-table th, .data-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-.data-table th {
-  background-color: #f2f2f2;
-}
-
-.data-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.data-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-.term-list {
-  list-style: none;
-  padding: 0;
-}
-
-.term-item {
-  background: #f9f9f9;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.loading, .error {
-  color: #e74c3c;
-  font-weight: bold;
-}
-
-.error {
-  background-color: #fce4e4;
-  padding: 10px;
-  border-radius: 5px;
-}
-</style>
