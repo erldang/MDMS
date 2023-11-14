@@ -93,28 +93,35 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword') {
     next();
   } else {
-    // 토큰을 로컬 스토리지에서 확인
     const token = localStorage.getItem('token');
-    const isAdmin = localStorage.getItem('admin'); // Vuex store에서 관리자 여부를 가져옵니다.
+    const isAdmin = localStorage.getItem('admin') === 'true'; // 문자열을 불리언으로 변환
 
     if (token) {
-      // 관리자 전용 페이지에 접근 시도 시 관리자 여부를 체크합니다.
       if (to.path.startsWith('/admin') && !isAdmin) {
-        // 관리자가 아닌데 관리자 페이지에 접근하려 하면 메인 페이지로 리다이렉트합니다.
-        next({ name: 'Main' });
+        if (from.name !== 'Main') { // 리다이렉션 루프 방지
+          next({ name: 'Main' });
+        } else {
+          next(false); // 현재 위치 유지
+        }
       } else if (!to.path.startsWith('/admin') && isAdmin) {
-        // 관리자인데 일반 사용자 페이지에 접근하려 하면 관리자 메인 페이지로 리다이렉트합니다.
-        next({ name: 'AdminMainPage' });
+        if (from.name !== 'AdminMainPage') { // 리다이렉션 루프 방지
+          next({ name: 'AdminMainPage' });
+        } else {
+          next(false); // 현재 위치 유지
+        }
       } else {
-        // 그 외의 경우에는 요청한 페이지로 정상 이동합니다.
         next();
       }
     } else {
-      // 토큰이 없다면 로그인 페이지로 리다이렉트합니다.
-      next({ name: 'Login' });
+      if (from.name !== 'Login') { // 리다이렉션 루프 방지
+        next({ name: 'Login' });
+      } else {
+        next(false); // 현재 위치 유지
+      }
     }
   }
 });
+
 
 
 export default router;
