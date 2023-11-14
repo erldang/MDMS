@@ -92,7 +92,7 @@ export default {
       this.$router.push('/data-register');
     },
     navigateToDetail(item) {
-    this.$router.push({ name: 'DataDetail', params: { itemData: item } });
+    this.$router.push({ name: 'DataDetail', query: { itemData: JSON.stringify(item) } });
   }
   },
   mounted() {

@@ -45,6 +45,8 @@ export default {
   },
   methods: {
     fetchData() {
+      const itemData = JSON.parse(this.$route.query.itemData);
+      console.log(itemData);
       this.loading = true;
       this.error = null;
       const token = localStorage.getItem('token');
@@ -72,6 +74,8 @@ export default {
     }
   },
   mounted() {
+    console.log('itemData in mounted:', this.itemData);
+    console.log('itemData in mounted:', this.itemData.no);
     this.fetchData();
   },
 };
