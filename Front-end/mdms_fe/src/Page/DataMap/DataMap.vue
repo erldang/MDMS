@@ -33,20 +33,23 @@
 <style scoped>
 /* 페이지 내 버튼에 대한 스타일 */
 .page_btn button {
-  background-color: #f4f4f4; /* 기본 배경색 */
-  border: 1px solid #ccc; /* 테두리 색상 */
-  padding: 10px 15px; /* 내부 패딩 */
-  margin-right: 5px; /* 오른쪽 마진 */
-  border-radius: 5px; /* 둥근 모서리 */
-  cursor: pointer; /* 마우스 커서 스타일 */
-  transition: background-color 0.3s ease; /* 배경색 변화 애니메이션 */
+  background-color: #4CAF50; /* 버튼 배경 색상 변경 */
+  color: white; /* 텍스트 색상 */
+  padding: 10px 20px; /* 여백 */
+  margin: 5px; /* 마진 */
+  border: none; /* 테두리 없음 */
+  border-radius: 4px; /* 둥근 모서리 */
+  cursor: pointer; /* 마우스 오버시 커서 변경 */
+  font-size: 1.1rem; /* 폰트 크기 */
 }
-
 /* 버튼에 마우스 호버 시의 스타일 */
 .page_btn button:hover {
   background-color: #ddd; /* 호버 시 배경색 */
 }
 
+.page_btn button.active {
+  background-color: #3e8e41; /* 활성화된 버튼 색상 변경 */
+}
 /* 현재 활성화된 페이지 버튼의 스타일 */
 .page_btn .active {
   background-color: #bbb; /* 활성화된 배경색 */
