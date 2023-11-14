@@ -1,3 +1,6 @@
+<!-- 사용된 속성 표준 용어에서 NO가 표시된다 이를 제거할 필요가 있음
+테이블에서 NO(unknown) 이라고 뜬다 예외 처리 필요 
+헤더 부분에서 이름이 2줄로 표기된다 이를 해결할 필요 있음  -->
 <template>
   <div class="data-detail-container">
     <h1 class="title">테이블 상세 정보</h1>
@@ -49,7 +52,7 @@ export default {
       loading: false,
       error: null,
       tableHeaders: [],
-      tableDataSize: '10MB' //서버로 부터 받아오는 로직으로 변경 필요
+      tableDataSize: '' 
     };
   },
   created() {
@@ -68,7 +71,9 @@ export default {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(response => {
-        this.tableData = response.data;
+        this.tableData = response.data.data;
+        this.tableDataSize = response.data.message;
+        console.log(response);
         if (this.tableData.length > 0) {
           this.tableHeaders = Object.keys(this.tableData[0]).filter(key => key !== 'No');
         }
@@ -87,7 +92,7 @@ export default {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(response => {
-        this.terminologyData = response.data;
+        this.terminologyData = response.data.data;
       })
       .catch(error => {
         console.error('Error fetching terminology data:', error);
