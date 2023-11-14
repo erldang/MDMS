@@ -12,7 +12,7 @@
     <!-- 네비게이션 바 -->
     <nav v-if="isLoggedIn" class="navbar-section">
       <span class="username-text">{{ username }}</span>
-      <button class="nav-btn" @click="navigateToProfile">회원 정보</button>
+      <button class="nav-btn" @click="navigateToProfile">회원정보</button>
       <button class="nav-btn logout-btn" @click="logoutAction">로그아웃</button>
     </nav>
   </header>
