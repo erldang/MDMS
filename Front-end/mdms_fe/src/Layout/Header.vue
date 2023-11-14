@@ -136,4 +136,14 @@ export default {
     background-color: #e74c3c;
     color: #ffffff;
 }
+
+.username-text {
+    margin-right: 1.6rem;
+    font-weight: 500;
+    font-size: 1.28rem;
+    color: #ffffff;
+    white-space: nowrap; /* 텍스트가 한 줄에 표시되도록 설정 */
+}
+
+
 </style>
