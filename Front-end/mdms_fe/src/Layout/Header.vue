@@ -2,7 +2,7 @@
   <header class="header-container">
     <!-- 로고와 타이틀 섹션 -->
     <div class="left-section" @click="navigateToHome">
-      <img src="@/assets/img/test-logo.png" alt="테스트로고" class="logo-img">
+      <img src="@/assets/img/pruning-logo.png" alt="테스트로고" class="logo-img">
       <div class="title-section">
         <h1 class="title">MDMS</h1>
         <p class="subtitle">메타데이터 관리 서비스</p>
@@ -12,9 +12,7 @@
     <!-- 네비게이션 바 -->
     <nav v-if="isLoggedIn" class="navbar-section">
       <span class="username-text">{{ username }}</span>
-      <!-- 나머지 네비게이션 바 -->
       <button class="nav-btn" @click="navigateToProfile">회원 정보</button>
-      <button class="nav-btn">이력 조회</button>
       <button class="nav-btn logout-btn" @click="logoutAction">로그아웃</button>
     </nav>
   </header>
@@ -68,46 +66,63 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    margin-bottom: 1rem;
     background-color: #2C3E50;
     color: #ecf0f1;
-    border-bottom: 2px solid #34495e;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
 }
 
 .logo-img {
-    width: 40px;
-    height: 40px;
-    margin-right: 0.8rem;
+    width: 50px; /* 로고 크기 조정 */
+    height: 50px;
+    margin-right: 1rem;
 }
 
 .title-section {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .title {
-    font-size: 1.8rem;
+    font-size: 1.5rem; /* 제목 크기 조정 */
     margin: 0;
+    color: #ffffff;
 }
 
 .subtitle {
-    font-size: 0.85rem;
+    font-size: 0.9rem; /* 서브타이틀 크기 조정 */
     color: #bdc3c7;
 }
 
+.navbar-section {
+    display: flex;
+    align-items: center;
+}
+
+.username-text {
+    margin-right: 1rem;
+    font-weight: 500;
+    color: #ffffff;
+}
+
 .nav-btn {
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1rem;
     margin-left: 0.5rem;
     background-color: transparent;
     border: 1px solid #ecf0f1;
     border-radius: 3px;
     cursor: pointer;
     transition: background-color 0.3s;
-    color:#bdc3c7;
+    color: #bdc3c7;
 }
 
 .nav-btn:hover {
     background-color: #34495e;
+    color: #ffffff;
 }
 
 .logout-btn {
@@ -117,11 +132,7 @@ export default {
 
 .logout-btn:hover {
     background-color: #e74c3c;
-    color: #ecf0f1;
+    color: #ffffff;
 }
 
-.username-text {
-    margin-right: 1rem;
-    font-weight: 500;
-}
 </style>
