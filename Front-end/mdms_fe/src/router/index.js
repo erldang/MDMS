@@ -11,6 +11,7 @@ import AdminCustomPage from '@/Page/AdminCustom/AdminCustom.vue'
 import AdminDataMapPage from '@/Page/AdminDataMap/AdminDataMap.vue'
 import AdminUserRecordPage from '@/Page/AdminUserRecord/AdminUserRecord.vue'
 import EditProfilePage from '@/Page/EditProfilePage/EditProfilePage.vue'
+import DataMapPage from '@/Page/DataMap/DataMap.vue'
 // import store from '@/store';
 
 const routes = [
@@ -74,6 +75,11 @@ const routes = [
     path: '/edit-profile',
     name: 'EditProfilePage',
     component: EditProfilePage
+  },
+  {
+    path: '/user-data-map',
+    name: 'DataMapPage',
+    component: DataMapPage
   },
 ];
 
