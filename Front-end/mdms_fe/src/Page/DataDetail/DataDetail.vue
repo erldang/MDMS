@@ -69,7 +69,7 @@ export default {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(response => {
-        this.tableData = response.data.data;
+        this.tableData = response.data;
         if (this.tableData.length > 0) {
           this.tableHeaders = Object.keys(this.tableData[0]).filter(key => key !== 'No');
         }
@@ -88,7 +88,7 @@ export default {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(response => {
-        this.terminologyData = response.data.data;
+        this.terminologyData = response.data;
       })
       .catch(error => {
         console.error('Error fetching terminology data:', error);
