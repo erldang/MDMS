@@ -21,7 +21,7 @@
         <th>테이블 논리명</th>
         <th>등록일</th>
       </tr>
-      <tr v-for="(item, index) in filteredData" :key="index">
+      <tr v-for="(item, index) in filteredData" :key="index" @click="navigateToDetail(item)">
         <td>{{ item.no }}</td>
         <td>{{ item.physicalTableName }}</td>
         <td>{{ item.logicalTableName }}</td>
@@ -90,7 +90,10 @@ export default {
     },
     addData() {
       this.$router.push('/data-register');
-    }
+    },
+    navigateToDetail(item) {
+    this.$router.push({ name: 'DataDetail', params: { itemData: item } });
+  }
   },
   mounted() {
     this.fetchData();

@@ -41,10 +41,10 @@ const routes = [
     component: ForgotPassword
   },
   {
-    path: '/data-detail/:id', 
+    path: '/data-detail',
     name: 'DataDetail',
     component: DataDetail,
-    props: true, 
+    props: true 
   },
   {
     path: '/data-register',
