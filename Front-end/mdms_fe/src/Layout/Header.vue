@@ -4,8 +4,8 @@
     <div class="left-section" @click="navigateToHome">
       <img src="@/assets/img/pruning-logo.png" alt="테스트로고" class="logo-img">
       <div class="title-section">
-        <h1 class="title">MDMS</h1>
-        <p class="subtitle">메타데이터 관리 서비스</p>
+        <h1 class="title">MDMS : 데이터 정원사</h1>
+        <p class="subtitle">메타데이터 관리 및 시각화 서비스</p>
       </div>
     </div>
     
@@ -65,7 +65,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 1.6rem 3.2rem; /* 기존 여백의 1.6배 */
     background-color: #2C3E50;
     color: #ecf0f1;
 }
@@ -76,9 +76,9 @@ export default {
 }
 
 .logo-img {
-    width: 50px; /* 로고 크기 조정 */
-    height: 50px;
-    margin-right: 1rem;
+    width: 150px;
+    height: auto; 
+    margin-right: 1.6rem; 
 }
 
 .title-section {
@@ -88,13 +88,13 @@ export default {
 }
 
 .title {
-    font-size: 1.5rem; /* 제목 크기 조정 */
+    font-size: 2.4rem; /* 제목 폰트 크기 1.6배 증가 */
     margin: 0;
     color: #ffffff;
 }
 
 .subtitle {
-    font-size: 0.9rem; /* 서브타이틀 크기 조정 */
+    font-size: 1.44rem; /* 서브타이틀 폰트 크기 1.6배 증가 */
     color: #bdc3c7;
 }
 
@@ -104,19 +104,21 @@ export default {
 }
 
 .username-text {
-    margin-right: 1rem;
+    margin-right: 1.6rem; /* 오른쪽 마진 1.6배 증가 */
     font-weight: 500;
+    font-size: 1.28rem; /* 폰트 크기 1.6배 증가 */
     color: #ffffff;
 }
 
 .nav-btn {
-    padding: 0.5rem 1rem;
-    margin-left: 0.5rem;
+    padding: 0.8rem 1.6rem; /* 버튼 내부 여백 1.6배 증가 */
+    margin-left: 0.8rem; /* 왼쪽 마진 1.6배 증가 */
     background-color: transparent;
     border: 1px solid #ecf0f1;
-    border-radius: 3px;
+    border-radius: 4.8px; /* 모서리 둥글기 1.6배 증가 */
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 1.28rem; /* 폰트 크기 1.6배 증가 */
     color: #bdc3c7;
 }
 
@@ -134,5 +136,4 @@ export default {
     background-color: #e74c3c;
     color: #ffffff;
 }
-
 </style>
