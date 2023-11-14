@@ -44,7 +44,6 @@ const routes = [
     path: '/data-detail',
     name: 'DataDetail',
     component: DataDetail,
-    props: true 
   },
   {
     path: '/data-register',

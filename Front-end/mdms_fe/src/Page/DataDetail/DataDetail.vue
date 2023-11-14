@@ -34,19 +34,25 @@ import axios from 'axios';
 
 export default {
   name: 'DataDetail',
-  props: ['itemData'],
   data() {
     return {
+      itemData: null, // 이 부분을 data로 추가
       tableData: [],
       loading: false,
       error: null,
-      tableHeaders: [], // 테이블 헤더를 위한 데이터
+      tableHeaders: []
     };
+  },
+  created() {
+    // URL 쿼리 파라미터에서 itemData를 추출하고 콘솔에 출력합니다.
+    if (this.$route.query.itemData) {
+      console.log('Received itemData:', this.$route.query.itemData);
+      this.itemData = JSON.parse(this.$route.query.itemData);
+    }
+    this.fetchData();
   },
   methods: {
     fetchData() {
-      const itemData = JSON.parse(this.$route.query.itemData);
-      console.log(itemData);
       this.loading = true;
       this.error = null;
       const token = localStorage.getItem('token');
@@ -56,7 +62,6 @@ export default {
       .then(response => {
         this.tableData = response.data.data;
         if (this.tableData.length > 0) {
-          // 첫 번째 데이터 항목에서 키를 추출하여 헤더로 사용합니다.
           this.tableHeaders = Object.keys(this.tableData[0]);
         }
       })
@@ -72,11 +77,6 @@ export default {
       const date = new Date(dateString);
       return date.toLocaleDateString();
     }
-  },
-  mounted() {
-    console.log('itemData in mounted:', this.itemData);
-    console.log('itemData in mounted:', this.itemData.no);
-    this.fetchData();
   },
 };
 </script>

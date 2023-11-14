@@ -92,8 +92,10 @@ export default {
       this.$router.push('/data-register');
     },
     navigateToDetail(item) {
-    this.$router.push({ name: 'DataDetail', query: { itemData: JSON.stringify(item) } });
-  }
+      // DataDetail 컴포넌트로 보내기 전에 데이터를 콘솔에 출력합니다.
+      console.log('Navigating to DataDetail with item:', item);
+      this.$router.push({ name: 'DataDetail', query: { itemData: JSON.stringify(item) } });
+    }
   },
   mounted() {
     this.fetchData();
