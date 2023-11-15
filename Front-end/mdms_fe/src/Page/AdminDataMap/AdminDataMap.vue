@@ -126,7 +126,7 @@ export default {
       let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
         singleBranchOnly: false,
         downDepth: 2,
-        topDepth: 1,
+        topDepth: 0,
         initialDepth: 2,
         valueField: "value",
         categoryField: "name",
