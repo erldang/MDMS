@@ -13,7 +13,7 @@
       <button @click="ListTerminology">용어</button>
     </div>
 
-    <div v-if="showTableList">
+    <div v-if="showTableList" class="table-list">
       <h3>테이블 목록</h3>
       <ul>
         <li v-for="table in tableList" :key="table.no" @click="handleTableClick(table.logicalTableName)">
@@ -22,7 +22,7 @@
       </ul>
     </div>
 
-    <div v-if="showTerminologyList">
+    <div v-if="showTerminologyList" class="terminology-list">
       <h3>용어 목록</h3>
       <ul>
         <li v-for="term in terminologyList" :key="term">{{ term }}</li>
@@ -176,5 +176,35 @@ h1, h2 {
 .button-group button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+/* CSS 개선 */
+.button-group button:hover {
+  background-color: #0056b3; /* 어두운 파란색으로 변경 */
+}
+
+.list-btn button {
+  padding: 8px 12px;
+  margin: 5px;
+  background-color: #28a745; /* 녹색 계열 */
+  color: white;
+}
+
+.list-btn button:hover {
+  background-color: #218838; /* 어두운 녹색으로 변경 */
+}
+
+.table-list, .terminology-list {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f8f9fa; /* 연한 회색 */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .button-group button, .list-btn button {
+    width: 100%; /* 모바일 화면에서 버튼을 전체 너비로 확장 */
+    margin-bottom: 10px;
+  }
 }
 </style>
