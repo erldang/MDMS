@@ -7,11 +7,11 @@ import ForgotPassword from '@/Page/ForgotPassword/ForgotPassword.vue';
 import DataDetail from '@/Page/DataDetail/DataDetail.vue';
 import DataRegister from '@/Page/DataRegister/DataRegister.vue'
 import AdminMainPage from '@/Page/AdminMain/AdminMain.vue'
-import AdminCustomPage from '@/Page/AdminCustom/AdminCustom.vue'
 import AdminDataMapPage from '@/Page/AdminDataMap/AdminDataMap.vue'
 import AdminUserRecordPage from '@/Page/AdminUserRecord/AdminUserRecord.vue'
 import EditProfilePage from '@/Page/EditProfilePage/EditProfilePage.vue'
 import DataMapPage from '@/Page/DataMap/DataMap.vue'
+import RegisterCustomTermPage from '@/Page/RegisterCustomTerm/RegisterCustomTerm.vue'
 // import store from '@/store';
 
 const routes = [
@@ -56,11 +56,6 @@ const routes = [
     component: AdminMainPage,
   },
   {
-    path: '/custom-standard-terms',
-    name: 'AdminCustomPage',
-    component: AdminCustomPage,
-  },
-  {
     path: '/admin-datamap',
     name: 'AdminDataMapPage',
     component: AdminDataMapPage,
@@ -80,6 +75,11 @@ const routes = [
     name: 'DataMapPage',
     component: DataMapPage
   },
+  {
+    path: '/register-custom-term',
+    name: 'RegisterCustomTermPage',
+    component: RegisterCustomTermPage
+  },
 ];
 
 const router = createRouter({
@@ -89,7 +89,7 @@ const router = createRouter({
 
 // 라우터 가드에서 관리자 여부를 체크하여 리다이렉션
 router.beforeEach((to, from, next) => {
-  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' ||to.name === 'DataMapPage') {
+  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' ||to.name === 'DataMapPage'|| to.name === 'RegisterCustomTermPage') {
     next();
   } else {
     const token = localStorage.getItem('token');
