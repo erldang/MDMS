@@ -25,7 +25,9 @@
     <div v-if="showTerminologyList">
       <h3>용어 목록</h3>
       <ul>
-        <li v-for="term in terminologyList" :key="term">{{ term }}</li>
+        <li v-for="term in terminologyList" :key="term" @click="handleTermClick(term)">
+          {{ term }}
+        </li>
       </ul>
     </div>
 
@@ -33,28 +35,26 @@
   </div>
 </template>
 
-
 <script>
 import axios from 'axios';
-// amCharts 관련 라이브러리 임포트
 import * as am5 from "@amcharts/amcharts5";
-import * as am5hierarchy from "@amcharts/amcharts5/hierarchy";
-import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+// 하위 모듈 및 테마 임포트 생략
 
 export default {
   name: 'AdminDataMapPage',
   data() {
     return {
+      // 테이블 데이터, 용어 목록 및 차트 관련 상태 관리
       tableData: [],
       tableList: [],
       terminologyList: [],
       showTableList: false,
       showTerminologyList: false,
-      chart: null // 차트 인스턴스를 저장할 변수
+      chart: null // 차트 인스턴스를 저장
     };
   },
   created() {
-    this.fetchTableData(); // 컴포넌트가 생성될 때 데이터를 가져옵니다.
+    this.fetchTableData(); // 컴포넌트 생성 시 데이터 로딩
   },
   methods: {
     // 서버에서 테이블 데이터를 가져오는 메소드
@@ -90,39 +90,50 @@ export default {
       this.showTerminologyList = true;
       this.showTableList = false;
     },
-    // 테이블 항목 클릭 시 호출되는 메소드
     handleTableClick(logicalTableName) {
       const selectedTable = this.tableData.find(table => table.logicalTableName === logicalTableName);
       if (selectedTable) {
         this.createChart(selectedTable);
       }
     },
-    // 차트를 생성하는 메소드
-    createChart(tableData) {
+    handleTermClick(term) {
+      this.createChartForTerm(term);
+    },
+    createChartForTerm(selectedTerm) {
+      const tablesContainingTerm = this.tableData.filter(table =>
+        table.stdTerminologyList.includes(selectedTerm)
+      );
+
+      const children = tablesContainingTerm.map(table => ({
+        name: table.logicalTableName,
+        value: table.num
+      }));
+
+      const chartData = {
+        name: selectedTerm,
+        children: children
+      };
+
+      this.createChart(chartData);
+    },
+    createChart(chartData) {
+      // 기존에 생성된 차트가 있다면 제거합니다.
       if (this.chart) {
-        this.chart.dispose(); // 기존 차트가 있다면 제거합니다.
+        this.chart.dispose();
+        this.chart = null;
       }
 
+      // 새로운 차트의 Root를 생성합니다. 여기서 this.$refs.chartdiv는 차트가 들어갈 DOM 요소를 참조합니다.
       let root = am5.Root.new(this.$refs.chartdiv);
 
-      root.setThemes([am5themes_Animated.new(root)]);
-
+      // amCharts의 기본 컨테이너 설정. 차트의 크기와 레이아웃을 정의합니다.
       let container = root.container.children.push(am5.Container.new(root, {
         width: am5.percent(80),
         height: am5.percent(80),
         layout: root.verticalLayout
       }));
 
-      // 차트에 사용할 데이터 구조를 생성합니다.
-      const data = {
-        name: tableData.logicalTableName,
-        children: tableData.stdTerminologyList.map(term => ({
-          name: term,
-          value: tableData.num
-        }))
-      };
-
-      // 차트 생성 및 설정
+      // ForceDirected 시리즈를 생성하고 설정합니다. 이 시리즈는 노드 간의 연결성과 관계를 표현하는 데 사용됩니다.
       let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
         singleBranchOnly: false,
         downDepth: 2,
@@ -138,16 +149,19 @@ export default {
         maxRadius: am5.percent(6)
       }));
 
-      series.data.setAll([data]);
+      // 차트에 데이터를 설정합니다. 여기서 chartData는 차트를 그릴 때 사용할 데이터 구조입니다.
+      series.data.setAll([chartData]);
 
-      this.chart = series; // 차트 인스턴스를 저장합니다.
-    }
+      // 생성된 차트를 인스턴스 변수에 저장합니다. 이를 통해 나중에 차트를 제거하거나 다시 렌더링할 수 있습니다.
+      this.chart = series;
+    },
+
+    beforeDestroy() {
+      if (this.chart) {
+        this.chart.dispose(); // 컴포넌트 파괴 시 차트 정리
+      }
+    },
   },
-  beforeDestroy() {
-    if (this.chart) {
-      this.chart.dispose(); // 컴포넌트가 파괴될 때 차트를 정리합니다.
-    }
-  }
 };
 </script>
 
