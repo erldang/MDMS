@@ -9,20 +9,20 @@
     </div>
 
     <div class="search-section">
-      <select v-model="selectedCategory">
+      <select v-model="selectedCategory" class="search-select">
         <option value="">전체</option>
         <option value="custom">커스텀</option>
         <option value="standard">표준</option>
       </select>
-      <select v-model="searchType">
+      <select v-model="searchType" class="search-select">
         <option value="standardTerminology">표준 용어명</option>
         <option value="englishAbbreviation">영어 약어명</option>
       </select>
-      <input type="text" v-model="searchQuery" placeholder="검색">
-      <button @click="searchData">검색</button>
+      <input type="text" v-model="searchQuery" class="search-input" placeholder="검색">
+      <button class="search-button" @click="searchData">검색</button>
     </div>
 
-    <table> 
+    <table class="data-table">
       <tr>
         <th>No</th>
         <th>차수</th>
@@ -123,62 +123,75 @@ export default {
 <style scoped>
 /* 기본 스타일링 */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
   color: #333;
   background-color: #f4f4f4;
-  line-height: 1.6;
-  padding: 20px;
 }
 
 h1, h2 {
-  color: #444;
+  color: #333;
 }
 
-/* 레이아웃 및 정렬 */
-.button-group, .search-section, .pagination {
-  margin-bottom: 20px;
+/* 버튼 및 검색 필드 스타일 */
+.button-group button, .search-button {
+  padding: 10px 15px;
+  margin-right: 10px;
+  border: none;
+  color: #fff;
+  background-color: #007bff;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
 }
 
-.button-group button, .search-section select, .search-section input, .pagination span {
+.button-group button:disabled, .search-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.search-select, .search-input {
   padding: 10px;
   margin-right: 10px;
   border: 1px solid #ddd;
-  background: #fff;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.button-group button:disabled {
-  color: #aaa;
-  cursor: default;
+  border-radius: 5px;
 }
 
 /* 테이블 스타일 */
-table {
+.data-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
 }
 
-th, td {
+.data-table th, .data-table td {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: left;
 }
 
-th {
+.data-table th {
   background-color: #f0f0f0;
 }
 
 /* 페이지네이션 */
 .pagination span {
+  padding: 5px 10px;
+  margin-right: 5px;
+  border: 1px solid #ddd;
   cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.pagination span:hover {
+  background-color: #ddd;
 }
 
 /* 반응형 디자인 */
 @media (max-width: 600px) {
-  .button-group button, .search-section select, .search-section input {
-    margin-bottom: 10px;
+  .button-group button, .search-select, .search-input {
     width: 100%;
+    margin-bottom: 10px;
   }
 }
 </style>
