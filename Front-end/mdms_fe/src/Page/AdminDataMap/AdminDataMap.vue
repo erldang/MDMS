@@ -162,6 +162,11 @@ export default {
       }
     },
   },
+  beforeUnmount() {
+    if (this.chart) {
+      this.chart.dispose(); // 컴포넌트가 파괴될 때 차트를 정리합니다.
+    }
+  }
 };
 </script>
 
