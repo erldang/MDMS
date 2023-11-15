@@ -1,13 +1,4 @@
-ERROR
-Cannot read properties of undefined (reading 'push')
-TypeError: Cannot read properties of undefined (reading 'push')
-    at Proxy.navigateToDataMap (webpack-internal:///./node_modules/babel-loader/lib/index.js??clonedRuleSet-40.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/Page/AdminMain/AdminMain.vue?vue&type=script&lang=js:66:58)
-    at onClick._cache.<computed>._cache.<computed> (webpack-internal:///./node_modules/babel-loader/lib/index.js??clonedRuleSet-40.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[3]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/Page/AdminMain/AdminMain.vue?vue&type=template&id=771938ba:42:92)
-    at callWithErrorHandling (webpack-internal:///./node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js:288:18)
-    at callWithAsyncErrorHandling (webpack-internal:///./node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js:296:17)
-    at HTMLButtonElement.invoker (webpack-internal:///./node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js:759:82)
-검색 후 전체 데이터에서 검색을 하는 게 아니라 검색 필터링 되어진 데이터에 관련하여 검색하게 된다 이를 해결
-    <template>
+<template>
     <div>
       <h1>커스텀 표준 용어 추가</h1>
       <form @submit.prevent="submitForm">

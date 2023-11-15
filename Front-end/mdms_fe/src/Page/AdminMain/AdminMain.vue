@@ -47,18 +47,18 @@
 
 <script>
 import axios from 'axios';
-import router from 'vue-router';
 
 export default {
   name: 'AdminMainPage',
   data() {
     return {
-      dataList: [],
+      originalDataList: [], // 원본 데이터 리스트
+      dataList: [], // 화면에 표시될 데이터 리스트
       searchQuery: '',
       searchType: 'standardTerminology',
       selectedCategory: '',
       currentPage: 1,
-      pageSize: 10,
+      pageSize: 30,
     };
   },
   created() {
@@ -83,7 +83,8 @@ export default {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       })
       .then(response => {
-        this.dataList = response.data.data;
+        this.originalDataList = response.data.data;
+        this.dataList = this.originalDataList; // 초기 데이터 설정
       })
       .catch(error => {
         console.error(error);
@@ -92,7 +93,7 @@ export default {
     searchData() {
       // 검색 로직 구현
       this.currentPage = 1; // 검색시 첫 페이지로 리셋
-      let filteredData = this.dataList;
+      let filteredData = this.originalDataList;
 
       if (this.selectedCategory === 'custom') {
         filteredData = filteredData.filter(item => item.isCustom);
@@ -107,10 +108,10 @@ export default {
       this.dataList = filteredData;
     },
     navigateToDataMap() {
-      router.push('/admin-datamap');
+      this.$router.push('/admin-datamap');
     },
     navigateToUserRecord() {
-      router.push('/admin-user-record');
+      this.$router.push('/admin-user-record');
     },
     changePage(page) {
       this.currentPage = page;
@@ -118,3 +119,66 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+/* 기본 스타일링 */
+body {
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f4f4f4;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #444;
+}
+
+/* 레이아웃 및 정렬 */
+.button-group, .search-section, .pagination {
+  margin-bottom: 20px;
+}
+
+.button-group button, .search-section select, .search-section input, .pagination span {
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.button-group button:disabled {
+  color: #aaa;
+  cursor: default;
+}
+
+/* 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+/* 페이지네이션 */
+.pagination span {
+  cursor: pointer;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+  .button-group button, .search-section select, .search-section input {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+}
+</style>
