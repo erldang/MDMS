@@ -143,7 +143,7 @@ export default {
       this.chart = series; // 차트 인스턴스를 저장합니다.
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.dispose(); // 컴포넌트가 파괴될 때 차트를 정리합니다.
     }
