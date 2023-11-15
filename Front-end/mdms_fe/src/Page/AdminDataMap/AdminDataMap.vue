@@ -130,7 +130,32 @@ export default {
       this.showTableList = false;
     },
     handleTableClick(logicalTableName) {
-      console.log(logicalTableName);
+      // 선택된 테이블에 대한 데이터만 필터링
+      const selectedTableData = this.tableData.filter(table => table.logicalTableName === logicalTableName);
+
+      // 필터링된 데이터를 기반으로 차트 데이터 생성
+      const chartData = this.createChartDataForTable(selectedTableData);
+
+      // 차트 업데이트
+      this.updateChart(chartData);
+    },
+
+    createChartDataForTable(tableData) {
+      // 단일 테이블 데이터를 기반으로 차트 데이터 생성
+      return tableData.map(table => ({
+        name: table.logicalTableName,
+        children: table.stdTerminologyList.map(term => ({ name: term }))
+      }));
+    },
+
+    updateChart(data) {
+      if (this.chart) {
+        // 기존 차트 데이터 업데이트
+        this.chart.series.getIndex(0).data.setAll(data);
+      } else {
+        // 차트가 없는 경우 새로 생성
+        this.createChart();
+      }
     },
     handleTermClick(term) {
       console.log(term);
