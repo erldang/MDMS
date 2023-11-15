@@ -12,16 +12,24 @@
       <h2>데이터 맵 페이지</h2>
       <!-- 여기에 필요한 거 추가 하면 됩니다 제목도 지워도 됩니다 -->
       <!-- <div id="chartdiv" ref="chartdiv"></div> // 맵 그리기-->
-      <div class="catalog">
-        <table>
-          <tr>
-            <th>테이블 논리명</th>
-          </tr>
-          <tr v-for="(item, index) in rawData" :key="index" @click="navigateToDetail(item)">
-            <td>{{ index.logicalTableName   }}</td>
-          </tr>
-        </table>
-      </div>
+      <div class="list-btn">
+      <button @click="ListTable">테이블</button>
+      <button @click="ListTerminology">용어</button>
+    </div>
+
+    <div v-if="showTableList">
+      <h3>테이블 목록</h3>
+      <ul>
+        <li v-for="table in tableList" :key="table.no">{{ table.logicalTableName }}</li>
+      </ul>
+    </div>
+
+    <div v-if="showTerminologyList">
+      <h3>용어 목록</h3>
+      <ul>
+        <li v-for="term in terminologyList" :key="term">{{ term }}</li>
+      </ul>
+    </div>
     </div>
 </template>
 
@@ -36,11 +44,15 @@
     name: 'DataMap', // 컴포넌트 이름
     data() {
       return {
-        rawData: [], // 서버로부터 받은 원본 데이터
+        tableData: [],
+        tableList: [],
+        terminologyList: [],
+        showTableList: false,
+        showTerminologyList: false
       };
     },
-    computed: {
-
+    created() {
+      this.fetchTableData();
     },
     mounted() {
       // // Create root element
@@ -166,28 +178,35 @@
       isCurrentPage(route) {
         return this.$route.path === route;
       },
-      async getData() {
+      async fetchTableData() {
         try {
-          const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
-          const response = await axios.get('http://localhost:3001/tableinfo', { //테이블 목록 가져오기 
-            headers: { 'Authorization': `Bearer ${token}` } // 토큰을 헤더에 포함시켜 요청
-          }).then(response => {
-          this.rawData = response.data.data;
+          const token = localStorage.getItem('token');
+          const response = await axios.get('http://localhost:3001/tableInfo', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
           });
-          console.log(response.data.data);
-          //html 요소에 목록을 채워넣기 
+          this.tableData = response.data.data;
+          this.tableList = this.tableData.map(item => ({
+            no: item.no,
+            logicalTableName: item.logicalTableName
+          }));
+          this.terminologyList = [...new Set(this.tableData.flatMap(item => item.stdTerminologyList))];
         } catch (error) {
-          alert('데이터를 불러오는 중 에러가 발생했습니다.'); // 에러 처리
+          console.error('Error fetching table data:', error);
         }
       },
-      navigateToDetail(item) {
-        // DataDetail 컴포넌트로 보내기 전에 데이터를 콘솔에 출력합니다.
-        console.log('Navigating to DataDetail with item:', item);
-        this.$router.push({ name: 'DataDetail', query: { itemData: JSON.stringify(item) } });
-      }
+      ListTable() {
+        this.showTableList = true;
+        this.showTerminologyList = false;
+      },
+      ListTerminology() {
+        this.showTerminologyList = true;
+        this.showTableList = false;
+      },
     }
   }
-</script>
+</script>s
 
 <style scoped>
 /* 페이지 내 버튼에 대한 스타일 */
