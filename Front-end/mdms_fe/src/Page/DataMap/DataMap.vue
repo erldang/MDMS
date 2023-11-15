@@ -13,11 +13,14 @@
       <!-- 여기에 필요한 거 추가 하면 됩니다 제목도 지워도 됩니다 -->
       <!-- <div id="chartdiv" ref="chartdiv"></div> // 맵 그리기-->
       <div class="catalog">
-        <li>
-          <ul>1</ul>
-          <ul>2</ul>
-          <ul>3</ul>
-        </li>
+        <table>
+          <tr>
+            <th>테이블 논리명</th>
+          </tr>
+          <tr v-for="(item, index) in rawData" :key="index" @click="navigateToDetail(item)">
+            <td>{{ index.logicalTableName }}</td>
+          </tr>
+        </table>
       </div>
     </div>
 </template>
@@ -27,9 +30,18 @@
   // import * as am5 from "@amcharts/amcharts5";
   // import * as am5hierarchy from "@amcharts/amcharts5/hierarchy";
   // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+  import axios from 'axios';
 
   export default {
     name: 'DataMap', // 컴포넌트 이름
+    data() {
+      return {
+        rawData: [], // 서버로부터 받은 원본 데이터
+      };
+    },
+    computed: {
+
+    },
     mounted() {
       // // Create root element
       // // https://www.amcharts.com/docs/v5/getting-started/#Root_element
@@ -154,6 +166,25 @@
       isCurrentPage(route) {
         return this.$route.path === route;
       },
+      async getData() {
+        try {
+          const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
+          const response = await axios.get('http://localhost:3001/tableinfo', { //테이블 목록 가져오기 
+            headers: { 'Authorization': `Bearer ${token}` } // 토큰을 헤더에 포함시켜 요청
+          }).then(response => {
+          this.rawData = response.data.data;
+          });
+          console.log(response.data.data);
+          //html 요소에 목록을 채워넣기 
+        } catch (error) {
+          alert('데이터를 불러오는 중 에러가 발생했습니다.'); // 에러 처리
+        }
+      },
+      navigateToDetail(item) {
+        // DataDetail 컴포넌트로 보내기 전에 데이터를 콘솔에 출력합니다.
+        console.log('Navigating to DataDetail with item:', item);
+        this.$router.push({ name: 'DataDetail', query: { itemData: JSON.stringify(item) } });
+      }
     }
   }
 </script>

@@ -89,7 +89,7 @@ const router = createRouter({
 
 // 라우터 가드에서 관리자 여부를 체크하여 리다이렉션
 router.beforeEach((to, from, next) => {
-  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword') {
+  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' ||to.name === 'DataMapPage') {
     next();
   } else {
     const token = localStorage.getItem('token');
