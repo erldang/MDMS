@@ -7,7 +7,6 @@ import ForgotPassword from '@/Page/ForgotPassword/ForgotPassword.vue';
 import DataDetail from '@/Page/DataDetail/DataDetail.vue';
 import DataRegister from '@/Page/DataRegister/DataRegister.vue'
 import AdminMainPage from '@/Page/AdminMain/AdminMain.vue'
-import AdminCustomPage from '@/Page/AdminCustom/AdminCustom.vue'
 import AdminDataMapPage from '@/Page/AdminDataMap/AdminDataMap.vue'
 import AdminUserRecordPage from '@/Page/AdminUserRecord/AdminUserRecord.vue'
 import EditProfilePage from '@/Page/EditProfilePage/EditProfilePage.vue'
@@ -55,11 +54,6 @@ const routes = [
     path: '/admin-main',
     name: 'AdminMainPage',
     component: AdminMainPage,
-  },
-  {
-    path: '/custom-standard-terms',
-    name: 'AdminCustomPage',
-    component: AdminCustomPage,
   },
   {
     path: '/admin-datamap',
