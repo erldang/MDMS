@@ -18,7 +18,7 @@
             <th>테이블 논리명</th>
           </tr>
           <tr v-for="(item, index) in rawData" :key="index" @click="navigateToDetail(item)">
-            <td>{{ index.logicalTableName }}</td>
+            <td>{{ index.logicalTableName   }}</td>
           </tr>
         </table>
       </div>
