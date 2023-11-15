@@ -47,21 +47,36 @@
           domain: null,
         },
         domainSearchQuery: '',
+        allDomains: [], // 서버로부터 가져온 전체 도메인 데이터를 저장
         domainSearchResults: [],
       };
     },
+    created() {
+      this.fetchDomains();
+    },
+    watch: {
+      // domainSearchQuery의 변화를 감시합니다
+      domainSearchQuery(newQuery) {
+        this.filterDomains(newQuery);
+      }
+    },
     methods: {
-      searchDomain() {
-        // 도메인 검색 로직
-        axios.get(`localhost:3001/domain?query=${this.domainSearchQuery}`, {
+      fetchDomains() {
+        axios.get(`localhost:3001/domain`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
         .then(response => {
-          this.domainSearchResults = response.data.data;
+          this.allDomains = response.data.data;
         })
         .catch(error => {
           console.error(error);
         });
+      },
+      filterDomains(query) {
+        // 입력된 검색어를 기반으로 도메인 데이터를 필터링
+        this.domainSearchResults = this.allDomains.filter(domain => 
+          domain.classificationName.toLowerCase().includes(query.toLowerCase())
+        );
       },
       selectDomain(domain) {
         this.form.domain = domain;
@@ -72,7 +87,7 @@
         for (const key in this.form.domain) {
             stringifiedDomain[key] = String(this.form.domain[key]);
         }
-
+  
         const postData = {
             "degree": '1차',
             "standardTerminology": String(this.form.standardTerminology),
@@ -83,7 +98,7 @@
             "standardCode": '-',
             "isCustom": true, 
         };
-
+  
         axios.post('localhost:3001/terminology/add', postData, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
@@ -93,8 +108,9 @@
         .catch(error => {
             console.error(error);
         });
-        }
+      }
     }
   };
   </script>
+  
   
