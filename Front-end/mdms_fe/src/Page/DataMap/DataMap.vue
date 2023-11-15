@@ -8,36 +8,38 @@
         <!-- 데이터 맵 페이지로 이동하는 버튼 -->
         <button :class="{ active: isCurrentPage('/user-data-map') }" @click="navigateTo('/user-data-map')">데이터 맵</button>
       </div>
+      <!-- 여기에 필요한 거 추가 하면 됩니다 제목도 지워도 됩니다 -->
       <!-- 페이지 제목 -->
       <h2>데이터 맵 페이지</h2>
-      <!-- 여기에 필요한 거 추가 하면 됩니다 제목도 지워도 됩니다 -->
-      <!-- <div id="chartdiv" ref="chartdiv"></div> // 맵 그리기-->
       <div class="list-btn">
-      <button @click="ListTable">테이블</button>
-      <button @click="ListTerminology">용어</button>
-    </div>
+        <button @click="ListTable">테이블</button>
+        <button @click="ListTerminology">용어</button>
+      </div>
 
-    <div v-if="showTableList">
-      <h3>테이블 목록</h3>
-      <ul>
-        <li v-for="table in tableList" :key="table.no">{{ table.logicalTableName }}</li>
-      </ul>
-    </div>
+      <div v-if="showTableList">
+        <h3>테이블 목록</h3>
+        <ul>
+          <li v-for="table in tableList" :key="table.no" @click="handleTableClick(table.logicalTableName)">
+            {{ table.logicalTableName }}
+          </li>
+        </ul>
+      </div>
 
-    <div v-if="showTerminologyList">
-      <h3>용어 목록</h3>
-      <ul>
-        <li v-for="term in terminologyList" :key="term">{{ term }}</li>
-      </ul>
-    </div>
+      <div v-if="showTerminologyList">
+        <h3>용어 목록</h3>
+        <ul>
+          <li v-for="term in terminologyList" :key="term">{{ term }}</li>
+        </ul>
+      </div>
+      <div id="chartdiv" ref="chartdiv"></div>
     </div>
 </template>
 
 <script>
   // 맵그리기
-  // import * as am5 from "@amcharts/amcharts5";
-  // import * as am5hierarchy from "@amcharts/amcharts5/hierarchy";
-  // import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+  import * as am5 from "@amcharts/amcharts5";
+  import * as am5hierarchy from "@amcharts/amcharts5/hierarchy";
+  import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
   import axios from 'axios';
 
   export default {
@@ -48,126 +50,14 @@
         tableList: [],
         terminologyList: [],
         showTableList: false,
-        showTerminologyList: false
+        showTerminologyList: false,
+        chart: null // 차트 인스턴스를 저장할 변수
       };
     },
     created() {
       this.fetchTableData();
     },
     mounted() {
-      // // Create root element
-      // // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-      // var root = am5.Root.new(this.$refs.chartdiv);
-
-      // // Set themes
-      // // https://www.amcharts.com/docs/v5/concepts/themes/
-      // root.setThemes([am5themes_Animated.new(root)]);
-
-      // // Create wrapper container
-      // let container = root.container.children.push(am5.Container.new(root, {
-      //   width: am5.percent(80),
-      //   height: am5.percent(80),
-      //   layout: root.verticalLayout
-      // }));
-
-      // var data = {
-      //   children: [{
-      //     name: "Fruity",
-      //     children: [{
-      //       name: "테스트용 베리종류",
-      //       children: [
-      //         {
-      //           name: "테스트용 베리1",
-      //           value: 2,
-      //         },
-      //         {
-      //           name: "테스트용 베리2",
-      //           value: 3,
-      //         }
-      //       ]
-      //       },
-      //       {
-      //         name: "기타 과일",
-      //         children: [
-      //         {
-      //           name: "코코넛",
-      //           value: 1
-      //         },
-      //         {
-      //           name: "체리",
-      //           value: 1
-      //         }
-      //       ]
-      //     }]
-      //   }]
-      // };
-
-      // // Create series
-      // // https://www.amcharts.com/docs/v5/charts/hierarchy/#Adding
-      // let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
-      //   singleBranchOnly: false,
-      //   downDepth: 2, //클릭시 한번에 출력되는 깊이
-      //   topDepth: 1, // 출력시 상위 몇번째의 깊이에 있는 종류를 기점으로 출력시켜 줄것인가
-      //   initialDepth: 2, // 첫 출력시 한번에 보여줄 깊이(몇단계 아래까지 보여줄 것인가)
-      //   valueField: "value", // value로 하면 수치에 따라 표현, 이름으로 하면 해당 이름이 출력 숫자면 크기가 조절됨
-      //   // valueField: 3, 크기 고정하고 수치만 그리는거 모르겠음
-      //   categoryField: "name",
-      //   childDataField: "children",
-      //   idField: "value",
-      //   linkWithField: "linkWith",
-      //   manyBodyStrength: -15, // 서로간의 거리(-일수록 더 멀리 멀어짐)
-      //   centerStrength: 0.3, // 멀어짐 정도 인거같은데 1보다 커지면 동그라미로 뭉침
-      //   // 구체 크기조절
-      //   minRadius: am5.percent(6),
-      //   maxRadius: am5.percent(6),
-      //   // 이미지 변경
-      //   // series.circles.template.set("forceHidden", true);
-      //   // series.outerCircles.template.set("forceHidden", true);
-      //   // src: asdfg
-      // }));
-
-      // // // Disable circles
-      // // series.circles.template.set("forceHidden", true);
-      // // series.outerCircles.template.set("forceHidden", true);
-
-      // // ... except for central node
-      // series.circles.template.adapters.add("forceHidden", function(forceHidden, target) {
-      // return target.dataItem.get("depth") == 0 ? false: forceHidden;
-      // });
-      // // Set up labels
-      // series.labels.template.setAll({
-      // fill: am5.color(0x000000),
-      // y: 45,
-      // oversizedBehavior: "none"
-      // });
-
-      // // Use adapter to leave central node label centered
-      // series.labels.template.adapters.add("forceHidden", function(forceHidden, target) {
-      // return target.dataItem.get("depth") == 0 ? false : forceHidden;
-      // });
-
-      // // Use template.setup function to prep up node with an image
-      // series.nodes.template.setup = function(target) {
-      //   target.events.on("dataitemchanged", function(ev) {
-      //       target.children.push(am5.Picture.new(root, {
-      //       width: 0,
-      //       height: 0,
-      //       centerX: am5.percent(50),
-      //       centerY: am5.percent(50),
-      //       src: ev.target.dataItem.dataContext.image
-      //     }));
-      //   });
-      // }
-      // series.get("colors").setAll({
-      //   step: 2
-      // });
-
-      // series.links.template.set("strength", 1); // 모양 결정하는거 같음 0~4 까지 출력됨 0은 서로 꼬여있음 1이나 3은 같아보임
-      // series.data.setAll([data]);
-      // series.set("selectedDataItem", series.dataItems[0]);
-
-      // // Make stuff animate on load
-      // series.appear(1000, 300); // 출력속도, 처음 출현속도 같음
     },
     methods: {
       // 경로(route)를 인자로 받아 해당 경로로 라우팅하는 메소드
@@ -178,6 +68,7 @@
       isCurrentPage(route) {
         return this.$route.path === route;
       },
+      // 서버에서 테이블 데이터를 가져오는 메소드
       async fetchTableData() {
         try {
           const token = localStorage.getItem('token');
@@ -196,6 +87,58 @@
           console.error('Error fetching table data:', error);
         }
       },
+      // 테이블 항목 클릭 시 호출되는 메소드
+      handleTableClick(logicalTableName) {
+        const selectedTable = this.tableData.find(table => table.logicalTableName === logicalTableName);
+        if (selectedTable) {
+          this.createChart(selectedTable);
+        }
+      },
+      // 차트를 생성하는 메소드
+      createChart(tableData) {
+        if (this.chart) {
+          this.chart.dispose(); // 기존 차트가 있다면 제거합니다.
+        }
+
+        let root = am5.Root.new(this.$refs.chartdiv);
+
+        root.setThemes([am5themes_Animated.new(root)]);
+
+        let container = root.container.children.push(am5.Container.new(root, {
+          width: am5.percent(80),
+          height: am5.percent(80),
+          layout: root.verticalLayout
+        }));
+
+        // 차트에 사용할 데이터 구조를 생성합니다.
+        const data = {
+          name: tableData.logicalTableName,
+          children: tableData.stdTerminologyList.map(term => ({
+            name: term,
+            value: tableData.num
+          }))
+        };
+
+        // 차트 생성 및 설정
+        let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+          singleBranchOnly: false,
+          downDepth: 2,
+          topDepth: 0,
+          initialDepth: 2,
+          valueField: "value",
+          categoryField: "name",
+          childDataField: "children",
+          idField: "value",
+          manyBodyStrength: -15,
+          centerStrength: 0.3,
+          minRadius: am5.percent(6),
+          maxRadius: am5.percent(6)
+        }));
+
+        series.data.setAll([data]);
+
+        this.chart = series; // 차트 인스턴스를 저장합니다.
+      },
       ListTable() {
         this.showTableList = true;
         this.showTerminologyList = false;
@@ -204,9 +147,14 @@
         this.showTerminologyList = true;
         this.showTableList = false;
       },
+    },
+    beforeUnmount() {
+      if (this.chart) {
+        this.chart.dispose(); // 컴포넌트가 파괴될 때 차트를 정리합니다.
+      }
     }
   }
-</script>s
+</script>
 
 <style scoped>
 /* 페이지 내 버튼에 대한 스타일 */
