@@ -1,3 +1,6 @@
+<!-- 도메인 검색 후 선택했을 때 선택된 도메인이 무엇인지 사용자에게 보여주기 
+각 입력 창에서 엔터를 눌렀을 때 폼이 제출되는 것을 방지하기
+각 입력 창이 비었다면 제출하지 못하게 하고 유효성 검사 로직 추가하기 -->
 <template>
     <div>
       <h1>커스텀 표준 용어 추가</h1>
@@ -62,7 +65,7 @@
     },
     methods: {
       fetchDomains() {
-        axios.get(`localhost:3001/domain`, {
+        axios.get(`http://localhost:3001/domain`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
         .then(response => {
@@ -99,7 +102,7 @@
             "isCustom": true, 
         };
   
-        axios.post('localhost:3001/terminology/add', postData, {
+        axios.post('http://localhost:3001/terminology/add', postData, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
         .then(response => {
