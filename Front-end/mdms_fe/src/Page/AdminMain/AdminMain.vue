@@ -1,13 +1,6 @@
 <template>
     <div>
       <div class="search-filter">
-        <input type="date" v-model="startDate" />
-        <input type="date" v-model="endDate" />
-        <select v-model="searchtype">
-          <option value="검색 타입">검색 타입</option>
-          <option value="검색 타입1">타입1</option>
-          <option value="검색 타입2">타입2</option>
-        </select>
         <input type="text" v-model="searchQuery" placeholder="검색어" />
         <button @click="searchData">검색</button>
       </div>
