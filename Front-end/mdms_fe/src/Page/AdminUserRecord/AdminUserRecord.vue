@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="admin-page">
     <h1>관리자 페이지</h1>
     <h2>사용자 이력 조회</h2>
     <div class="button-group">
@@ -8,11 +8,31 @@
       <button :disabled="$route.path === '/admin-user-record'">사용자 이력 조회</button>
     </div>
 
-    <!-- 여기에 사용자 이력 조회를 위한 추가적인 내용을 배치할 수 있습니다 -->
+    <div class="table-container">
+      <table class="user-history-table">
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>물리명</th>
+            <th>논리명</th>
+            <th>사용자</th>
+            <th>생성 일자</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="record in userHistory" :key="record.no">
+            <td>{{ record.no }}</td>
+            <td>{{ record.physicalTableName }}</td>
+            <td>{{ record.logicalTableName }}</td>
+            <td>{{ record.email }}</td>
+            <td>{{ new Date(record.registrationDate).toLocaleString() }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 
@@ -20,11 +40,11 @@ export default {
   name: 'AdminUserRecordPage',
   data() {
     return {
-      // 여기에 필요한 데이터 속성들을 정의합니다
+      userHistory: [] 
     };
   },
   created() {
-    // 필요한 데이터를 가져오는 로직을 여기에 작성합니다
+    this.fetchUserHistory();
   },
   methods: {
     navigateToMain() {
@@ -33,7 +53,19 @@ export default {
     navigateToDataMap() {
       this.$router.push('/admin-datamap');
     },
-    // 여기에 필요한 추가 메서드들을 정의합니다
+    async fetchUserHistory() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3001/history', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        this.userHistory = response.data.data;
+      } catch (error) {
+        console.error('Error fetching user history:', error);
+      }
+    }
   }
 };
 </script>
@@ -64,4 +96,58 @@ h1, h2 {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+.table-container {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.user-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-history-table thead {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.user-history-table th, 
+.user-history-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.user-history-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.user-history-table tbody tr:hover {
+  background-color: #ddd;
+}
+
+.user-history-table td {
+  position: relative;
+}
+
+.user-history-table td::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #007bff;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.user-history-table td:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
 </style>
