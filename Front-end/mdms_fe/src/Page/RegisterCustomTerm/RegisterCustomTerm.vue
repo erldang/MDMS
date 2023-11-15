@@ -1,29 +1,28 @@
-<!-- 도메인 검색 후 선택했을 때 선택된 도메인이 무엇인지 사용자에게 보여주기 
-각 입력 창에서 엔터를 눌렀을 때 폼이 제출되는 것을 방지하기
-각 입력 창이 비었다면 제출하지 못하게 하고 유효성 검사 로직 추가하기 -->
 <template>
     <div>
       <h1>커스텀 표준 용어 추가</h1>
       <form @submit.prevent="submitForm">
         <div>
           <label for="standardTerminology">표준용어명:</label>
-          <input type="text" id="standardTerminology" v-model="form.standardTerminology">
+          <input type="text" id="standardTerminology" v-model="form.standardTerminology" @keypress.enter.prevent>
         </div>
         <div>
           <label for="description">설명:</label>
-          <input type="text" id="description" v-model="form.description">
+          <input type="text" id="description" v-model="form.description" @keypress.enter.prevent>
         </div>
         <div>
           <label for="englishAbbreviation">영어 약어 명:</label>
-          <input type="text" id="englishAbbreviation" v-model="form.englishAbbreviation">
+          <input type="text" id="englishAbbreviation" v-model="form.englishAbbreviation" @keypress.enter.prevent>
         </div>
         <div>
           <label for="relevantOrganization">기관명:</label>
-          <input type="text" id="relevantOrganization" v-model="form.relevantOrganization">
+          <input type="text" id="relevantOrganization" v-model="form.relevantOrganization" @keypress.enter.prevent>
         </div>
         <div>
           <label for="domainSearch">도메인 검색:</label>
-          <input type="text" id="domainSearch" v-model="domainSearchQuery" @input="searchDomain">
+          <input type="text" id="domainSearch" v-model="domainSearchQuery" @input="searchDomain" @keypress.enter.prevent>
+          <!-- 선택된 도메인 표시 -->
+          <p v-if="form.domain">선택된 도메인: {{ form.domain.classificationName }}</p>
           <!-- 도메인 검색 결과 표시 -->
           <ul>
             <li v-for="domain in domainSearchResults" :key="domain.no" @click="selectDomain(domain)">
@@ -31,29 +30,35 @@
             </li>
           </ul>
         </div>
-        <button type="submit">등록</button>
+        <button type="submit" :disabled="!isValid">등록</button>
       </form>
     </div>
   </template>
   
   <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        form: {
-          standardTerminology: '',
-          description: '',
-          englishAbbreviation: '',
-          relevantOrganization: '',
-          domain: null,
-        },
-        domainSearchQuery: '',
-        allDomains: [], // 서버로부터 가져온 전체 도메인 데이터를 저장
-        domainSearchResults: [],
-      };
-    },
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      form: {
+        standardTerminology: '',
+        description: '',
+        englishAbbreviation: '',
+        relevantOrganization: '',
+        domain: null,
+      },
+      domainSearchQuery: '',
+      allDomains: [],
+      domainSearchResults: [],
+    };
+  },
+  computed: {
+    isValid() {
+        // 모든 필드가 채워져 있는지 확인
+      return this.form.standardTerminology && this.form.description && this.form.englishAbbreviation && this.form.relevantOrganization && this.form.domain;
+    }
+  },
     created() {
       this.fetchDomains();
     },
