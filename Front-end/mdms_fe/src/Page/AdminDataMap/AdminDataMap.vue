@@ -1,3 +1,4 @@
+<!-- 용어 선택 시 데이터맵 1단계  -->
 <template>
   <div>
     <h1>관리자 페이지</h1>
@@ -141,12 +142,12 @@ export default {
 
       series.data.setAll([data]);
 
-      this.chart = series; // 차트 인스턴스를 저장합니다.
+      this.chart = series;
     }
   },
   beforeUnmount() {
     if (this.chart) {
-      this.chart.dispose(); // 컴포넌트가 파괴될 때 차트를 정리합니다.
+      this.chart.dispose();
     }
   },
   // 용어 선택 시 호출될 메소드
