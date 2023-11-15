@@ -56,7 +56,7 @@ export default {
   created() {
     this.fetchTableData();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.dispose();
     }
