@@ -121,7 +121,6 @@ export default {
 </script>
 
 <style scoped>
-/* 기본 스타일링 */
 body {
   font-family: 'Arial', sans-serif;
   color: #333;
@@ -187,11 +186,4 @@ h1, h2 {
   background-color: #ddd;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 600px) {
-  .button-group button, .search-select, .search-input {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-}
 </style>
