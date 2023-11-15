@@ -25,7 +25,9 @@
     <div v-if="showTerminologyList" class="terminology-list">
       <h3>용어 목록</h3>
       <ul>
-        <li v-for="term in terminologyList" :key="term">{{ term }}</li>
+        <li v-for="term in terminologyList" :key="term" @click="handleTerminologyClick(term)">
+          {{ term }}
+        </li>
       </ul>
     </div>
 
@@ -36,7 +38,6 @@
 
 <script>
 import axios from 'axios';
-// amCharts 관련 라이브러리 임포트
 import * as am5 from "@amcharts/amcharts5";
 import * as am5hierarchy from "@amcharts/amcharts5/hierarchy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
@@ -50,11 +51,11 @@ export default {
       terminologyList: [],
       showTableList: false,
       showTerminologyList: false,
-      chart: null // 차트 인스턴스를 저장할 변수
+      chart: null 
     };
   },
   created() {
-    this.fetchTableData(); // 컴포넌트가 생성될 때 데이터를 가져옵니다.
+    this.fetchTableData(); 
   },
   methods: {
     // 서버에서 테이블 데이터를 가져오는 메소드
@@ -147,6 +148,69 @@ export default {
     if (this.chart) {
       this.chart.dispose(); // 컴포넌트가 파괴될 때 차트를 정리합니다.
     }
+  },
+  // 용어 선택 시 호출될 메소드
+  async handleTerminologyClick(terminology) {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`http://localhost:3001/tableInfo/join/terminology?standardTerminology=${terminology}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.data && response.data.ok === "ok") {
+        this.createTerminologyChart(response.data.data[0]);
+      } else {
+        // 에러 처리
+        console.error('Data fetch failed');
+      }
+    } catch (error) {
+      console.error('Error fetching terminology data:', error);
+    }
+  },
+
+  // 용어 데이터를 기반으로 차트 생성
+  createTerminologyChart(terminologyData) {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
+    let root = am5.Root.new(this.$refs.chartdiv);
+
+    root.setThemes([am5themes_Animated.new(root)]);
+
+    let container = root.container.children.push(am5.Container.new(root, {
+      width: am5.percent(80),
+      height: am5.percent(80),
+      layout: root.verticalLayout
+    }));
+
+    const data = {
+      name: terminologyData.standardTerminology,
+      children: terminologyData.tableList.map(table => ({
+        name: table.logicalTableName,
+        value: parseInt(table.num)
+      }))
+    };
+
+    let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+      singleBranchOnly: false,
+      downDepth: 2,
+      topDepth: 0,
+      initialDepth: 2,
+      valueField: "value",
+      categoryField: "name",
+      childDataField: "children",
+      idField: "value",
+      manyBodyStrength: -15,
+      centerStrength: 0.3,
+      minRadius: am5.percent(6),
+      maxRadius: am5.percent(6)
+    }));
+
+    series.data.setAll([data]);
+
+    this.chart = series;
   }
 };
 </script>
