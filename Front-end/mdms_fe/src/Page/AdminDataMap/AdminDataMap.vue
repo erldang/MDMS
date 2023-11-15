@@ -38,26 +38,31 @@
 <script>
 import axios from 'axios';
 import * as am5 from "@amcharts/amcharts5";
+import am5hierarchy from "@amcharts/amcharts5/hierarchy";
 // 하위 모듈 및 테마 임포트 생략
 
 export default {
   name: 'AdminDataMapPage',
   data() {
     return {
-      // 테이블 데이터, 용어 목록 및 차트 관련 상태 관리
       tableData: [],
       tableList: [],
       terminologyList: [],
       showTableList: false,
       showTerminologyList: false,
-      chart: null // 차트 인스턴스를 저장
+      chart: null,
     };
   },
   created() {
-    this.fetchTableData(); // 컴포넌트 생성 시 데이터 로딩
+    this.fetchTableData();
+  },
+  beforeDestroy() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
   },
   methods: {
-    // 서버에서 테이블 데이터를 가져오는 메소드
+    // 데이터 가져오기 및 처리
     async fetchTableData() {
       try {
         const token = localStorage.getItem('token');
@@ -76,6 +81,40 @@ export default {
         console.error('Error fetching table data:', error);
       }
     },
+
+    // 차트 생성
+    createChartData() {
+      return this.tableData.map(table => ({
+        name: table.logicalTableName,
+        children: table.stdTerminologyList.map(term => ({ name: term }))
+      }));
+    },
+    createChart() {
+      const root = am5.Root.new(this.$refs.chartdiv);
+
+      let chart = root.container.children.push(am5hierarchy.ForceDirected.new(root, {
+        singleBranchOnly: false,
+        downDepth: 1
+      }));
+
+      let series = chart.series.push(am5hierarchy.ForceDirectedSeries.new(root, {
+        singleBranchOnly: false,
+        downDepth: 1,
+        valueField: "value",
+        nameField: "name",
+        childrenField: "children"
+      }));
+
+      series.data.setAll(this.createChartData());
+      series.nodes.template.setAll({
+        draggable: true,
+        tooltipText: "{name}"
+      });
+
+      this.chart = chart;
+    },
+
+    // UI 상호작용
     navigateToMain() {
       this.$router.push('/admin-main');
     },
@@ -91,84 +130,15 @@ export default {
       this.showTableList = false;
     },
     handleTableClick(logicalTableName) {
-      const selectedTable = this.tableData.find(table => table.logicalTableName === logicalTableName);
-      if (selectedTable) {
-        this.createChart(selectedTable);
-      }
+      console.log(logicalTableName);
     },
     handleTermClick(term) {
-      this.createChartForTerm(term);
-    },
-    createChartForTerm(selectedTerm) {
-      const tablesContainingTerm = this.tableData.filter(table =>
-        table.stdTerminologyList.includes(selectedTerm)
-      );
-
-      const children = tablesContainingTerm.map(table => ({
-        name: table.logicalTableName,
-        value: table.num
-      }));
-
-      const chartData = {
-        name: selectedTerm,
-        children: children
-      };
-
-      this.createChart(chartData);
-    },
-    createChart(chartData) {
-      // 기존에 생성된 차트가 있다면 제거합니다.
-      if (this.chart) {
-        this.chart.dispose();
-        this.chart = null;
-      }
-
-      // 새로운 차트의 Root를 생성합니다. 여기서 this.$refs.chartdiv는 차트가 들어갈 DOM 요소를 참조합니다.
-      let root = am5.Root.new(this.$refs.chartdiv);
-
-      // amCharts의 기본 컨테이너 설정. 차트의 크기와 레이아웃을 정의합니다.
-      let container = root.container.children.push(am5.Container.new(root, {
-        width: am5.percent(80),
-        height: am5.percent(80),
-        layout: root.verticalLayout
-      }));
-
-      // ForceDirected 시리즈를 생성하고 설정합니다. 이 시리즈는 노드 간의 연결성과 관계를 표현하는 데 사용됩니다.
-      let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
-        singleBranchOnly: false,
-        downDepth: 2,
-        topDepth: 1,
-        initialDepth: 2,
-        valueField: "value",
-        categoryField: "name",
-        childDataField: "children",
-        idField: "value",
-        manyBodyStrength: -15,
-        centerStrength: 0.3,
-        minRadius: am5.percent(6),
-        maxRadius: am5.percent(6)
-      }));
-
-      // 차트에 데이터를 설정합니다. 여기서 chartData는 차트를 그릴 때 사용할 데이터 구조입니다.
-      series.data.setAll([chartData]);
-
-      // 생성된 차트를 인스턴스 변수에 저장합니다. 이를 통해 나중에 차트를 제거하거나 다시 렌더링할 수 있습니다.
-      this.chart = series;
-    },
-
-    beforeDestroy() {
-      if (this.chart) {
-        this.chart.dispose(); // 컴포넌트 파괴 시 차트 정리
-      }
-    },
-  },
-  beforeUnmount() {
-    if (this.chart) {
-      this.chart.dispose(); // 컴포넌트가 파괴될 때 차트를 정리합니다.
+      console.log(term);
     }
   }
 };
 </script>
+
 
 <style scoped>
 body {
