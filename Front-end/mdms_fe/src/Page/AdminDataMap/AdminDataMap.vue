@@ -165,16 +165,10 @@ export default {
 
     // 차트 생성 메소드
     async createChart(tableData) {
-      // 기존 차트가 존재하는지 확인 및 제거
       if (this.chart) {
-        console.log("기존 차트가 있습니다. 차트를 삭제합니다.");
-        this.chart.dispose();
+        this.chart.dispose(); // 기존 차트 제거
         this.chart = null;
-        console.log("기존 차트 삭제 완료.");
       }
-      // 새 차트 생성
-      let root = am5.Root.new(this.$refs.chartdiv);
-      root.setThemes([am5themes_Animated.new(root)]);
       // DOM 참조 유효성 확인
       if (this.$refs.chartdiv) {
         let root = am5.Root.new(this.$refs.chartdiv);
@@ -232,13 +226,7 @@ export default {
         console.log("DOM 참조 유효성 확인 시 false error");
       }
     },
-    // 용어 클릭 핸들러
     async handleTerminologyClick(terminology) {
-      // 차트 인스턴스 제거
-      if (this.chart) {
-        this.chart.dispose();
-        this.chart = null;
-      }
       const tableList = await this.fetchTerminologyUsage(terminology);
       if (tableList && tableList.length > 0) {
         this.createTerminologyChart({
@@ -250,16 +238,13 @@ export default {
         this.displayErrorMessage("용어 데이터를 가져오는 데 실패했습니다.");
       }
     },
-    //용어 차트 생성 메소드
     createTerminologyChart(terminologyData) {
-      // 차트 인스턴스 제거
+      // 기존 차트 인스턴스 제거
       if (this.chart) {
         this.chart.dispose();
         this.chart = null;
       }
-      // 새 차트 생성
-      let root = am5.Root.new(this.$refs.chartdiv);
-      root.setThemes([am5themes_Animated.new(root)]);
+
       if (this.$refs.chartdiv) {
         let root = am5.Root.new(this.$refs.chartdiv);
         root.setThemes([am5themes_Animated.new(root)]);
