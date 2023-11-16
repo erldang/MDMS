@@ -198,7 +198,6 @@ export default {
         this.displayErrorMessage("용어 데이터를 가져오는 데 실패했습니다.");
       }
     },
-    // createTerminologyChart 메소드
     createTerminologyChart(terminologyData) {
       // 기존 차트 인스턴스 제거
       if (this.chart) {
@@ -206,7 +205,6 @@ export default {
         this.chart = null;
       }
 
-      // DOM 참조 유효성 확인
       if (this.$refs.chartdiv) {
         let root = am5.Root.new(this.$refs.chartdiv);
         root.setThemes([am5themes_Animated.new(root)]);
@@ -220,9 +218,12 @@ export default {
         // 첫 번째 레벨 자식 노드의 데이터 구성
         const children = terminologyData.tableList.map(table => {
           // 각 테이블에서 사용된 용어를 두 번째 레벨 자식 노드로 구성
+          // 최상위 노드(현재 선택된 용어)와 다른 용어만 포함하도록 필터링
           const secondLevelChildren = this.tableData
-            .find(t => t.logicalTableName === table.tableName)
-            ?.stdTerminologyList.map(term => ({
+            .find(t => t.logicalTableName === table.logicalTableName)
+            ?.stdTerminologyList
+            .filter(term => term !== terminologyData.standardTerminology) // 최상위 노드와 중복 제거
+            .map(term => ({
               name: term,
               value: parseInt(table.num, 10) // 또는 다른 유의미한 값
             })) || [];
