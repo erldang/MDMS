@@ -217,20 +217,20 @@ export default {
 
         // 첫 번째 레벨 자식 노드의 데이터 구성
         const children = terminologyData.tableList.map(table => {
-          // 각 테이블에서 사용된 용어를 두 번째 레벨 자식 노드로 구성
-          // 최상위 노드(현재 선택된 용어)와 다른 용어만 포함하도록 필터링
           const secondLevelChildren = this.tableData
             .find(t => t.logicalTableName === table.logicalTableName)
             ?.stdTerminologyList
             .filter(term => term !== terminologyData.standardTerminology) // 최상위 노드와 중복 제거
-            .map(term => ({
-              name: term,
-              value: parseInt(table.num, 10) // 또는 다른 유의미한 값
-            })) || [];
+
+          // 필터링 결과 로깅
+          console.log("Filtered terms for table", table.logicalTableName, secondLevelChildren);
 
           return {
-            name: table.tableName,
-            children: secondLevelChildren
+            name: table.logicalTableName,
+            children: secondLevelChildren.map(term => ({
+              name: term,
+              value: parseInt(table.num, 10)
+            }))
           };
         });
 
