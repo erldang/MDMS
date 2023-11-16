@@ -1,15 +1,14 @@
 <template>
-    <!-- 컴포넌트의 HTML 마크업 -->
-    <div>
-      <!-- 페이지 이동 버튼 그룹 -->
-      <div class="page_btn">
-        <!-- 데이터 목록 페이지로 이동하는 버튼 -->
-        <button :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">데이터 목록</button>
-        <!-- 데이터 맵 페이지로 이동하는 버튼 -->
-        <button :class="{ active: isCurrentPage('/user-data-map') }" @click="navigateTo('/user-data-map')">데이터 맵</button>
-      </div>
-      <!-- 여기에 필요한 거 추가 하면 됩니다 제목도 지워도 됩니다 -->
-      <!-- 페이지 제목 -->
+        <div>
+          <div class="page_btn">
+              <!-- 데이터 목록 페이지로 이동하는 버튼 -->
+              <button :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">데이터 목록</button>
+              <!-- 데이터 맵 페이지로 이동하는 버튼 -->
+              <button :class="{ active: isCurrentPage('/user-data-map') }" @click="navigateTo('/user-data-map')">데이터 맵</button>
+            </div>
+          <!-- 페이지 제목 -->
+          <h2>데이터 맵</h2>
+
           <!-- 테이블 및 용어 목록을 토글하는 버튼 -->
         <div class="list-btn">
           <button @click="ListTable">테이블</button>
@@ -54,6 +53,9 @@
         ></div>
     </div>
 </template>
+  
+  
+  
 <script>
 import axios from "axios";
 import * as am5 from "@amcharts/amcharts5";
@@ -61,7 +63,7 @@ import * as am5hierarchy from "@amcharts/amcharts5/hierarchy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 export default {
-  name: "DataMapPage",
+  name: "AdminDataMapPage",
   data() {
     return {
       // 컴포넌트의 상태 데이터
@@ -108,13 +110,13 @@ export default {
         this.displayErrorMessage("테이블 데이터를 가져오는 데 실패했습니다.");
       }
     },
-    // 경로(route)를 인자로 받아 해당 경로로 라우팅하는 메소드
-    navigateTo(route) {
-        this.$router.push(route);
+    // 메인 페이지로 이동하는 메소드
+    navigateToMain() {
+      this.$router.push("/admin-main");
     },
-    // 현재 페이지 경로가 주어진 경로(route)와 일치하는지 확인하는 메소드
-    isCurrentPage(route) {
-        return this.$route.path === route;
+    // 사용자 이력 페이지로 이동하는 메소드
+    navigateToUserRecord() {
+      this.$router.push("/admin-user-record");
     },
     // 테이블 목록을 표시하는 메소드
     ListTable() {
@@ -161,16 +163,11 @@ export default {
 
     // 차트 생성 메소드
     async createChart(tableData) {
-      // 기존 차트가 존재하는지 확인 및 제거
       if (this.chart) {
-        console.log("기존 차트가 있습니다. 차트를 삭제합니다.");
-        this.chart.dispose();
-        this.chart = null;
-        console.log("기존 차트 삭제 완료.");
+        am5.array.each(am5.registry.rootElements, (re, index) => {
+          am5.registry.rootElements[index].dispose();
+        });
       }
-      // 새 차트 생성
-      let root = am5.Root.new(this.$refs.chartdiv);
-      root.setThemes([am5themes_Animated.new(root)]);
       // DOM 참조 유효성 확인
       if (this.$refs.chartdiv) {
         let root = am5.Root.new(this.$refs.chartdiv);
@@ -228,13 +225,7 @@ export default {
         console.log("DOM 참조 유효성 확인 시 false error");
       }
     },
-    // 용어 클릭 핸들러
     async handleTerminologyClick(terminology) {
-      // 차트 인스턴스 제거
-      if (this.chart) {
-        this.chart.dispose();
-        this.chart = null;
-      }
       const tableList = await this.fetchTerminologyUsage(terminology);
       if (tableList && tableList.length > 0) {
         this.createTerminologyChart({
@@ -246,16 +237,13 @@ export default {
         this.displayErrorMessage("용어 데이터를 가져오는 데 실패했습니다.");
       }
     },
-    //용어 차트 생성 메소드
     createTerminologyChart(terminologyData) {
-      // 차트 인스턴스 제거
       if (this.chart) {
-        this.chart.dispose();
-        this.chart = null;
+        am5.array.each(am5.registry.rootElements, (re, index) => {
+          am5.registry.rootElements[index].dispose();
+        });
       }
-      // 새 차트 생성
-      let root = am5.Root.new(this.$refs.chartdiv);
-      root.setThemes([am5themes_Animated.new(root)]);
+
       if (this.$refs.chartdiv) {
         let root = am5.Root.new(this.$refs.chartdiv);
         root.setThemes([am5themes_Animated.new(root)]);
@@ -327,33 +315,8 @@ export default {
   },
 };
 </script>
-
+  
 <style scoped>
-/* 페이지 내 버튼에 대한 스타일 */
-.page_btn button {
-  background-color: #4CAF50; /* 버튼 배경 색상 변경 */
-  color: white; /* 텍스트 색상 */
-  padding: 10px 20px; /* 여백 */
-  margin: 5px; /* 마진 */
-  border: none; /* 테두리 없음 */
-  border-radius: 4px; /* 둥근 모서리 */
-  cursor: pointer; /* 마우스 오버시 커서 변경 */
-  font-size: 1.1rem; /* 폰트 크기 */
-}
-/* 버튼에 마우스 호버 시의 스타일 */
-.page_btn button:hover {
-  background-color: #ddd; /* 호버 시 배경색 */
-}
-
-.page_btn button.active {
-  background-color: #3e8e41; /* 활성화된 버튼 색상 변경 */
-}
-/* 현재 활성화된 페이지 버튼의 스타일 */
-.page_btn .active {
-  background-color: #bbb; /* 활성화된 배경색 */
-  color: white; /* 글자 색상 */
-  cursor: default; /* 마우스 커서 스타일 */
-}
 body {
   font-family: "Arial", sans-serif;
   color: #333;
@@ -419,3 +382,4 @@ h2 {
   }
 }
 </style>
+  
