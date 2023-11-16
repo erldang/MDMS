@@ -1,57 +1,64 @@
 <template>
-        <div>
-          <div class="page_btn">
-              <!-- 데이터 목록 페이지로 이동하는 버튼 -->
-              <button :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">데이터 목록</button>
-              <!-- 데이터 맵 페이지로 이동하는 버튼 -->
-              <button :class="{ active: isCurrentPage('/user-data-map') }" @click="navigateTo('/user-data-map')">데이터 맵</button>
-            </div>
-          <!-- 페이지 제목 -->
-          <h2>데이터 맵</h2>
-
-          <!-- 테이블 및 용어 목록을 토글하는 버튼 -->
-        <div class="list-btn">
-          <button @click="ListTable">테이블</button>
-          <button @click="ListTerminology">용어</button>
-        </div>
-
-        <!-- 테이블 목록을 표시하는 섹션 -->
-        <div v-if="showTableList" class="table-list">
-          <h3>테이블 목록</h3>
-          <ul>
-            <!-- 테이블 목록의 각 항목 -->
-            <li
-              v-for="table in tableList"
-              :key="table.no"
-              @click="handleTableClick(table.logicalTableName)"
-            >
-              {{ table.logicalTableName }}
-            </li>
-          </ul>
-        </div>
-
-        <!-- 용어 목록을 표시하는 섹션 -->
-        <div v-if="showTerminologyList" class="terminology-list">
-          <h3>용어 목록</h3>
-          <ul>
-            <!-- 용어 목록의 각 항목 -->
-            <li
-              v-for="term in terminologyList"
-              :key="term"
-              @click="handleTerminologyClick(term)"
-            >
-              {{ term }}
-            </li>
-          </ul>
-        </div>
-
-        <!-- 차트를 표시할 div 요소 -->
-        <div
-          v-show="showTableList || showTerminologyList"
-          ref="chartdiv"
-          style="width: 100%; height: 1000px"
-        ></div>
+  <div>
+    <div class="page_btn">
+      <!-- 데이터 목록 페이지로 이동하는 버튼 -->
+      <button :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">
+        데이터 목록
+      </button>
+      <!-- 데이터 맵 페이지로 이동하는 버튼 -->
+      <button
+        :class="{ active: isCurrentPage('/user-data-map') }"
+        @click="navigateTo('/user-data-map')"
+      >
+        데이터 맵
+      </button>
     </div>
+    <!-- 페이지 제목 -->
+    <h2>데이터 맵</h2>
+
+    <!-- 테이블 및 용어 목록을 토글하는 버튼 -->
+    <div class="list-btn">
+      <button @click="ListTable">테이블</button>
+      <button @click="ListTerminology">용어</button>
+    </div>
+
+    <!-- 테이블 목록을 표시하는 섹션 -->
+    <div v-if="showTableList" class="table-list">
+      <h3>테이블 목록</h3>
+      <ul>
+        <!-- 테이블 목록의 각 항목 -->
+        <li
+          v-for="table in tableList"
+          :key="table.no"
+          @click="handleTableClick(table.logicalTableName)"
+        >
+          {{ table.logicalTableName }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- 용어 목록을 표시하는 섹션 -->
+    <div v-if="showTerminologyList" class="terminology-list">
+      <h3>용어 목록</h3>
+      <ul>
+        <!-- 용어 목록의 각 항목 -->
+        <li
+          v-for="term in terminologyList"
+          :key="term"
+          @click="handleTerminologyClick(term)"
+        >
+          {{ term }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- 차트를 표시할 div 요소 -->
+    <div
+      v-show="showTableList || showTerminologyList"
+      ref="chartdiv"
+      style="width: 100%; height: 1000px"
+    ></div>
+  </div>
 </template>
   
   
@@ -80,6 +87,14 @@ export default {
     this.fetchTableData();
   },
   methods: {
+    // 현재 페이지인지 확인하는 함수
+    isCurrentPage(path) {
+      return this.$route.path === path;
+    },
+    // 특정 페이지로 이동하는 함수
+    navigateTo(path) {
+      this.$router.push(path);
+    },
     displayErrorMessage(message) {
       console.error(message);
       this.showToast(message);
