@@ -165,9 +165,14 @@ export default {
 
     // 차트 생성 메소드
     async createChart(tableData) {
+      // 기존 차트가 존재하는지 확인
       if (this.chart) {
-        this.chart.dispose(); // 기존 차트 제거
+        console.log("기존 차트가 있습니다. 차트를 삭제합니다.");
+        this.chart.dispose();
         this.chart = null;
+        console.log("기존 차트 삭제 완료.");
+      } else {
+        console.log("새 차트를 생성합니다.");
       }
       // DOM 참조 유효성 확인
       if (this.$refs.chartdiv) {
@@ -227,6 +232,12 @@ export default {
       }
     },
     async handleTerminologyClick(terminology) {
+      if (this.chart && this.$refs.chartdiv) {
+        console.log("기존 차트의 내용을 클리어합니다.");
+        let root = am5.Root.new(this.$refs.chartdiv);
+        root.container.children.clear();
+        console.log("기존 차트 내용 클리어 완료.");
+      }
       const tableList = await this.fetchTerminologyUsage(terminology);
       if (tableList && tableList.length > 0) {
         this.createTerminologyChart({
@@ -240,11 +251,12 @@ export default {
     },
     createTerminologyChart(terminologyData) {
       // 기존 차트 인스턴스 제거
-      if (this.chart) {
-        this.chart.dispose();
-        this.chart = null;
+      if (this.chart && this.$refs.chartdiv) {
+        console.log("기존 차트의 내용을 클리어합니다.");
+        let root = am5.Root.new(this.$refs.chartdiv);
+        root.container.children.clear();
+        console.log("기존 차트 내용 클리어 완료.");
       }
-
       if (this.$refs.chartdiv) {
         let root = am5.Root.new(this.$refs.chartdiv);
         root.setThemes([am5themes_Animated.new(root)]);
