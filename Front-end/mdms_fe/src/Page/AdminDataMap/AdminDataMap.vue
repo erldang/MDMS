@@ -166,8 +166,9 @@ export default {
     // 차트 생성 메소드
     async createChart(tableData) {
       if (this.chart) {
-        this.chart.dispose(); // 기존 차트 제거
-        this.chart = null;
+        am5.array.each(am5.registry.rootElements, (re, index) =>{
+          am5.registry.rootElements[index].dispose();
+        });
       }
       // DOM 참조 유효성 확인
       if (this.$refs.chartdiv) {
@@ -239,10 +240,10 @@ export default {
       }
     },
     createTerminologyChart(terminologyData) {
-      // 기존 차트 인스턴스 제거
       if (this.chart) {
-        this.chart.dispose();
-        this.chart = null;
+        am5.array.each(am5.registry.rootElements, (re, index) =>{
+          am5.registry.rootElements[index].dispose();
+        });
       }
 
       if (this.$refs.chartdiv) {
