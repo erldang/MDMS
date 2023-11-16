@@ -156,7 +156,7 @@ export default {
           return {
             name: term,
             children: filteredUsageData.map(table => ({
-              name: table.logicalTableName,
+              name: table.tableName,
               value: parseInt(table.num, 10)
             }))
           };
@@ -221,14 +221,14 @@ export default {
         const children = terminologyData.tableList.map(table => {
           // 각 테이블에서 사용된 용어를 두 번째 레벨 자식 노드로 구성
           const secondLevelChildren = this.tableData
-            .find(t => t.logicalTableName === table.logicalTableName)
+            .find(t => t.logicalTableName === table.tableName)
             ?.stdTerminologyList.map(term => ({
               name: term,
-              value: 1 // 또는 다른 유의미한 값
+              value: parseInt(table.num, 10) // 또는 다른 유의미한 값
             })) || [];
 
           return {
-            name: table.logicalTableName,
+            name: table.tableName,
             children: secondLevelChildren
           };
         });
@@ -264,9 +264,6 @@ export default {
           if (this.chart) {
               this.chart.dispose(); // 컴포넌트 파괴 시 차트 정리
           }
-      },
-      displayErrorMessage(message) {
-          alert(message);
       },
   }
 };
