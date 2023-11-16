@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.annotations.Mapper;
-
+import java.util.List;
 @Data
 @Getter
 @Mapper
@@ -17,4 +17,5 @@ public class TableDto {
     private String logicalTableName;
     private String physicalTableName;
     private String query;
+    private List<StandardTerminologyDto> standardTerminologyList;
 }

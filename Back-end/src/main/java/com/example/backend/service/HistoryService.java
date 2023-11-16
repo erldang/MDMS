@@ -36,7 +36,6 @@ public class HistoryService {
 
         List<History> historyList = historyRepository.findHistoryByEmail(email);
 
-        System.out.println(historyList.toString());
 
         List<HistoryDto> historyDtoList = new ArrayList<HistoryDto>();
         for(History history : historyList){

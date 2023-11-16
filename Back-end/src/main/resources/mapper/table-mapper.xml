@@ -26,8 +26,24 @@
 
         select physical_Table_Name from HISTORY  where HISTORY.Logical_Table_Name = ${logicalName}
 
-
     </select>
 
+    <select id="countTable" resultType="int">
+
+        select COUNT(*) from ${tableName}
+    </select>
+
+    <select id="getTableSize" resultType="HashMap">
+
+
+--
+        SELECT
+            table_name AS `table`,
+        round(((data_length + index_length) / 1024 / 1024), 2) AS `Size`
+        FROM information_schema.tables
+        WHERE table_schema = 'commonword'
+          AND TABLE_NAME = '${tableName}'
+
+    </select>
 
 </mapper>

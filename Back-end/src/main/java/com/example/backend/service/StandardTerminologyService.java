@@ -30,11 +30,12 @@ public class StandardTerminologyService {
         return stdDtoList;
     }
 
-    public void addData(StandardTerminologyDto stdDto){
+    public String addData(StandardTerminologyDto stdDto){
 
         stdRepository.save(new StandardTerminology(stdDto));
-
+        return "추가 완료";
     }
+
 
 
 }

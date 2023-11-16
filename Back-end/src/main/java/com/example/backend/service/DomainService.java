@@ -35,9 +35,7 @@ public class DomainService {
     }
 
     public DomainDto findDomainByName(String name){
-        System.out.println("domain Name : " + name);
         Domain domain = domainRepository.findDomainByName(name);
-        System.out.println("findDomainByName : " + domain.toString());
         return new DomainDto(domain);
 
 

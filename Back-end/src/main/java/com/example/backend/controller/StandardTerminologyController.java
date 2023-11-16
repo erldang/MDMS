@@ -13,9 +13,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +40,19 @@ public class StandardTerminologyController {
 
     }
 
+    @PostMapping("/add")
+    public ResponseDto<Object> addCustomTerminology(@RequestBody StandardTerminologyDto stdDto){
+
+
+
+        stdDto.setIsCustom(true);
+
+        String message = stdService.addData(stdDto);
+
+
+        return ResponseDto.builder().message(message).ok("ok").build();
+
+    }
 
 
 

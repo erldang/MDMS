@@ -1,14 +1,14 @@
 package com.example.backend.controller;
 
 
-import com.example.backend.dto.HistoryDto;
-import com.example.backend.dto.ResponseDto;
-import com.example.backend.dto.TableDto;
+import com.example.backend.dto.*;
 import com.example.backend.service.HistoryService;
+import com.example.backend.service.TableInfoService;
 import com.example.backend.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -24,28 +24,43 @@ public class TableController {
     @Autowired
     HistoryService historyService;
 
+    @Autowired
+    TableInfoService tableInfoService;
     @GetMapping
     public ResponseDto<Object> showTables(){
-        List<HashMap<String,String>> tables = tableService.showTables();
-        List<String> tableList = new ArrayList<String>();
+        List<TableInfoDto> tables = tableInfoService.findAllTableInfo();
+        List<HashMap<String, String>> tableList = new ArrayList<HashMap<String,String>>();
 
-        for(HashMap<String,String> table : tables){
-            for(Map.Entry<String,String> entry : table.entrySet()){
-                System.out.println(entry.getKey() + " " + entry.getValue());
-                tableList.add(entry.getValue());
-            }
+        for(TableInfoDto tableInfoDto : tables){
+
+            String physicalName = tableInfoDto.getPhysicalTableName();
+            String logicalName = tableInfoDto.getLogicalTableName();
+
+            HashMap<String ,String> tmp = new HashMap<String,String>();
+            tmp.put("physicalName" , physicalName);
+            tmp.put("logicalName" , logicalName);
+
+            tableList.add(tmp);
+
         }
 
-        return ResponseDto.builder().data(tableList).build();
+        Set<HashMap<String,String>> set = new HashSet<HashMap<String,String>>(tableList);
+        List<HashMap<String,String>> responseDate = new ArrayList<HashMap<String,String>>(set);
+
+        return ResponseDto.builder().data(responseDate).ok("ok").build();
     }
 
 
     @GetMapping("/physicalJoin")
     public ResponseDto<Object> findTableByPhysicalName(@RequestParam("physicalName") String physicalName){
 
-        System.out.println((physicalName));
         List<HashMap<String,String>> table = tableService.findTableByPhysicalName(physicalName);
-        return ResponseDto.builder().data(table).message("찾았드아").build();
+
+        //여기다가 용량 조회
+        BigDecimal tableSize = tableService.getTableSize(physicalName);
+
+
+        return ResponseDto.builder().data(table).message(tableSize.toPlainString() + "MB").build();
     }
 
     @GetMapping("/logicalJoin")
@@ -68,9 +83,10 @@ public class TableController {
         String physicalTableName = tableDto.getPhysicalTableName();
         String logicalTableName = tableDto.getLogicalTableName();
         Date registrainDate = new Date();
+        List<StandardTerminologyDto> standardTerminologyDtoList = tableDto.getStandardTerminologyList();
 
 
-
+        //이력 테이블에 넣고
         HistoryDto historyDto = HistoryDto
                 .builder()
                 .email(email)
@@ -79,9 +95,20 @@ public class TableController {
                 .registrationDate(registrainDate)
                 .build();
 
-        System.out.println(historyDto.toString());
 
         historyService.addHistory(historyDto);
+
+        for(StandardTerminologyDto stdDto : standardTerminologyDtoList){
+            TableInfoDto tableInfoDto = TableInfoDto.builder()
+                    .logicalTableName(logicalTableName)
+                    .physicalTableName(physicalTableName)
+                    .num(0)
+                    .stdTerminologyDto(stdDto)
+                .build();
+            tableInfoService.addTableInfo(tableInfoDto);
+        }
+
+
 
 
         return ResponseDto.builder().message(message).ok("ok").build();

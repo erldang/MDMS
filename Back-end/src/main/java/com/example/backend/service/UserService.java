@@ -6,7 +6,6 @@ import com.example.backend.dto.UserDto;
 import com.example.backend.entity.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.security.JwtProvider;
-import com.example.backend.security.RedisRepositoryConfig;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
@@ -78,32 +77,30 @@ public class UserService {
 
         String code =  emailService.sendEmailWithAttachment(to);
 
-        System.out.println(code);
 
         session.setAttribute(to , code);
         session.setMaxInactiveInterval(180);
 
-        System.out.println(session.getAttribute(to));
 
 
 
         return code;
     }
 
-    public String AuthenticationRequestCheck(HttpSession session , EmailCodeDto emailCodeDto) throws MessagingException {
-
-        String email = emailCodeDto.getEmail();
-        System.out.println("check code : " + session.getAttribute(email));
-
-
-        if(emailCodeDto.getCode().equals(session.getAttribute(email))){
-            return "인증완료";
-        }
-        else{
-            return "인증실패";
-        }
-
-    }
+//    public String AuthenticationRequestCheck(HttpSession session , EmailCodeDto emailCodeDto) throws MessagingException {
+//
+//        String email = emailCodeDto.getEmail();
+//        System.out.println("check code : " + session.getAttribute(email));
+//
+//
+//        if(emailCodeDto.getCode().equals(session.getAttribute(email))){
+//            return "인증완료";
+//        }
+//        else{
+//            return "인증실패";
+//        }
+//
+//    }
 
     @Transactional
     public String logIn(UserDto userDto) throws Exception{
@@ -128,28 +125,26 @@ public class UserService {
             String token = jwtProvider.generateToken(userDto.getEmail());
 
 
-            redisTemplate.opsForValue().set(userDto.getEmail(), token, TimeUnit.MILLISECONDS.ordinal());
-            String test = redisTemplate.opsForValue().get(userDto.getEmail());
-            System.out.println("logIn시 redis에 저장된 토큰확인 : " + test);
+            //redisTemplate.opsForValue().set(userDto.getEmail(), token, TimeUnit.MILLISECONDS.ordinal());
+            //String test = redisTemplate.opsForValue().get(userDto.getEmail());
             return token;
 
         }
     }
 
-    public String logOut(UserDto userDto){
-
-        if(redisTemplate.opsForValue().get(userDto.getEmail()) != null ){
-
-            redisTemplate.delete(userDto.getEmail());
-        //redisTemplate.delete(userDto.getEmail());
-        }
-        return "로그아웃 완료";
-    }
+//    public String logOut(UserDto userDto){
+//
+//        if(redisTemplate.opsForValue().get(userDto.getEmail()) != null ){
+//
+//            redisTemplate.delete(userDto.getEmail());
+//        //redisTemplate.delete(userDto.getEmail());
+//        }
+//        return "로그아웃 완료";
+//    }
 
     public String modifyUser(UserDto userDto){
 
-        String test = (String) redisTemplate.opsForValue().get(userDto.getEmail());
-        System.out.println("수정시 redis에 저장된 토큰확인 : " + test);
+       // String test = (String) redisTemplate.opsForValue().get(userDto.getEmail());
         User user = userRepository.findById(userDto.getEmail()).get();
 
         user.setName(userDto.getName());

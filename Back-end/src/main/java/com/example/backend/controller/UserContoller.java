@@ -56,20 +56,19 @@ public class UserContoller {
 
     }
 
-    @PostMapping("/authentication/check")
-    public ResponseDto<Object> AuthenticationRequestCheck(HttpSession session,
-                                             @RequestBody EmailCodeDto emailCodeDto) throws MessagingException {
-
-        String response =  userService.AuthenticationRequestCheck(session, emailCodeDto);
-
-        return ResponseDto.builder().message(response).ok("ok").build();
-
-    }
+//    @PostMapping("/authentication/check")
+//    public ResponseDto<Object> AuthenticationRequestCheck(HttpSession session,
+//                                             @RequestBody EmailCodeDto emailCodeDto) throws MessagingException {
+//
+//        String response =  userService.AuthenticationRequestCheck(session, emailCodeDto);
+//
+//        return ResponseDto.builder().message(response).ok("ok").build();
+//
+//    }
 
     @PostMapping("/login")
     public ResponseDto<Object> logIn( @RequestBody UserDto userDto) throws Exception {
 
-        System.out.println("로그인 contoller 시작");
         String message = userService.logIn(userDto);
 //        String token = null;
 //        if(message.equals("로그인 성공")){
@@ -89,23 +88,19 @@ public class UserContoller {
     @PostMapping("/modify")
     public ResponseDto<Object> modify(@RequestBody UserDto userDto){
 
-        System.out.println(userDto.toString());
         String message = userService.modifyUser(userDto);
         return ResponseDto.builder().ok("ok").message(message).build();
     }
 
-    @PostMapping("/logout")
-    public ResponseDto<Object> logout(@RequestBody UserDto userDto){
-
-        //String message = userService.logout(userDto);
-        System.out.println("logout 동작");
-        String message = userService.logOut(userDto);
-
-
-
-        return ResponseDto.builder().ok("ok").message(message).build();
-
-    }
+//    @PostMapping("/logout")
+//    public ResponseDto<Object> logout(@RequestBody UserDto userDto){
+//
+//        //String message = userService.logout(userDto);
+//        String message = userService.logOut(userDto);
+//
+//        return ResponseDto.builder().ok("ok").message(message).build();
+//
+//    }
 
     @PostMapping("/check")
     public ResponseDto<Object> deleteCheck(@RequestBody UserDto userDto,
