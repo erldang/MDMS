@@ -19,13 +19,13 @@ public class User {
     private String password;
     private String name;
     private String phone;
-
+    private Boolean admin;
     public User(UserDto userDto){
         this.email = userDto.getEmail();
         this.name = userDto.getName();
         this.password = userDto.getPassword();
         this.phone = userDto.getPhone();
-
+        this.admin = userDto.getAdmin();
     }
 
 

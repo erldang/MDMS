@@ -31,7 +31,7 @@ public class EmailService {
 
         helper.setText(code);
 
-
+        System.out.println("이메일로 보낸 코드 : " + code);
         mailSender.send(message);
 
         return code;

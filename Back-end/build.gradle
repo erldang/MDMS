@@ -40,6 +40,17 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5") // 추가
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     //
+
+    //엑셀 파일읽기
+    implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
+    implementation group: 'org.apache.tika', name: 'tika-core', version: '2.3.0'
+
+
+    //배치 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+
 }
 
 tasks.named('test') {

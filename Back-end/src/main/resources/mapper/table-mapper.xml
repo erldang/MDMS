@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.repository.TableMapper">
+
+    <select id="findTest" resultType="com.example.backend.dto.TableDto">
+                SELECT * FROM TEST where id = 1;
+
+    </select>
+
+
+    <select id="createTable">
+        ${query}
+    </select>
+<!--    <select id="showTables" resultType="java.lang.String"></select>-->
+
+    <select id="showTables" resultType="HashMap">
+        SHOW TABLES;
+    </select>
+
+    <select id="findTableByPhysicalName" resultType="hashmap">
+        select * from ${physicalName}
+    </select>
+
+    <select id="findPhysicalNameByLogicalName" resultType="String">
+
+        select physical_Table_Name from HISTORY  where HISTORY.Logical_Table_Name = ${logicalName}
+
+    </select>
+
+    <select id="countTable" resultType="int">
+
+        select COUNT(*) from ${tableName}
+    </select>
+
+    <select id="getTableSize" resultType="HashMap">
+
+
+--
+        SELECT
+            table_name AS `table`,
+        round(((data_length + index_length) / 1024 / 1024), 2) AS `Size`
+        FROM information_schema.tables
+        WHERE table_schema = 'commonword'
+          AND TABLE_NAME = '${tableName}'
+
+    </select>
+
+</mapper>
