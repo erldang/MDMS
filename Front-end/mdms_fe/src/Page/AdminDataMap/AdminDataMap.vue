@@ -1,8 +1,3 @@
-<!-- 테이블 목록 클릭 시, 테이블 데이터 맵 2단계 
-용어 목록 클릭 시, 용어 데이터 맵 2단계  -->
-<!-- 용어 2차 자식 노드 중복 제거
-서버에 데이터 가져올 때, 비어있을 때 맵을 생성하지 않고, 오류를 사용자에게 알리고 맵 변경하지 않기 -->
-<!-- 테이블 -> 용어 혹은 용어 -> 테이블 넘어갈 때 오류 -->
 <template>
   <div>
       <!-- 페이지 제목 -->
@@ -45,8 +40,8 @@
       </div>
 
       <!-- 차트를 표시할 div 요소 -->
-      <div ref="chartdiv" style="width: 100%; height: 1000px;"></div>
-  </div>
+                                              <div v-show="showTableList || showTerminologyList" ref="chartdiv" style="width: 100%; height: 1000px;"></div>
+                                        </div>
 </template>
   
   
@@ -60,208 +55,210 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 export default {
   name: 'AdminDataMapPage',
   data() {
-      return {
-          // 컴포넌트의 상태 데이터
-          tableData: [],
-          tableList: [],
-          terminologyList: [],
-          showTableList: false,
-          showTerminologyList: false,
-          chart: null // 차트 인스턴스 저장
-      };
+    return {
+      // 컴포넌트의 상태 데이터
+      tableData: [],
+      tableList: [],
+      terminologyList: [],
+      showTableList: false,
+      showTerminologyList: false,
+      chart: null // 차트 인스턴스 저장
+    };
   },
   created() {
-      // 컴포넌트 생성 시 데이터 로드
-      this.fetchTableData();
+    // 컴포넌트 생성 시 데이터 로드
+    this.fetchTableData();
   },
   methods: {
-      // 서버에서 테이블 데이터를 가져오는 메소드
-      async fetchTableData() {
-          try {
-              const token = localStorage.getItem('token');
-              const response = await axios.get('http://localhost:3001/tableInfo', {
-                  headers: {
-                      'Authorization': `Bearer ${token}`
-                  }
-              });
-              this.tableData = response.data.data;
-              this.tableList = this.tableData.map(item => ({
-                  no: item.no,
-                  logicalTableName: item.logicalTableName
-              }));
-              this.terminologyList = [...new Set(this.tableData.flatMap(item => item.stdTerminologyList))];
-          } catch (error) {
-              console.error('Error fetching table data:', error);
-              this.displayErrorMessage("테이블 데이터를 가져오는 데 실패했습니다.");
-          }
-      },
-      // 메인 페이지로 이동하는 메소드
-      navigateToMain() {
-          this.$router.push('/admin-main');
-      },
-      // 사용자 이력 페이지로 이동하는 메소드
-      navigateToUserRecord() {
-          this.$router.push('/admin-user-record');
-      },
-      // 테이블 목록을 표시하는 메소드
-      ListTable() {
-          this.showTableList = true;
-          this.showTerminologyList = false;
-      },
-      // 용어 목록을 표시하는 메소드
-      ListTerminology() {
-          this.showTerminologyList = true;
-          this.showTableList = false;
-      },
-      // 테이블 항목 클릭 시 호출되는 메소드
-      handleTableClick(logicalTableName) {
-          const selectedTable = this.tableData.find(table => table.logicalTableName === logicalTableName);
-          if (selectedTable) {
-              this.createChart(selectedTable);
-          }
-      },
-      // 서버에서 용어별 사용된 테이블 목록을 가져오는 비동기 함수
-      async fetchTerminologyUsage(terminology) {
-          try {
-              const token = localStorage.getItem('token');
-              const response = await axios.get(`http://localhost:3001/tableInfo/join/terminology?standardTerminology=${terminology}`, {
-                  headers: {
-                      'Authorization': `Bearer ${token}`
-                  }
-              });
-              return response.data.ok === "ok" ? response.data.data[0].tableList : [];
-          } catch (error) {
-              console.error('Error fetching terminology usage:', error);
-              return [];
-          }
-      },
+    displayErrorMessage(message) {
+      console.error(message);
+      this.showToast(message);
+    },
+    // 서버에서 테이블 데이터를 가져오는 메소드
+    async fetchTableData() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3001/tableInfo', { headers: { 'Authorization': `Bearer ${token}` } });
+        if (response.data && response.data.data) {
+          this.tableData = response.data.data;
+          this.tableList = this.tableData.map(item => ({ no: item.no, logicalTableName: item.logicalTableName }));
+          this.terminologyList = [...new Set(this.tableData.flatMap(item => item.stdTerminologyList))];
+        } else {
+          throw new Error("데이터 로드 실패");
+        }
+      } catch (error) {
+        console.error('Error fetching table data:', error);
+        this.displayErrorMessage("테이블 데이터를 가져오는 데 실패했습니다.");
+      }
+    },
+    // 메인 페이지로 이동하는 메소드
+    navigateToMain() {
+      this.$router.push('/admin-main');
+    },
+    // 사용자 이력 페이지로 이동하는 메소드
+    navigateToUserRecord() {
+      this.$router.push('/admin-user-record');
+    },
+    // 테이블 목록을 표시하는 메소드
+    ListTable() {
+      this.showTableList = true;
+      this.showTerminologyList = false;
+    },
+    // 용어 목록을 표시하는 메소드
+    ListTerminology() {
+      this.showTerminologyList = true;
+      this.showTableList = false;
+    },
+    // 테이블 항목 클릭 시 호출되는 메소드
+    handleTableClick(logicalTableName) {
+      const selectedTable = this.tableData.find(table => table.logicalTableName === logicalTableName);
+      if (selectedTable) {
+        this.createChart(selectedTable);
+      }
+    },
 
-      // 차트 생성 메소드
-      async createChart(tableData) {
-          if (this.chart) {
-              this.chart.dispose(); // 기존 차트 제거
-          }
+    async fetchTerminologyUsage(terminology) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`http://localhost:3001/tableInfo/join/terminology?standardTerminology=${terminology}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (response.data.ok === "ok" && response.data.data && response.data.data[0].tableList.length > 0) {
+          return response.data.data[0].tableList;
+        } else {
+          throw new Error("용어 데이터가 비어있습니다.");
+        }
+      } catch (error) {
+        console.error('Error fetching terminology usage:', error);
+        this.displayErrorMessage("용어 데이터를 가져오는 데 실패했습니다.");
+        return [];
+      }
+    },
 
-          let root = am5.Root.new(this.$refs.chartdiv);
-          root.setThemes([am5themes_Animated.new(root)]);
+    // 차트 생성 메소드
+    async createChart(tableData) {
+      if (this.chart) {
+        this.chart.dispose(); // 기존 차트 제거
+        this.chart = null;
+      }
+      // DOM 참조 유효성 확인
+      if (this.$refs.chartdiv) {
+        let root = am5.Root.new(this.$refs.chartdiv);
+        root.setThemes([am5themes_Animated.new(root)]);
 
-          let container = root.container.children.push(am5.Container.new(root, {
-              width: am5.percent(80),
-              height: am5.percent(80),
-              layout: root.verticalLayout
-          }));
+        let container = root.container.children.push(am5.Container.new(root, {
+          width: am5.percent(80),
+          height: am5.percent(80),
+          layout: root.verticalLayout
+        }));
 
-          const children = await Promise.all(tableData.stdTerminologyList.map(async (term) => {
-              const usageData = await this.fetchTerminologyUsage(term);
-              const filteredUsageData = usageData.filter(u => u.logicalTableName !== tableData.logicalTableName); // 최상위 테이블 제외
-              return {
-                  name: term,
-                  children: filteredUsageData.map(table => ({
-                      name: table.logicalTableName,
-                      value: parseInt(table.num, 10)
-                  }))
-              };
-          }));
-
-          const data = {
-              name: tableData.logicalTableName,
-              children: children
+        const children = await Promise.all(tableData.stdTerminologyList.map(async (term) => {
+          const usageData = await this.fetchTerminologyUsage(term);
+          const filteredUsageData = usageData.filter(u => u.logicalTableName !== tableData.logicalTableName); // 최상위 테이블 제외
+          return {
+            name: term,
+            children: filteredUsageData.map(table => ({
+              name: table.logicalTableName,
+              value: parseInt(table.num, 10)
+            }))
           };
+        }));
 
-          let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
-              singleBranchOnly: false,
-              downDepth: 2,
-              topDepth: 0,
-              initialDepth: 2,
-              valueField: "value",
-              categoryField: "name",
-              childDataField: "children",
-              idField: "value",
-              manyBodyStrength: -15,
-              centerStrength: 0.3,
-              minRadius: am5.percent(6),
-              maxRadius: am5.percent(6)
-          }));
+        const data = {
+          name: tableData.logicalTableName,
+          children: children
+        };
 
-          series.data.setAll([data]);
-          this.chart = series;
-      },
-      // 용어 선택 시 호출될 메소드
-      async handleTerminologyClick(terminology) {
-          try {
-              const token = localStorage.getItem('token');
-              const response = await axios.get(`http://localhost:3001/tableInfo/join/terminology?standardTerminology=${terminology}`, {
-                  headers: {
-                      'Authorization': `Bearer ${token}`
-                  }
-              });
-              if (response.data && response.data.ok === "ok") {
-                  this.createTerminologyChart(response.data.data[0]);
-                  //여기 데이터 형식을 보고 확인해야겠다
-              } else {
-                  // 에러 처리
-                  console.error('Data fetch failed');
-                  this.displayErrorMessage("용어 데이터를 가져오는 데 실패했습니다.");
-              }
-          } catch (error) {
-              console.error('Error fetching terminology data:', error);
-              this.displayErrorMessage("용어 데이터를 가져오는 데 실패했습니다.");
-          }
-      },
-      // 용어 데이터를 기반으로 차트 생성
-      createTerminologyChart(terminologyData) {
-          if (this.chart) {
-              this.chart.dispose();
-          }
+        let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+          singleBranchOnly: false,
+          downDepth: 2,
+          topDepth: 0,
+          initialDepth: 2,
+          valueField: "value",
+          categoryField: "name",
+          childDataField: "children",
+          idField: "value",
+          manyBodyStrength: -15,
+          centerStrength: 0.3,
+          minRadius: am5.percent(6),
+          maxRadius: am5.percent(6)
+        }));
 
-          let root = am5.Root.new(this.$refs.chartdiv);
-          root.setThemes([am5themes_Animated.new(root)]);
+        series.data.setAll([data]);
+        this.chart = series;
+      }
+      else {
+        console.log("DOM 참조 유효성 확인 시 false error");
+      }
+    },
+    async handleTerminologyClick(terminology) {
+      const tableList = await this.fetchTerminologyUsage(terminology);
+      if (tableList && tableList.length > 0) {
+        this.createTerminologyChart({ standardTerminology: terminology, tableList });
+      } else {
+        console.error('Data fetch failed or empty data');
+        this.displayErrorMessage("용어 데이터를 가져오는 데 실패했습니다.");
+      }
+    },
+    // createTerminologyChart 메소드
+    createTerminologyChart(terminologyData) {
+      // 기존 차트 인스턴스 제거
+      if (this.chart) {
+        this.chart.dispose();
+        this.chart = null;
+      }
 
-          let container = root.container.children.push(am5.Container.new(root, {
-              width: am5.percent(80),
-              height: am5.percent(80),
-              layout: root.verticalLayout
-          }));
+      // DOM 참조 유효성 확인
+      if (this.$refs.chartdiv) {
+        let root = am5.Root.new(this.$refs.chartdiv);
+        root.setThemes([am5themes_Animated.new(root)]);
+        // ... 차트 생성 로직
+        let container = root.container.children.push(am5.Container.new(root, {
+          width: am5.percent(80),
+          height: am5.percent(80),
+          layout: root.verticalLayout
+        }));
 
-          // 첫 번째 레벨 자식 노드의 데이터 구성
-          const children = terminologyData.tableList.map(table => {
-              // 각 테이블에서 사용된 용어를 두 번째 레벨 자식 노드로 구성
-              const secondLevelChildren = this.tableData
-                  .find(t => t.logicalTableName === table.logicalTableName)
-                  ?.stdTerminologyList.map(term => ({
-                      name: term,
-                      value: 1 // 또는 다른 유의미한 값
-                  })) || [];
+        // 첫 번째 레벨 자식 노드의 데이터 구성
+        const children = terminologyData.tableList.map(table => {
+          // 각 테이블에서 사용된 용어를 두 번째 레벨 자식 노드로 구성
+          const secondLevelChildren = this.tableData
+            .find(t => t.logicalTableName === table.logicalTableName)
+            ?.stdTerminologyList.map(term => ({
+              name: term,
+              value: 1 // 또는 다른 유의미한 값
+            })) || [];
 
-              return {
-                  name: table.logicalTableName,
-                  children: secondLevelChildren
-              };
-          });
-
-          const data = {
-              name: terminologyData.standardTerminology, // 최상위 노드: 선택된 용어
-              children: children
+          return {
+            name: table.logicalTableName,
+            children: secondLevelChildren
           };
+        });
 
-          // 차트 생성 및 설정
-          let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
-              singleBranchOnly: false,
-              downDepth: 2,
-              topDepth: 0,
-              initialDepth: 2,
-              valueField: "value",
-              categoryField: "name",
-              childDataField: "children",
-              idField: "value",
-              manyBodyStrength: -15,
-              centerStrength: 0.3,
-              minRadius: am5.percent(6),
-              maxRadius: am5.percent(6)
-          }));
+        const data = {
+          name: terminologyData.standardTerminology, // 최상위 노드: 선택된 용어
+          children: children
+        };
 
-          series.data.setAll([data]);
-          this.chart = series;
+        // 차트 생성 및 설정
+        let series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+          singleBranchOnly: false,
+          downDepth: 2,
+          topDepth: 0,
+          initialDepth: 2,
+          valueField: "value",
+          categoryField: "name",
+          childDataField: "children",
+          idField: "value",
+          manyBodyStrength: -15,
+          centerStrength: 0.3,
+          minRadius: am5.percent(6),
+          maxRadius: am5.percent(6)
+        }));
+
+        series.data.setAll([data]);
+        this.chart = series;
+      } else {
+        console.error("DOM 요소 참조 실패");
+      }
       },
       beforeUnmount() {
           if (this.chart) {
