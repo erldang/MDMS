@@ -108,13 +108,13 @@ export default {
         this.displayErrorMessage("테이블 데이터를 가져오는 데 실패했습니다.");
       }
     },
-    // 메인 페이지로 이동하는 메소드
-    navigateToMain() {
-      this.$router.push("/admin-main");
+    // 경로(route)를 인자로 받아 해당 경로로 라우팅하는 메소드
+    navigateTo(route) {
+        this.$router.push(route);
     },
-    // 사용자 이력 페이지로 이동하는 메소드
-    navigateToUserRecord() {
-      this.$router.push("/admin-user-record");
+    // 현재 페이지 경로가 주어진 경로(route)와 일치하는지 확인하는 메소드
+    isCurrentPage(route) {
+        return this.$route.path === route;
     },
     // 테이블 목록을 표시하는 메소드
     ListTable() {
