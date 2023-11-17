@@ -1,58 +1,56 @@
-<!-- 컬럼 이름 입력이랑 검색 결과 , 컬럼 제거, 컬럼 추가, SQL DDL 생성, 등록하기 디자인 적용안됨
-등록하기 시 완료 하면 메인 페이지('/')로 돌아가는 거 추가 
-취소하기 하면 현재 입력 폼에 작성된 내용을 제거하고 메인 페이지('/') 로 가게 하기  -->
 <template>
   <div class="data-register">
-    <h2>SQL 테이블 생성</h2>
+    <h2 class="form-title">SQL 테이블 생성</h2>
     <form @submit.prevent="generateAndRegisterTable">
       <!-- 물리적 테이블 이름 입력 -->
       <div class="input-group">
-        <label for="physicalTableName">물리적 테이블 이름 입력:</label>
-        <input type="text" id="physicalTableName" v-model="tableName" @input="validateTableName" />
+        <label for="physicalTableName" class="input-label">물리적 테이블 이름 입력:</label>
+        <input type="text" id="physicalTableName" class="input-field" v-model="tableName" @input="validateTableName" />
       </div>
 
       <!-- 논리적 테이블 이름 입력 -->
       <div class="input-group">
-        <label for="logicalTableName">논리적 테이블 이름 입력:</label>
-        <input type="text" id="logicalTableName" v-model="logicalTableName" />
+        <label for="logicalTableName" class="input-label">논리적 테이블 이름 입력:</label>
+        <input type="text" id="logicalTableName" class="input-field" v-model="logicalTableName" />
       </div>
 
-
+      <!-- 컬럼 목록 -->
       <div class="columns">
         <div class="column" v-for="(column, index) in columns" :key="index">
-          <input type="text" v-model="column.name" @input="searchColumnName(index)" placeholder="컬럼 이름" />
+          <input type="text" class="column-name-input" v-model="column.name" @input="searchColumnName(index)" placeholder="컬럼 이름" />
           <div class="column-info" v-if="column.standardTerminology">
-            <p>선택된 컬럼: {{ column.standardTerminology }}</p>
-            <p>영어 약어: {{ column.name }}</p>
-            <p>설명: {{ column.description }}</p>
+            <p class="column-detail">선택된 컬럼: {{ column.standardTerminology }}</p>
+            <p class="column-detail">영어 약어: {{ column.name }}</p>
+            <p class="column-detail">설명: {{ column.description }}</p>
           </div>
-          <button type="button" @click="removeColumn(index)">컬럼 제거</button>
+          <button type="button" class="remove-column-btn" @click="removeColumn(index)">컬럼 제거</button>
           <ul class="search-results" v-if="searchResults[index]">
-            <li v-for="result in searchResults[index]" :key="result.no" @click="selectColumnName(result, index)">
-              {{ result.domain.dataType }} - {{ result.standardTerminology }} - {{ result.englishAbbreviation }}: {{
-                result.description }}
+            <li class="search-result-item" v-for="result in searchResults[index]" :key="result.no" @click="selectColumnName(result, index)">
+              {{ result.domain.dataType }} - {{ result.standardTerminology }} - {{ result.englishAbbreviation }}: {{ result.description }}
             </li>
           </ul>
         </div>
       </div>
 
-      <button type="button" @click="addColumn">컬럼 추가</button>
+      <button type="button" class="add-column-btn" @click="addColumn">컬럼 추가</button>
 
       <!-- 액션 버튼들 -->
-      <div class="actions">
-        <button type="button" @click="generateCreateStatement" :disabled="!tableName">SQL DDL 생성</button>
-        <button type="submit" :disabled="!tableName || !logicalTableName || columns.length === 0">등록하기</button>
+      <div class="action-buttons">
+        <button type="button" class="generate-ddl-btn" @click="generateCreateStatement" :disabled="!tableName">SQL DDL 생성</button>
+        <button type="submit" class="register-btn" :disabled="!tableName || !logicalTableName || columns.length === 0">등록하기</button>
+        <button class="cancel-btn" @click="this.$router.push('/');">취소</button>
       </div>
 
       <!-- 생성된 SQL 쿼리 표시 -->
       <div v-if="createdSQL" class="created-sql">
-        <h3>생성된 SQL 쿼리:</h3>
-        <textarea v-model="createdSQL" readonly></textarea>
-        <button type="button" @click="copyToClipboard">복사하기</button>
+        <h3 class="sql-title">생성된 SQL 쿼리:</h3>
+        <textarea class="sql-textarea" v-model="createdSQL" readonly></textarea>
+        <button type="button" class="copy-btn" @click="copyToClipboard">복사하기</button>
       </div>
     </form>
   </div>
 </template>
+
 
 
 <script>
@@ -245,6 +243,7 @@ export default {
           alert(response.data.message);
           // 폼 초기화 및 기타 작업 수행
           this.resetForm();
+          this.$router.push('/');
         } else {
           // 서버에서 에러 메시지가 올 경우 사용자에게 알림
           alert(response.data.message);
@@ -276,27 +275,22 @@ export default {
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  /* 강화된 그림자 효과 */
-  border: 1px solid #ddd;
-  /* 약간 더 진한 회색 */
 }
 
-.data-register h2 {
+.form-title {
   text-align: center;
   color: #35495E;
-  /* 모던한 다크 블루 */
   font-size: 24px;
   margin-bottom: 30px;
   padding-bottom: 10px;
   border-bottom: 2px solid #ddd;
-  /* 약간 더 진한 회색 */
 }
 
 .input-group {
   margin-bottom: 20px;
 }
 
-.input-group label {
+.input-label {
   display: block;
   margin-bottom: 10px;
   font-weight: 600;
@@ -304,7 +298,7 @@ export default {
   font-size: 18px;
 }
 
-.input-group input[type="text"] {
+.input-field {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
@@ -313,17 +307,28 @@ export default {
   box-sizing: border-box;
   transition: border-color 0.3s, box-shadow 0.3s;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  /* 입력 필드에 그림자 효과 추가 */
 }
 
-.input-group input[type="text"]:focus {
+.input-field:focus {
   border-color: #3498db;
   outline: none;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
-  /* 포커스 시 그림자 효과 강화 */
 }
 
-.button {
+.columns .column {
+  margin-bottom: 15px;
+}
+
+.column-name-input {
+  width: calc(100% - 100px); /* Adjust width as necessary */
+  margin-right: 10px;
+}
+
+.remove-column-btn,
+.add-column-btn,
+.generate-ddl-btn,
+.register-btn,
+.cancel-btn {
   padding: 12px 20px;
   font-size: 16px;
   font-weight: 600;
@@ -335,31 +340,37 @@ export default {
   margin-right: 10px;
   cursor: pointer;
   background-color: #27ae60;
-  /* 녹색 계열 */
   color: white;
 }
 
-.button:not(:disabled):hover {
+.remove-column-btn:not(:disabled):hover,
+.add-column-btn:hover,
+.generate-ddl-btn:hover,
+.register-btn:hover,
+.cancel-btn:hover {
   background-color: #229954;
-  /* 어두운 녹색 */
   transform: translateY(-2px);
 }
 
-.button:disabled {
+.remove-column-btn:disabled {
   background-color: #7f8c8d;
-  /* 연한 회색 */
 }
 
-.button:active {
+.remove-column-btn:active,
+.add-column-btn:active,
+.generate-ddl-btn:active,
+.register-btn:active,
+.cancel-btn:active {
   transform: translateY(0);
 }
 
 .search-results ul {
+  list-style-type: none;
   padding-left: 0;
   margin-top: 10px;
 }
 
-.search-results li {
+.search-result-item {
   padding: 10px;
   margin-bottom: 8px;
   background-color: #ecf0f1;
@@ -368,9 +379,8 @@ export default {
   cursor: pointer;
 }
 
-.search-results li:hover {
+.search-result-item:hover {
   background-color: #d6dbdf;
-  /* 연한 회색 */
 }
 
 .column-info {
@@ -387,11 +397,11 @@ export default {
   border-radius: 5px;
 }
 
-.created-sql h3 {
+.sql-title {
   margin-bottom: 10px;
 }
 
-.created-sql textarea {
+.sql-textarea {
   width: 100%;
   height: 150px;
   padding: 10px;
@@ -400,16 +410,15 @@ export default {
   margin-bottom: 10px;
 }
 
-.created-sql button {
+.copy-btn {
   padding: 10px 15px;
   background-color: #27ae60;
-  /* 녹색 계열 */
   color: white;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.created-sql button:hover {
+.copy-btn:hover {
   background-color: #229954;
-  /* 어두운 녹색 */
-}</style>
+}
+</style>
