@@ -100,4 +100,10 @@ public class TableInfoService {
         return tableInfoDtoList;
 
     }
+
+    public void deleteByPhysicalTableName(String physicalTableName) {
+
+        tableInfoRepository.deleteByPhysicalTableName(physicalTableName);
+
+    }
 }

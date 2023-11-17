@@ -75,4 +75,9 @@ public class TableService {
 
         return tableSize;
     }
+
+    public void dropTable(String physicalTableName) {
+
+        tableMapper.dropTable(physicalTableName);
+    }
 }

@@ -25,4 +25,8 @@ public interface TableInfoRepository extends JpaRepository<TableInfo,Integer> {
     @Query("select t from TableInfo t where t.logicalTableName = ?1")
     List<TableInfo> findTableInfoByTableName(String tableName);
 
+    @Modifying
+    @Transactional
+    @Query("delete TableInfo t where t.physicalTableName = ?1")
+    void deleteByPhysicalTableName(String physicalTableName);
 }

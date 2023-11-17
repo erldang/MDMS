@@ -2,12 +2,11 @@ package com.example.backend.controller;
 
 
 import com.example.backend.dto.EmailCodeDto;
+import com.example.backend.dto.HistoryDto;
 import com.example.backend.dto.ResponseDto;
 import com.example.backend.dto.UserDto;
-import com.example.backend.service.EmailService;
+import com.example.backend.service.*;
 import com.example.backend.security.JwtProvider;
-import com.example.backend.service.HistoryService;
-import com.example.backend.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +33,12 @@ public class UserContoller {
 
     @Autowired
     HistoryService historyService;
+
+    @Autowired
+    TableService tableService;
+
+    @Autowired
+    TableInfoService tableInfoService;
 
     //일반사용자가입
     @PostMapping("/signup")
@@ -106,7 +111,26 @@ public class UserContoller {
     @DeleteMapping("/delete")
     public ResponseDto<Object> delete(@RequestBody UserDto userDto){
 
+
+        //history를 조회에서 이 유저가 만들었던 table들 삭제
+        //tableInfo에서 table들 물리명기준 삭제
+
+        List<HistoryDto> historyDtoList = historyService.findHistoryByEmail(userDto.getEmail());
+        for(HistoryDto historyDto : historyDtoList){
+            tableService.dropTable(historyDto.getPhysicalTableName());
+            tableInfoService.deleteByPhysicalTableName(historyDto.getPhysicalTableName());
+
+
+        }
+
+
+
+
+        historyService.deleteHistoryByEmail(userDto.getEmail());
+
+
         String message = userService.delete(userDto);
+
 
 
 
