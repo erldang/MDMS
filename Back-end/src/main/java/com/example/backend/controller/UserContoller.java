@@ -37,10 +37,11 @@ public class UserContoller {
 
     //일반사용자가입
     @PostMapping("/signup")
-    public ResponseDto<Object> signUpUser(@RequestBody UserDto userDto) {
+    public ResponseDto<Object> signUpUser(@RequestBody UserDto userDto) throws Exception {
 
         userDto.setAdmin(false);
         String response = userService.signUpUser(userDto);
+
 
         return ResponseDto.builder().message(response).ok("ok").build();
 
@@ -56,15 +57,6 @@ public class UserContoller {
 
     }
 
-//    @PostMapping("/authentication/check")
-//    public ResponseDto<Object> AuthenticationRequestCheck(HttpSession session,
-//                                             @RequestBody EmailCodeDto emailCodeDto) throws MessagingException {
-//
-//        String response =  userService.AuthenticationRequestCheck(session, emailCodeDto);
-//
-//        return ResponseDto.builder().message(response).ok("ok").build();
-//
-//    }
 
     @PostMapping("/login")
     public ResponseDto<Object> logIn( @RequestBody UserDto userDto) throws Exception {
@@ -155,7 +147,7 @@ public class UserContoller {
     }
 
     @PostMapping("/findPwd")
-    public ResponseDto<Object> findPwd(@RequestBody UserDto userDto){
+    public ResponseDto<Object> findPwd(@RequestBody UserDto userDto) throws Exception {
 
         UserDto user = userService.findPassword(userDto);
 

@@ -5,6 +5,7 @@ import com.example.backend.dto.EmailCodeDto;
 import com.example.backend.dto.UserDto;
 import com.example.backend.entity.User;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.security.AESEncryptionUtil;
 import com.example.backend.security.JwtProvider;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
@@ -44,6 +45,9 @@ public class UserService {
     @Autowired
     JwtProvider jwtProvider;
 
+
+
+    //AESEncryptionUtil aesEncryptionUtil;
     //@Autowired
     //private RedisTemplate redisTemplate;
     private final RedisTemplate<String, String> redisTemplate;
@@ -59,10 +63,14 @@ public class UserService {
     }
 
 
-    public String signUpUser( UserDto userDto){
+    public String signUpUser( UserDto userDto) throws Exception {
 
 
         User user = new User(userDto);
+
+        String encodePassword = AESEncryptionUtil.encrypt(user.getPassword());
+
+        user.setPassword(encodePassword);
 
         userRepository.save(user);
 
@@ -206,10 +214,11 @@ public class UserService {
 
     }
 
-    public UserDto findPassword(UserDto userDto) {
+    public UserDto findPassword(UserDto userDto) throws Exception {
 
         User user = userRepository.findPassword(userDto.getEmail(),userDto.getName(),userDto.getPhone());
-
+        String decodedPassword = AESEncryptionUtil.decrypt(user.getPassword());
+        user.setPassword(decodedPassword);
 
         return  new UserDto(user);
     }
