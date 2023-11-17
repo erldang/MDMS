@@ -1,15 +1,15 @@
+<!-- 버튼 표준 용어,데이터 맵, 사용자 이력 조회 버튼 디자인 미적용 -->
 <template>
   <div>
     <!-- 페이지 제목 -->
     <h1 class="page-title">관리자 페이지</h1>
-    <h2 class="sub-title">표준 용어 관리</h2>
-
     <!-- 버튼 그룹 -->
     <div class="navigation-buttons">
       <button class="nav-btn" :disabled="$route.path === '/admin-main'">표준 용어</button>
       <button class="nav-btn" @click="navigateToDataMap">데이터 맵</button>
       <button class="nav-btn" @click="navigateToUserRecord">사용자 이력 조회</button>
     </div>
+    <h2 class="sub-title">표준 용어 관리</h2>
 
     <!-- 검색 섹션 -->
     <div class="search-section">
@@ -134,13 +134,14 @@ body {
   background-color: #f4f4f4;
 }
 
-h1, h2 {
-  color: #35495E; /* 모던한 다크 블루 색상 */
+h1,
+h2 {
+  color: #35495E;
+  /* 모던한 다크 블루 색상 */
   margin-bottom: 10px;
 }
 
-/* 탐색 버튼 그룹 스타일 */
-.navigation-buttons .nav-btn {
+.nav-btn{
   padding: 10px 20px;
   margin: 5px;
   border: none;
@@ -151,39 +152,40 @@ h1, h2 {
   transition: background-color 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 버튼에 그림자 효과 추가 */
 }
+/* 버튼 및 검색 필드 스타일 */
+.button-group button,
+.search-button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  color: white;
+  background-color: #007bff;
+  /* 밝은 파란색 */
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* 버튼에 그림자 효과 추가 */
+}
 
-.navigation-buttons .nav-btn:disabled {
+.button-group button:disabled,
+.search-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.nav-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-.navigation-buttons .nav-btn:hover {
-  background-color: #0056b3; /* 어두운 파란색 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 강화 */
-}
-
-/* 검색 필터 스타일 */
-.search-section .search-select,
-.search-section .search-input {
+.search-select,
+.search-input {
   padding: 10px;
   margin-right: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* 검색 필드에 그림자 효과 추가 */
-}
-
-.search-section .search-button {
-  padding: 10px 15px;
-  background-color: #27ae60; /* 녹색 계열 */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.search-section .search-button:hover {
-  background-color: #229954; /* 어두운 녹색 */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  /* 검색 필드에 그림자 효과 추가 */
 }
 
 /* 테이블 스타일 */
@@ -191,30 +193,34 @@ h1, h2 {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.data-table th, .data-table td {
-  padding: 8px;
-  text-align: left;
+.data-table th,
+.data-table td {
   border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
 }
 
 .data-table th {
   background-color: #f0f0f0;
 }
 
-/* 페이지네이션 스타일 */
-.pagination .page-number {
+/* 페이지네이션 */
+.pagination span {
   padding: 5px 10px;
   margin-right: 5px;
   border: 1px solid #ddd;
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  
 }
 
-.pagination .page-number:hover {
+.pagination span:hover {
   background-color: #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  /* 호버 시 그림자 효과 강화 */
 }
 </style>

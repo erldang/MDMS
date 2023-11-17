@@ -4,16 +4,18 @@
       <button :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">데이터 목록</button>
       <button :class="{ active: isCurrentPage('/user-data-map') }" @click="navigateTo('/user-data-map')">데이터 맵</button>
     </div>
+    
+    <h1>데이터 목록</h1>
+    <button class="register-btn" @click="addData">등록</button>
     <div class="search-filter">
-      <input type="date" v-model="startDate" />
-      <input type="date" v-model="endDate" />
-      <input type="text" v-model="searchQuery" placeholder="검색어" />
+      <input class="search-date" type="date" v-model="startDate" placeholder="날짜 선택 1" />
+      <input class="search-date" type="date" v-model="endDate" placeholder="날짜 선택 2" />
+      <div></div> 
+      <input type="text" v-model="searchQuery" placeholder="검색어를 입력하세요" />
       <button @click="fetchData">검색</button>
     </div>
     <div v-if="loading">데이터 로딩중...</div>
     <div v-if="error">{{ error }}</div>
-    <h1>데이터 목록</h1>
-    <button class="register-btn" @click="addData">등록</button>
     <table>
       <tr>
         <th>No</th>
@@ -120,9 +122,9 @@ export default {
   background-color: #0056b3;
   /* 어두운 파란색 */
 }
-
 .search-filter {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
 }
@@ -133,16 +135,38 @@ export default {
   margin-right: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 1.1rem;
+}
+
+.search-date {
+  margin: 0%;
+  font-size: 1.1rem;
+  font-family: 'Arial';
 }
 
 .search-filter button {
   padding: 8px 15px;
   background-color: #27ae60;
-  /* 녹색 계열 */
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1.1rem;
+}
+
+/* 추가한 스타일 */
+.search-filter input[type="date"]:nth-child(1),
+.search-filter input[type="date"]:nth-child(2) {
+  width: 120px;
+}
+
+.search-filter input[type="text"] {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.search-filter button {
+  min-width: 80px;
 }
 
 h1 {
@@ -186,5 +210,6 @@ table th {
   color: #e74c3c;
   /* 경고, 오류 메시지에 적합한 색상 */
   margin: 10px 0;
-}</style>
+}
+</style>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="data-register">
-    <h2 class="form-title">SQL 테이블 생성</h2>
+    <h2 class="form-title">새로운 테이블 생성</h2>
     <form @submit.prevent="generateAndRegisterTable">
       <!-- 물리적 테이블 이름 입력 -->
       <div class="input-group">
@@ -322,6 +322,9 @@ export default {
 .column-name-input {
   width: calc(100% - 100px); /* Adjust width as necessary */
   margin-right: 10px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .remove-column-btn,
@@ -338,6 +341,7 @@ export default {
   border: none;
   border-radius: 5px;
   margin-right: 10px;
+  margin-top: 10px;
   cursor: pointer;
   background-color: #27ae60;
   color: white;
@@ -402,12 +406,14 @@ export default {
 }
 
 .sql-textarea {
-  width: 100%;
+  width: 90%;
   height: 150px;
   padding: 10px;
   border: 1px solid #bdc3c7;
   border-radius: 5px;
   margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .copy-btn {

@@ -1,13 +1,13 @@
 <template>
   <div class="admin-page">
     <h1 class="page-title">관리자 페이지</h1>
-    <h2 class="sub-title">사용자 이력 조회</h2>
     <div class="navigation-buttons">
       <button class="nav-btn" @click="navigateToMain">표준 용어</button>
       <button class="nav-btn" @click="navigateToDataMap">데이터 맵</button>
       <button class="nav-btn" :disabled="$route.path === '/admin-user-record'">사용자 이력 조회</button>
     </div>
-
+    <h2 class="sub-title">사용자 이력 조회</h2>
+    
     <div class="table-container">
       <table class="user-history-table">
         <thead>

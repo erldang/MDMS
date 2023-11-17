@@ -8,11 +8,11 @@
       <!-- 데이터 맵 페이지로 이동하는 버튼 -->
       <button class="page-nav-button" :class="{ active: isCurrentPage('/user-data-map') }"
         @click="navigateTo('/user-data-map')">
-        데이터 맵
+        데이터 맵 
       </button>
     </div>
     <!-- 페이지 제목 -->
-    <h2 class="page-title">데이터 맵</h2>
+    <h1 class="page-title">데이터 맵</h1>
 
     <!-- 테이블 및 용어 목록을 토글하는 버튼 -->
     <div class="toggle-button-group">
@@ -20,36 +20,42 @@
       <button class="toggle-button" @click="ListTerminology">용어</button>
     </div>
 
-    <!-- 테이블 목록을 표시하는 섹션 -->
-    <div v-if="showTableList" class="table-list-section">
-      <h3 class="section-title">테이블 목록</h3>
-      <ul class="table-list">
-        <!-- 테이블 목록의 각 항목 -->
-        <li class="table-list-item" v-for="table in tableList" :key="table.no"
-          @click="handleTableClick(table.logicalTableName)">
-          {{ table.logicalTableName }}
-        </li>
-      </ul>
-    </div>
+    <div class="flex-container">
+      <!-- 왼쪽에 고정된 너비의 섹션 -->
+      <div class="fixed-section" style="width: 10%;">
+        <!-- 테이블 목록을 표시하는 섹션 -->
+        <div v-if="showTableList" class="table-list-section">
+          <h3 class="section-title">테이블 목록</h3>
+          <ul class="table-list">
+            <!-- 테이블 목록의 각 항목 -->
+            <li class="table-list-item" v-for="table in tableList" :key="table.no"
+              @click="handleTableClick(table.logicalTableName)">
+              {{ table.logicalTableName }}
+            </li>
+          </ul>
+        </div>
 
-    <!-- 용어 목록을 표시하는 섹션 -->
-    <div v-if="showTerminologyList" class="terminology-list-section">
-      <h3 class="section-title">용어 목록</h3>
-      <ul class="terminology-list">
-        <!-- 용어 목록의 각 항목 -->
-        <li class="terminology-list-item" v-for="term in terminologyList" :key="term"
-          @click="handleTerminologyClick(term)">
-          {{ term }}
-        </li>
-      </ul>
-    </div>
+        <!-- 용어 목록을 표시하는 섹션 -->
+        <div v-if="showTerminologyList" class="terminology-list-section">
+          <h3 class="section-title">용어 목록</h3>
+          <ul class="terminology-list">
+            <!-- 용어 목록의 각 항목 -->
+            <li class="terminology-list-item" v-for="term in terminologyList" :key="term"
+              @click="handleTerminologyClick(term)">
+              {{ term }}
+            </li>
+          </ul>
+        </div>
+      </div>
 
-    <!-- 차트를 표시할 div 요소 -->
-    <div v-show="showTableList || showTerminologyList" class="chart-container" ref="chartdiv"
-      style="width: 100%; height: 1000px"></div>
+      <!-- 오른쪽에 차트를 표시하는 섹션 -->
+      <div class="flex-item">
+        <div v-show="showTableList || showTerminologyList" class="chart-container" ref="chartdiv"
+          style="width: 100%; height: 1000px"></div>
+      </div>
+    </div>
   </div>
 </template>
-
   
   
 <script>
@@ -189,24 +195,14 @@ export default {
           tableData.stdTerminologyList.map(async (term) => {
             const usageData = await this.fetchTerminologyUsage(term);
             const filteredUsageData = usageData.filter(
-              (u) => u.logicalTableName !== tableData.logicalTableName
+              (u) => u.logicalTableName !== tableData.tableName
             ); // 최상위 테이블 제외
-            const childrenWithFilter = filteredUsageData.map((table) => {
-              const secondLevelChildren = table.stdTerminologyList
-                .filter((childTerm) => childTerm !== tableData.logicalTableName) // 최상위 부모 노드의 테이블 이름과 동일한 경우 제외
-                .map((childTerm) => ({
-                  name: childTerm,
-                  value: parseInt(table.num, 10),
-                }));
-              return {
-                name: table.logicalTableName,
-                children: secondLevelChildren,
-              };
-            });
-
             return {
               name: term,
-              children: childrenWithFilter,
+              children: filteredUsageData.map((table) => ({
+                name: table.tableName,
+                value: parseInt(table.num, 10),
+              })),
             };
           })
         );
@@ -330,29 +326,55 @@ export default {
 };
 </script>
   
-.page-button-group .page-nav-button, .toggle-button-group .toggle-button {
+<style scoped>
+/* 페이지 제목 */
+.page-title {
+  display: inline-block;
+  margin-right: 20px;
+  color: #35495E; /* 모던한 다크 블루 색상 */
+}
+
+/* 페이지 네비게이션 버튼 */
+.page-button-group .page-nav-button {
+  background-color: #007bff; /* 밝은 파란색 */
+  color: white;
   padding: 10px 20px;
   margin: 5px;
   border: none;
-  color: white;
-  background-color: #007bff; /* 밝은 파란색 */
-  cursor: pointer;
   border-radius: 4px;
+  cursor: pointer;
   font-size: 1.1rem;
   transition: background-color 0.3s;
 }
 
-.page-button-group .page-nav-button.active, .toggle-button-group .toggle-button:hover {
+.page-button-group .page-nav-button.active {
   background-color: #0056b3; /* 어두운 파란색 */
 }
 
-.section-title, .page-title {
-  color: #35495E; /* 모던한 다크 블루 색상 */
-  margin-bottom: 20px;
-  text-align: left;
+.page-button-group .page-nav-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.table-list-section, .terminology-list-section {
+/* 토글 버튼 그룹 */
+.toggle-button-group .toggle-button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  color: white;
+  background-color: #28a745; /* 녹색 계열 */
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.toggle-button-group .toggle-button:hover {
+  background-color: #218838; /* 어두운 녹색 */
+}
+
+/* 목록을 나타내는 섹션 및 항목들 */
+.table-list-section,
+.terminology-list-section {
   margin-top: 20px;
   padding: 15px;
   background-color: white;
@@ -361,19 +383,48 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.table-list-item, .terminology-list-item {
+.section-title {
+  color: #34495e;
+  margin-bottom: 10px;
+}
+
+.table-list,
+.terminology-list {
+  list-style: none;
+  padding: 0;
+}
+
+.table-list-item,
+.terminology-list-item {
   padding: 10px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.table-list-item:hover, .terminology-list-item:hover {
+.table-list-item:hover,
+.terminology-list-item:hover {
   background-color: #f2f2f2;
 }
 
+/* 차트 컨테이너 */
 .chart-container {
   width: 100%;
   height: 1000px;
   margin-top: 20px;
 }
+
+/* 추가적인 스타일링 */
+.flex-container {
+  display: flex;
+}
+
+.fixed-section {
+  overflow: auto;
+  height: 1000px; /* 아래에 있는 차트와 동일한 높이로 설정 */
+}
+
+.flex-item {
+  flex-grow: 1; /* 차트가 남은 공간을 모두 채우도록 설정 */
+}
+</style>
