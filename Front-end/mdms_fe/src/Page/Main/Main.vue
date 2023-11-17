@@ -1,4 +1,3 @@
-<!-- 데이터 목록에 등록 버튼 디자인 적용 안됨 -->
 <template>
   <div>
     <div class="page_btn">
