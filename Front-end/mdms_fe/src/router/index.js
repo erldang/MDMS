@@ -88,6 +88,7 @@ const router = createRouter({
 });
 
 // 라우터 가드에서 관리자 여부를 체크하여 리다이렉션
+// 관리자 가 회원 정보에 들어가지 못한다. 수정해야한다.
 router.beforeEach((to, from, next) => {
   if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' ||to.name === 'DataMapPage'|| to.name === 'RegisterCustomTermPage') {
     next();

@@ -1,3 +1,4 @@
+<!-- 표준 용어 데이터 맵 사용자 이력 조회 버튼 디자인 미적용 -->
 <template>
   <div class="admin-page">
     <h1 class="page-title">관리자 페이지</h1>
