@@ -30,7 +30,7 @@ public class TableInfoController {
 
     //모든 테이블 info 조회하기
     @GetMapping
-    public ResponseDto<Object> findAllTableInfo( @RequestHeader Map<String, String> headers){
+    public ResponseDto<Object> findAllTableInfo( @RequestHeader Map<String, String> headers) throws Exception {
         List<TableInfoDto> tableinfoDtoList = new ArrayList<TableInfoDto>();
         List<ResponseTableInfoDto> responseTableInfoDtoList = new ArrayList<ResponseTableInfoDto>();
         boolean isAdmin = isAdmin(headers);
@@ -68,7 +68,7 @@ public class TableInfoController {
     //tableInfo where = terminology
     @GetMapping("/join/terminology")
     public ResponseDto<Object> findTableInfoByStdTerminology(@RequestParam(value = "standardTerminology") String standardTerminology,
-                                                             @RequestHeader Map<String, String> headers){
+                                                             @RequestHeader Map<String, String> headers) throws Exception {
 
         boolean isAdmin = isAdmin(headers);
         String email = getEmailFromHeader(headers);
@@ -148,7 +148,7 @@ public class TableInfoController {
 
 
     @GetMapping("/test")
-    public void test(@RequestHeader Map<String, String> headers){
+    public void test(@RequestHeader Map<String, String> headers) throws Exception {
         String token = headers.get("authorization").replaceAll("Bearer " , "");
         System.out.println("token : "+ token );
         String email = jwtProvider.getEmailFromToken(token);
@@ -164,7 +164,7 @@ public class TableInfoController {
     }
 
     //헤더에 담긴 토큰으로 관리자인지 사용자인지 판닩하는 메소드
-    public Boolean isAdmin(Map<String,String> headers){
+    public Boolean isAdmin(Map<String,String> headers) throws Exception {
         String token = headers.get("authorization").replaceAll("Bearer " , "");
         System.out.println("token : "+ token );
         String email = jwtProvider.getEmailFromToken(token);

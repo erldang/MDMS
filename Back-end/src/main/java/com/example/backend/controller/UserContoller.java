@@ -78,7 +78,7 @@ public class UserContoller {
     }
 
     @PostMapping("/modify")
-    public ResponseDto<Object> modify(@RequestBody UserDto userDto){
+    public ResponseDto<Object> modify(@RequestBody UserDto userDto) throws Exception {
 
         String message = userService.modifyUser(userDto);
         return ResponseDto.builder().ok("ok").message(message).build();
@@ -115,7 +115,7 @@ public class UserContoller {
     }
 
     @GetMapping
-    public ResponseDto<Object> getAllUsers(){
+    public ResponseDto<Object> getAllUsers() throws Exception {
 
         //userService.getAllUsers();
         return ResponseDto.builder().ok("ok").data(userService.getAllUsers()).build();
@@ -123,7 +123,7 @@ public class UserContoller {
 
 
     @GetMapping("/specific")
-    public ResponseDto<Object> getSpecifyUser(@RequestParam("token") String token){
+    public ResponseDto<Object> getSpecifyUser(@RequestParam("token") String token) throws Exception {
 
         String email = jwtProvider.getEmailFromToken(token);
 
