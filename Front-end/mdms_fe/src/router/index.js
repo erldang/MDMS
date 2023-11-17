@@ -88,35 +88,44 @@ const router = createRouter({
 });
 
 // 라우터 가드에서 관리자 여부를 체크하여 리다이렉션
-// 관리자 가 회원 정보에 들어가지 못한다. 수정해야한다.
 router.beforeEach((to, from, next) => {
-  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword' ||to.name === 'DataMapPage'|| to.name === 'RegisterCustomTermPage') {
+  // 로그인, 회원가입, 비밀번호 찾기는 제한 없이 접근 가능
+  if (to.name === 'Login' || to.name === 'Register' || to.name === 'ForgotPassword') {
     next();
   } else {
     const token = localStorage.getItem('token');
     const isAdmin = localStorage.getItem('admin') === 'true'; // 문자열을 불리언으로 변환
 
+    // 토큰이 있는 경우
     if (token) {
+      // 관리자가 아니면서 관리자 전용 페이지 접근 시 메인 페이지로 리다이렉션
       if (to.path.startsWith('/admin') && !isAdmin) {
-        if (from.name !== 'Main') { // 리다이렉션 루프 방지
+        if (from.name !== 'Main') {
           next({ name: 'Main' });
         } else {
-          next(false); // 현재 위치 유지
+          next(false);
         }
-      } else if (!to.path.startsWith('/admin') && isAdmin) {
-        if (from.name !== 'AdminMainPage') { // 리다이렉션 루프 방지
+      } 
+      // 관리자이면서 일반 사용자 전용 페이지 접근 시 관리자 메인 페이지로 리다이렉션
+      // 하지만, 프로필과 프로필 수정 페이지는 예외로 처리
+      else if (!to.path.startsWith('/admin') && isAdmin && to.name !== 'Profile' && to.name !== 'EditProfilePage') {
+        if (from.name !== 'AdminMainPage') {
           next({ name: 'AdminMainPage' });
         } else {
-          next(false); // 현재 위치 유지
+          next(false);
         }
-      } else {
+      } 
+      // 그 외의 경우 정상적으로 페이지 접근 허용
+      else {
         next();
       }
-    } else {
-      if (from.name !== 'Login') { // 리다이렉션 루프 방지
+    } 
+    // 토큰이 없는 경우 로그인 페이지로 리다이렉션
+    else {
+      if (from.name !== 'Login') {
         next({ name: 'Login' });
       } else {
-        next(false); // 현재 위치 유지
+        next(false);
       }
     }
   }
