@@ -14,7 +14,7 @@
     <div v-if="loading">데이터 로딩중...</div>
     <div v-if="error">{{ error }}</div>
     <h1>데이터 목록</h1>
-    <button @click="addData">등록</button>
+    <button class="register-btn" @click="addData">등록</button>
     <table>
       <tr>
         <th>No</th>
@@ -153,7 +153,7 @@ h1 {
   /* 모던한 다크 블루 색상 */
 }
 
-button.addData {
+.register-btn {
   float: right;
   background-color: #f0ad4e;
   /* 오렌지 계열 */
