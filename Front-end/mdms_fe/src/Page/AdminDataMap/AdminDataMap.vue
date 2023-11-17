@@ -1,60 +1,51 @@
 <template>
   <div>
     <!-- 페이지 제목 -->
-    <h1>관리자 페이지</h1>
-    <h2>데이터 맵</h2>
+    <h1 class="page-title">관리자 페이지</h1>
+    <h2 class="sub-title">데이터 맵</h2>
 
     <!-- 탐색 버튼 그룹 -->
-    <div class="button-group">
-      <button @click="navigateToMain">표준 용어</button>
-      <button :disabled="$route.path === '/admin-datamap'">데이터 맵</button>
-      <button @click="navigateToUserRecord">사용자 이력 조회</button>
+    <div class="navigation-buttons">
+      <button class="nav-btn" @click="navigateToMain">표준 용어</button>
+      <button class="nav-btn" :disabled="$route.path === '/admin-datamap'">데이터 맵</button>
+      <button class="nav-btn" @click="navigateToUserRecord">사용자 이력 조회</button>
     </div>
 
     <!-- 테이블 및 용어 목록을 토글하는 버튼 -->
-    <div class="list-btn">
-      <button @click="ListTable">테이블</button>
-      <button @click="ListTerminology">용어</button>
+    <div class="toggle-buttons">
+      <button class="toggle-btn" @click="ListTable">테이블</button>
+      <button class="toggle-btn" @click="ListTerminology">용어</button>
     </div>
 
     <!-- 테이블 목록을 표시하는 섹션 -->
-    <div v-if="showTableList" class="table-list">
-      <h3>테이블 목록</h3>
-      <ul>
+    <div v-if="showTableList" class="table-list-section">
+      <h3 class="section-title">테이블 목록</h3>
+      <ul class="list">
         <!-- 테이블 목록의 각 항목 -->
-        <li
-          v-for="table in tableList"
-          :key="table.no"
-          @click="handleTableClick(table.logicalTableName)"
-        >
+        <li class="list-item" v-for="table in tableList" :key="table.no"
+          @click="handleTableClick(table.logicalTableName)">
           {{ table.logicalTableName }}
         </li>
       </ul>
     </div>
 
     <!-- 용어 목록을 표시하는 섹션 -->
-    <div v-if="showTerminologyList" class="terminology-list">
-      <h3>용어 목록</h3>
-      <ul>
+    <div v-if="showTerminologyList" class="terminology-list-section">
+      <h3 class="section-title">용어 목록</h3>
+      <ul class="list">
         <!-- 용어 목록의 각 항목 -->
-        <li
-          v-for="term in terminologyList"
-          :key="term"
-          @click="handleTerminologyClick(term)"
-        >
+        <li class="list-item" v-for="term in terminologyList" :key="term" @click="handleTerminologyClick(term)">
           {{ term }}
         </li>
       </ul>
     </div>
 
     <!-- 차트를 표시할 div 요소 -->
-    <div
-      v-show="showTableList || showTerminologyList"
-      ref="chartdiv"
-      style="width: 100%; height: 1000px"
-    ></div>
+    <div v-show="showTableList || showTerminologyList" class="chart-section" ref="chartdiv"
+      style="width: 100%; height: 1000px"></div>
   </div>
 </template>
+
   
   
   
@@ -166,7 +157,7 @@ export default {
     // 차트 생성 메소드
     async createChart(tableData) {
       if (this.chart) {
-        am5.array.each(am5.registry.rootElements, (re, index) =>{
+        am5.array.each(am5.registry.rootElements, (re, index) => {
           am5.registry.rootElements[index].dispose();
         });
       }
@@ -241,7 +232,7 @@ export default {
     },
     createTerminologyChart(terminologyData) {
       if (this.chart) {
-        am5.array.each(am5.registry.rootElements, (re, index) =>{
+        am5.array.each(am5.registry.rootElements, (re, index) => {
           am5.registry.rootElements[index].dispose();
         });
       }
@@ -327,61 +318,59 @@ body {
 
 h1,
 h2 {
-  color: #333;
+  color: #35495E;
+  /* 모던한 다크 블루 색상 */
+  margin-bottom: 10px;
 }
 
-.button-group button {
-  padding: 10px 15px;
-  margin-right: 10px;
+.button-group button,
+.list-btn button {
+  padding: 10px 20px;
+  margin: 5px;
   border: none;
-  color: #fff;
+  color: white;
   background-color: #007bff;
+  /* 밝은 파란색 */
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* 버튼에 그림자 효과 추가 */
 }
 
-.button-group button:disabled {
+.button-group button:disabled,
+.list-btn button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-/* CSS 개선 */
-.button-group button:hover {
-  background-color: #0056b3;
-  /* 어두운 파란색으로 변경 */
-}
-
-.list-btn button {
-  padding: 8px 12px;
-  margin: 5px;
-  background-color: #28a745;
-  /* 녹색 계열 */
-  color: white;
-}
-
+.button-group button:hover,
 .list-btn button:hover {
-  background-color: #218838;
-  /* 어두운 녹색으로 변경 */
+  background-color: #0056b3;
+  /* 어두운 파란색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* 호버 시 그림자 효과 강화 */
 }
 
 .table-list,
 .terminology-list {
   margin-top: 20px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  /* 연한 회색 */
+  padding: 15px;
+  background-color: white;
+  /* 백색 배경 */
   border: 1px solid #ddd;
   border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* 섹션에 그림자 효과 추가 */
 }
 
 @media (max-width: 768px) {
+
   .button-group button,
   .list-btn button {
     width: 100%;
     /* 모바일 화면에서 버튼을 전체 너비로 확장 */
-    margin-bottom: 10px;
+    margin: 10px 0;
   }
 }
 </style>
-  

@@ -1,66 +1,55 @@
 <template>
   <div>
-    <div class="page_btn">
+    <div class="page-button-group">
       <!-- 데이터 목록 페이지로 이동하는 버튼 -->
-      <button :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">
+      <button class="page-nav-button" :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">
         데이터 목록
       </button>
       <!-- 데이터 맵 페이지로 이동하는 버튼 -->
-      <button
-        :class="{ active: isCurrentPage('/user-data-map') }"
-        @click="navigateTo('/user-data-map')"
-      >
+      <button class="page-nav-button" :class="{ active: isCurrentPage('/user-data-map') }"
+        @click="navigateTo('/user-data-map')">
         데이터 맵
       </button>
     </div>
     <!-- 페이지 제목 -->
-    <h2>데이터 맵</h2>
+    <h2 class="page-title">데이터 맵</h2>
 
     <!-- 테이블 및 용어 목록을 토글하는 버튼 -->
-    <div class="list-btn">
-      <button @click="ListTable">테이블</button>
-      <button @click="ListTerminology">용어</button>
+    <div class="toggle-button-group">
+      <button class="toggle-button" @click="ListTable">테이블</button>
+      <button class="toggle-button" @click="ListTerminology">용어</button>
     </div>
 
     <!-- 테이블 목록을 표시하는 섹션 -->
-    <div v-if="showTableList" class="table-list">
-      <h3>테이블 목록</h3>
-      <ul>
+    <div v-if="showTableList" class="table-list-section">
+      <h3 class="section-title">테이블 목록</h3>
+      <ul class="table-list">
         <!-- 테이블 목록의 각 항목 -->
-        <li
-          v-for="table in tableList"
-          :key="table.no"
-          @click="handleTableClick(table.logicalTableName)"
-        >
+        <li class="table-list-item" v-for="table in tableList" :key="table.no"
+          @click="handleTableClick(table.logicalTableName)">
           {{ table.logicalTableName }}
         </li>
       </ul>
     </div>
 
     <!-- 용어 목록을 표시하는 섹션 -->
-    <div v-if="showTerminologyList" class="terminology-list">
-      <h3>용어 목록</h3>
-      <ul>
+    <div v-if="showTerminologyList" class="terminology-list-section">
+      <h3 class="section-title">용어 목록</h3>
+      <ul class="terminology-list">
         <!-- 용어 목록의 각 항목 -->
-        <li
-          v-for="term in terminologyList"
-          :key="term"
-          @click="handleTerminologyClick(term)"
-        >
+        <li class="terminology-list-item" v-for="term in terminologyList" :key="term"
+          @click="handleTerminologyClick(term)">
           {{ term }}
         </li>
       </ul>
     </div>
 
     <!-- 차트를 표시할 div 요소 -->
-    <div
-      v-show="showTableList || showTerminologyList"
-      ref="chartdiv"
-      style="width: 100%; height: 1000px"
-    ></div>
+    <div v-show="showTableList || showTerminologyList" class="chart-container" ref="chartdiv"
+      style="width: 100%; height: 1000px"></div>
   </div>
 </template>
-  
+
   
   
 <script>
@@ -332,69 +321,88 @@ export default {
 </script>
   
 <style scoped>
-body {
-  font-family: "Arial", sans-serif;
-  color: #333;
-  background-color: #f4f4f4;
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #35495E;
+  /* 모던한 다크 블루 */
+  color: #FFFFFF;
 }
 
-h1,
-h2 {
-  color: #333;
+.left-section {
+  display: flex;
+  align-items: center;
 }
 
-.button-group button {
-  padding: 10px 15px;
-  margin-right: 10px;
-  border: none;
-  color: #fff;
-  background-color: #007bff;
+.logo-img {
+  width: 60px;
+  /* 로고 크기 조정 */
+  height: auto;
+  margin-right: 20px;
+}
+
+.title-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 24px;
+  /* 적당한 크기의 제목 폰트 */
+  font-weight: bold;
+  /* 볼드체로 강조 */
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  /* 서브타이틀 폰트 크기 */
+  opacity: 0.9;
+  /* 약간 투명도 조정 */
+}
+
+.navbar-section {
+  display: flex;
+  align-items: center;
+}
+
+.username-text {
+  margin-right: 20px;
+  font-size: 18px;
+  /* 사용자 이름 폰트 크기 */
+  font-weight: medium;
+  white-space: nowrap;
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  margin-left: 10px;
+  background-color: transparent;
+  border: 2px solid #FFFFFF;
+  /* 흰색 테두리 */
+  border-radius: 5px;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  color: #FFFFFF;
 }
 
-.button-group button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.nav-btn:hover {
+  background-color: #4A6FA5;
+  /* 버튼 호버 색상 */
+  color: #FFFFFF;
 }
 
-/* CSS 개선 */
-.button-group button:hover {
-  background-color: #0056b3;
-  /* 어두운 파란색으로 변경 */
+.logout-btn {
+  border-color: #FF5252;
+  /* 로그아웃 버튼 테두리 색상 */
+  color: #FF5252;
 }
 
-.list-btn button {
-  padding: 8px 12px;
-  margin: 5px;
-  background-color: #28a745;
-  /* 녹색 계열 */
-  color: white;
-}
-
-.list-btn button:hover {
-  background-color: #218838;
-  /* 어두운 녹색으로 변경 */
-}
-
-.table-list,
-.terminology-list {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  /* 연한 회색 */
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-@media (max-width: 768px) {
-  .button-group button,
-  .list-btn button {
-    width: 100%;
-    /* 모바일 화면에서 버튼을 전체 너비로 확장 */
-    margin-bottom: 10px;
-  }
-}
-</style>
-  
+.logout-btn:hover {
+  background-color: #FF5252;
+  /* 로그아웃 버튼 호버 색상 */
+  color: #FFFFFF;
+}</style>

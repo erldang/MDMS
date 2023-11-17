@@ -1,11 +1,11 @@
 <template>
   <div class="admin-page">
-    <h1>관리자 페이지</h1>
-    <h2>사용자 이력 조회</h2>
-    <div class="button-group">
-      <button @click="navigateToMain">표준 용어</button>
-      <button @click="navigateToDataMap">데이터 맵</button>
-      <button :disabled="$route.path === '/admin-user-record'">사용자 이력 조회</button>
+    <h1 class="page-title">관리자 페이지</h1>
+    <h2 class="sub-title">사용자 이력 조회</h2>
+    <div class="navigation-buttons">
+      <button class="nav-btn" @click="navigateToMain">표준 용어</button>
+      <button class="nav-btn" @click="navigateToDataMap">데이터 맵</button>
+      <button class="nav-btn" :disabled="$route.path === '/admin-user-record'">사용자 이력 조회</button>
     </div>
 
     <div class="table-container">
@@ -30,9 +30,9 @@
         </tbody>
       </table>
     </div>
-
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -40,7 +40,7 @@ export default {
   name: 'AdminUserRecordPage',
   data() {
     return {
-      userHistory: [] 
+      userHistory: []
     };
   },
   created() {
@@ -77,19 +77,25 @@ body {
   background-color: #f4f4f4;
 }
 
-h1, h2 {
-  color: #333;
+h1,
+h2 {
+  color: #35495E;
+  /* 모던한 다크 블루 색상 */
+  margin-bottom: 10px;
 }
 
 .button-group button {
-  padding: 10px 15px;
-  margin-right: 10px;
+  padding: 10px 20px;
+  margin: 5px;
   border: none;
-  color: #fff;
+  color: white;
   background-color: #007bff;
+  /* 밝은 파란색 */
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* 버튼에 그림자 효과 추가 */
 }
 
 .button-group button:disabled {
@@ -109,11 +115,12 @@ h1, h2 {
 }
 
 .user-history-table thead {
-  background-color: #007bff;
+  background-color: #35495E;
+  /* 헤더 디자인과 일치하는 색상 */
   color: #fff;
 }
 
-.user-history-table th, 
+.user-history-table th,
 .user-history-table td {
   padding: 12px 15px;
   border: 1px solid #ddd;
@@ -148,6 +155,4 @@ h1, h2 {
 .user-history-table td:hover::after {
   transform: scaleX(1);
   transform-origin: bottom left;
-}
-
-</style>
+}</style>

@@ -29,7 +29,6 @@
 import axios from 'axios';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import './Login.css';
 
 export default {
   name: 'LoginPage',
@@ -91,3 +90,79 @@ export default {
   },
 };
 </script>
+<style scoped>
+.login-container {
+  width: 300px;
+  margin: 40px auto;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* 강화된 그림자 효과 */
+  background-color: #fff;
+  /* 백색 배경 */
+  border: 1px solid #ddd;
+  /* 약간 더 진한 회색 */
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #35495E;
+  /* 모던한 다크 블루 색상 */
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #34495e;
+  /* 어두운 회색 계열 */
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #bdc3c7;
+  /* 연한 회색 */
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #27ae60;
+  /* 녹색 계열 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #229954;
+  /* 어두운 녹색 */
+}
+
+.links {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.links a,
+.links router-link {
+  color: #007bff;
+  /* 밝은 파란색 */
+  text-decoration: none;
+}
+
+.links a:hover,
+.links router-link:hover {
+  text-decoration: underline;
+}</style>

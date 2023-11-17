@@ -5,11 +5,13 @@
       <img src="@/assets/img/pruning-logo.png" alt="테스트로고" class="logo-img">
       <div class="title-section">
         <h1 class="title">MDMS : 데이터 정원사</h1>
-        <p class="subtitle">메타데이터 관리 및 시각화 서비스</p>
+        <p class="subtitle">메타데이터 관리 서비스</p>
       </div>
     </div>
     
     <!-- 네비게이션 바 -->
+    <!-- <nav v-if="isLoggedIn" class="navbar-section"> -->
+      <!-- <span class="username-text">{{ username }}</span> -->
     <nav v-if="isLoggedIn" class="navbar-section">
       <span class="username-text">{{ username }}</span>
       <button class="nav-btn" @click="navigateToProfile">회원정보</button>
@@ -65,9 +67,10 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.6rem 3.2rem; /* 기존 여백의 1.6배 */
-    background-color: #2C3E50;
-    color: #ecf0f1;
+    padding: 20px 40px;
+    background-color: #35495E; /* 모던한 다크 블루 */
+    color: #FFFFFF;
+    margin-bottom: 1rem;
 }
 
 .left-section {
@@ -76,26 +79,27 @@ export default {
 }
 
 .logo-img {
-    width: 150px;
-    height: auto; 
-    margin-right: 1.6rem; 
+    width: 60px; /* 로고 크기 조정 */
+    height: auto;
+    margin-right: 20px;
 }
 
 .title-section {
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .title {
-    font-size: 2.4rem; /* 제목 폰트 크기 1.6배 증가 */
+    font-size: 24px; /* 적당한 크기의 제목 폰트 */
+    font-weight: bold; /* 볼드체로 강조 */
     margin: 0;
-    color: #ffffff;
+    color:#FFFFFF;
 }
 
 .subtitle {
-    font-size: 1.44rem; /* 서브타이틀 폰트 크기 1.6배 증가 */
-    color: #bdc3c7;
+    font-size: 16px; /* 서브타이틀 폰트 크기 */
+    opacity: 0.9; /* 약간 투명도 조정 */
+    color:#FFFFFF;
 }
 
 .navbar-section {
@@ -104,46 +108,37 @@ export default {
 }
 
 .username-text {
-    margin-right: 1.6rem; /* 오른쪽 마진 1.6배 증가 */
-    font-weight: 500;
-    font-size: 1.28rem; /* 폰트 크기 1.6배 증가 */
-    color: #ffffff;
+    margin-right: 20px;
+    font-size: 18px; /* 사용자 이름 폰트 크기 */
+    font-weight: medium;
+    white-space: nowrap;
 }
 
 .nav-btn {
-    padding: 0.8rem 1.6rem; /* 버튼 내부 여백 1.6배 증가 */
-    margin-left: 0.8rem; /* 왼쪽 마진 1.6배 증가 */
+    padding: 10px 20px;
+    margin-left: 10px;
     background-color: transparent;
-    border: 1px solid #ecf0f1;
-    border-radius: 4.8px; /* 모서리 둥글기 1.6배 증가 */
+    border: 2px solid #FFFFFF; /* 흰색 테두리 */
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 1.28rem; /* 폰트 크기 1.6배 증가 */
-    color: #bdc3c7;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    color: #FFFFFF;
 }
 
 .nav-btn:hover {
-    background-color: #34495e;
-    color: #ffffff;
+    background-color: #4A6FA5; /* 버튼 호버 색상 */
+    color: #FFFFFF;
 }
 
 .logout-btn {
-    border-color: #e74c3c;
-    color: #e74c3c;
+    border-color: #FF5252; /* 로그아웃 버튼 테두리 색상 */
+    color: #FF5252;
 }
 
 .logout-btn:hover {
-    background-color: #e74c3c;
-    color: #ffffff;
+    background-color: #FF5252; /* 로그아웃 버튼 호버 색상 */
+    color: #FFFFFF;
 }
-
-.username-text {
-    margin-right: 1.6rem;
-    font-weight: 500;
-    font-size: 1.28rem;
-    color: #ffffff;
-    white-space: nowrap; /* 텍스트가 한 줄에 표시되도록 설정 */
-}
-
-
 </style>
+

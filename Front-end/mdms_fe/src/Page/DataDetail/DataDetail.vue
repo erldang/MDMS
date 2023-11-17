@@ -44,7 +44,6 @@
 
 <script>
 import axios from 'axios';
-import './DataDetail.css';
 
 export default {
   name: 'DataDetail',
@@ -56,7 +55,7 @@ export default {
       loading: false,
       error: null,
       tableHeaders: [],
-      tableDataSize: '' 
+      tableDataSize: ''
     };
   },
   created() {
@@ -80,33 +79,33 @@ export default {
       axios.get(`http://localhost:3001/table/physicalJoin?physicalName=${this.itemData.physicalTableName}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      .then(response => {
-        this.tableData = response.data.data;
-        this.tableDataSize = response.data.message;
-        console.log(response);
-        if (this.tableData.length > 0) {
-          this.tableHeaders = Object.keys(this.tableData[0]).filter(key => key !== 'No');
-        }
-      })
-      .catch(error => {
-        this.error = '데이터 로드 중 오류 발생';
-        console.error('Error fetching table data:', error);
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+        .then(response => {
+          this.tableData = response.data.data;
+          this.tableDataSize = response.data.message;
+          console.log(response);
+          if (this.tableData.length > 0) {
+            this.tableHeaders = Object.keys(this.tableData[0]).filter(key => key !== 'No');
+          }
+        })
+        .catch(error => {
+          this.error = '데이터 로드 중 오류 발생';
+          console.error('Error fetching table data:', error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     fetchTerminologyData() {
       const token = localStorage.getItem('token');
       axios.get('http://localhost:3001/terminology', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      .then(response => {
-        this.terminologyData = response.data.data;
-      })
-      .catch(error => {
-        console.error('Error fetching terminology data:', error);
-      });
+        .then(response => {
+          this.terminologyData = response.data.data;
+        })
+        .catch(error => {
+          console.error('Error fetching terminology data:', error);
+        });
     },
     getTerminologyInfo(attributeName) {
       if (attributeName === 'NO') {
@@ -122,3 +121,107 @@ export default {
   },
 };
 </script>
+<style scoped>
+.data-detail-container {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  /* 밝은 배경색 */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  /* 강화된 그림자 효과 */
+}
+
+.title,
+.subtitle {
+  color: #35495E;
+  /* 모던한 다크 블루 */
+  margin-bottom: 15px;
+}
+
+.info {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+  /* 약간 더 진한 회색 */
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ddd;
+  /* 약간 더 진한 회색 */
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #35495E;
+  /* 모던한 다크 블루 */
+  color: white;
+  font-weight: bold;
+}
+
+.data-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+  /* 약간 더 진한 회색 */
+}
+
+.data-table tr:hover {
+  background-color: #ddd;
+  /* 진한 회색 */
+}
+
+.term-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.term-item {
+  background: #f2f2f2;
+  /* 약간 더 진한 회색 */
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+}
+
+.loading,
+.error {
+  font-size: 1.2rem;
+  color: #dc3545;
+  /* 강렬한 빨간색 */
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.error {
+  background-color: #f8d7da;
+  /* 연한 빨간색 */
+}
+
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.table-info {
+  width: 30%;
+}
+
+.terms-section {
+  width: 70%;
+}</style>

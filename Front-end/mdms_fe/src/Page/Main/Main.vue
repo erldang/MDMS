@@ -33,7 +33,6 @@
 
 <script>
 import axios from 'axios';
-import './Main.css';
 
 export default {
   name: 'MainPage',
@@ -67,16 +66,16 @@ export default {
       axios.get(`http://localhost:3001/history/join?email=${userEmail}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      .then(response => {
-        this.rawData = response.data.data;
-      })
-      .catch(error => {
-        this.error = '데이터 로드 중 에러 발생';
-        console.error('Error fetching data:', error);
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+        .then(response => {
+          this.rawData = response.data.data;
+        })
+        .catch(error => {
+          this.error = '데이터 로드 중 에러 발생';
+          console.error('Error fetching data:', error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -102,3 +101,90 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.page_btn button {
+  background-color: #007bff;
+  /* 밝은 파란색 */
+  color: white;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s;
+}
+
+.page_btn button.active {
+  background-color: #0056b3;
+  /* 어두운 파란색 */
+}
+
+.search-filter {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.search-filter input[type="date"],
+.search-filter input[type="text"] {
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.search-filter button {
+  padding: 8px 15px;
+  background-color: #27ae60;
+  /* 녹색 계열 */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+h1 {
+  display: inline-block;
+  margin-right: 20px;
+  color: #35495E;
+  /* 모던한 다크 블루 색상 */
+}
+
+button.addData {
+  float: right;
+  background-color: #f0ad4e;
+  /* 오렌지 계열 */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f2f2f2;
+}
+
+.loading,
+.error {
+  color: #e74c3c;
+  /* 경고, 오류 메시지에 적합한 색상 */
+  margin: 10px 0;
+}</style>
+

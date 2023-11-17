@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import './Profile.css';
+
 export default {
   data() {
     return {
@@ -38,8 +38,8 @@ export default {
           email: '',
           name: '',
           phone: '',
-          password:'',
-          admin:''
+          password: '',
+          admin: ''
         }
       },
       error: null,
@@ -48,9 +48,9 @@ export default {
   methods: {
     async fetchProfile() {
       const token = localStorage.getItem('token');
-      
+
       if (!token) {
-        this.$router.push('/login'); 
+        this.$router.push('/login');
         return;
       }
 
@@ -65,7 +65,7 @@ export default {
         const data = await response.json();
 
         if (data.ok === "ok") {
-          this.profile.data = data.data; 
+          this.profile.data = data.data;
         } else {
           this.error = "프로필을 불러오는 데 문제가 발생했습니다.";
         }
@@ -95,7 +95,7 @@ export default {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       };
-      
+
       const body = JSON.stringify({
         email: this.profile.data.email // 프로필에서 이메일을 가져와 요청 본문에 포함
       });
@@ -125,8 +125,68 @@ export default {
   },
 };
 </script>
+<style scoped>
+h2 {
+  text-align: center;
+  color: #35495E;
+  /* 모던한 다크 블루 색상 */
+  margin-bottom: 20px;
+}
 
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* 그림자 효과 */
+  background-color: #fff;
+  /* 백색 배경 */
+}
 
+div {
+  margin-bottom: 15px;
+}
 
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #34495e;
+  /* 어두운 회색 계열 */
+  font-weight: bold;
+}
 
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: #f2f2f2;
+  /* 연한 회색 */
+  color: #333;
+}
 
+button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background-color: #27ae60;
+  /* 녹색 계열 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #229954;
+  /* 어두운 녹색 */
+}
+
+.error-message {
+  color: #e74c3c;
+  /* 경고, 오류 메시지에 적합한 색상 */
+  text-align: center;
+  margin-top: 20px;
+}</style>

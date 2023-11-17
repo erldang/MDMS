@@ -26,7 +26,8 @@
           <button type="button" @click="removeColumn(index)">컬럼 제거</button>
           <ul class="search-results" v-if="searchResults[index]">
             <li v-for="result in searchResults[index]" :key="result.no" @click="selectColumnName(result, index)">
-              {{ result.domain.dataType }} - {{ result.standardTerminology }} - {{ result.englishAbbreviation }}: {{ result.description }}
+              {{ result.domain.dataType }} - {{ result.standardTerminology }} - {{ result.englishAbbreviation }}: {{
+                result.description }}
             </li>
           </ul>
         </div>
@@ -129,7 +130,8 @@ export default {
         relevantOrganization: result.relevantOrganization,
         isCustom: result.isCustom,
         domain: {
-          ...result.domain        }
+          ...result.domain
+        }
       };
       // 검색 결과 초기화
       this.searchResults = {};
@@ -221,9 +223,9 @@ export default {
             "description": column.description,
             "englishAbbreviation": column.name,
             "domain": column.domain,
-            "standardCode":column.standardCode,
-            "relevantOrganization":column.relevantOrganization,
-            "isCustom":column.isCustom,
+            "standardCode": column.standardCode,
+            "relevantOrganization": column.relevantOrganization,
+            "isCustom": column.isCustom,
           };
         }),
       };
@@ -270,17 +272,21 @@ export default {
   padding: 40px;
   background-color: #ffffff;
   border-radius: 15px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  /* 강화된 그림자 효과 */
+  border: 1px solid #ddd;
+  /* 약간 더 진한 회색 */
 }
 
 .data-register h2 {
   text-align: center;
-  color: #2c3e50;
+  color: #35495E;
+  /* 모던한 다크 블루 */
   font-size: 24px;
   margin-bottom: 30px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #ecf0f1;
+  border-bottom: 2px solid #ddd;
+  /* 약간 더 진한 회색 */
 }
 
 .input-group {
@@ -302,12 +308,16 @@ export default {
   border: 1px solid #bdc3c7;
   border-radius: 5px;
   box-sizing: border-box;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  /* 입력 필드에 그림자 효과 추가 */
 }
 
 .input-group input[type="text"]:focus {
   border-color: #3498db;
   outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* 포커스 시 그림자 효과 강화 */
 }
 
 .button {
@@ -321,15 +331,20 @@ export default {
   border-radius: 5px;
   margin-right: 10px;
   cursor: pointer;
+  background-color: #27ae60;
+  /* 녹색 계열 */
+  color: white;
 }
 
 .button:not(:disabled):hover {
-  background-color: #2980b9;
+  background-color: #229954;
+  /* 어두운 녹색 */
   transform: translateY(-2px);
 }
 
 .button:disabled {
   background-color: #7f8c8d;
+  /* 연한 회색 */
 }
 
 .button:active {
@@ -352,6 +367,7 @@ export default {
 
 .search-results li:hover {
   background-color: #d6dbdf;
+  /* 연한 회색 */
 }
 
 .column-info {
@@ -384,6 +400,7 @@ export default {
 .created-sql button {
   padding: 10px 15px;
   background-color: #27ae60;
+  /* 녹색 계열 */
   color: white;
   border-radius: 5px;
   cursor: pointer;
@@ -391,5 +408,5 @@ export default {
 
 .created-sql button:hover {
   background-color: #229954;
-}
-</style>
+  /* 어두운 녹색 */
+}</style>
