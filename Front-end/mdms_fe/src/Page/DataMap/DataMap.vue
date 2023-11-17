@@ -1,4 +1,3 @@
-<!-- 테이블 목록 에서 테이블 선택 시 2번째 자식 노드인 테이블 이름과 최상위 부모 노드의 테이블 이름 과 같다면 제거해야함 -->
 <template>
   <div>
     <div class="page-button-group">
@@ -192,12 +191,22 @@ export default {
             const filteredUsageData = usageData.filter(
               (u) => u.logicalTableName !== tableData.logicalTableName
             ); // 최상위 테이블 제외
+            const childrenWithFilter = filteredUsageData.map((table) => {
+              const secondLevelChildren = table.stdTerminologyList
+                .filter((childTerm) => childTerm !== tableData.logicalTableName) // 최상위 부모 노드의 테이블 이름과 동일한 경우 제외
+                .map((childTerm) => ({
+                  name: childTerm,
+                  value: parseInt(table.num, 10),
+                }));
+              return {
+                name: table.logicalTableName,
+                children: secondLevelChildren,
+              };
+            });
+
             return {
               name: term,
-              children: filteredUsageData.map((table) => ({
-                name: table.tableName,
-                value: parseInt(table.num, 10),
-              })),
+              children: childrenWithFilter,
             };
           })
         );
@@ -321,47 +330,26 @@ export default {
 };
 </script>
   
-<style scoped>
-.page-title {
-  text-align: center;
-  color: #35495E; /* 모던한 다크 블루 색상 */
-  margin-bottom: 20px;
-}
-
-.page-button-group .page-nav-button {
+.page-button-group .page-nav-button, .toggle-button-group .toggle-button {
   padding: 10px 20px;
   margin: 5px;
   border: none;
   color: white;
   background-color: #007bff; /* 밝은 파란색 */
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.page-button-group .page-nav-button.active {
-  background-color: #0056b3; /* 어두운 파란색 */
-}
-
-.page-button-group .page-nav-button:hover {
-  background-color: #0056b3;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.toggle-button-group .toggle-button {
-  padding: 10px 20px;
-  margin: 5px;
-  border: none;
-  color: white;
-  background-color: #28a745; /* 녹색 계열 */
-  cursor: pointer;
-  border-radius: 5px;
+  border-radius: 4px;
+  font-size: 1.1rem;
   transition: background-color 0.3s;
 }
 
-.toggle-button-group .toggle-button:hover {
-  background-color: #218838; /* 어두운 녹색 */
+.page-button-group .page-nav-button.active, .toggle-button-group .toggle-button:hover {
+  background-color: #0056b3; /* 어두운 파란색 */
+}
+
+.section-title, .page-title {
+  color: #35495E; /* 모던한 다크 블루 색상 */
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 .table-list-section, .terminology-list-section {
@@ -371,16 +359,6 @@ export default {
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.section-title {
-  color: #34495e;
-  margin-bottom: 10px;
-}
-
-.table-list, .terminology-list {
-  list-style: none;
-  padding: 0;
 }
 
 .table-list-item, .terminology-list-item {
@@ -399,4 +377,3 @@ export default {
   height: 1000px;
   margin-top: 20px;
 }
-</style>
