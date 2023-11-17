@@ -1,4 +1,3 @@
-<!-- CSS 적용 아예 안됨 -->
 <template>
   <div>
     <!-- 페이지 제목 -->
@@ -311,67 +310,73 @@ export default {
 </script>
   
 <style scoped>
-body {
-  font-family: "Arial", sans-serif;
-  color: #333;
-  background-color: #f4f4f4;
-}
-
-h1,
-h2 {
-  color: #35495E;
-  /* 모던한 다크 블루 색상 */
+.page-title, .sub-title {
+  color: #35495E; /* 모던한 다크 블루 색상 */
   margin-bottom: 10px;
 }
 
-.button-group button,
-.list-btn button {
+.navigation-buttons, .toggle-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.nav-btn, .toggle-btn {
   padding: 10px 20px;
-  margin: 5px;
   border: none;
   color: white;
-  background-color: #007bff;
-  /* 밝은 파란색 */
+  background-color: #007bff; /* 밝은 파란색 */
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* 버튼에 그림자 효과 추가 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 버튼에 그림자 효과 추가 */
 }
 
-.button-group button:disabled,
-.list-btn button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.nav-btn:hover, .toggle-btn:hover {
+  background-color: #0056b3; /* 어두운 파란색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 강화 */
 }
 
-.button-group button:hover,
-.list-btn button:hover {
-  background-color: #0056b3;
-  /* 어두운 파란색 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* 호버 시 그림자 효과 강화 */
-}
-
-.table-list,
-.terminology-list {
+.table-list-section, .terminology-list-section {
   margin-top: 20px;
   padding: 15px;
-  background-color: white;
-  /* 백색 배경 */
+  background-color: white; /* 백색 배경 */
   border: 1px solid #ddd;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* 섹션에 그림자 효과 추가 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 섹션에 그림자 효과 추가 */
+}
+
+.section-title {
+  color: #34495e; /* 어두운 회색 계열 */
+  margin-bottom: 10px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.list-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.list-item:hover {
+  background-color: #f2f2f2; /* 약간 더 진한 회색 */
+}
+
+.chart-section {
+  width: 100%;
+  height: 1000px;
+  margin-top: 20px;
 }
 
 @media (max-width: 768px) {
-
-  .button-group button,
-  .list-btn button {
-    width: 100%;
-    /* 모바일 화면에서 버튼을 전체 너비로 확장 */
-    margin: 10px 0;
+  .nav-btn, .toggle-btn {
+    width: 100%; /* 모바일 화면에서 버튼을 전체 너비로 확장 */
+    margin-bottom: 10px;
   }
 }
 </style>

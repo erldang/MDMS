@@ -1,4 +1,3 @@
-<!-- 버튼 표준 용어,데이터 맵, 사용자 이력 조회 버튼 디자인 미적용 -->
 <template>
   <div>
     <!-- 페이지 제목 -->
@@ -135,43 +134,56 @@ body {
   background-color: #f4f4f4;
 }
 
-h1,
-h2 {
-  color: #35495E;
-  /* 모던한 다크 블루 색상 */
+h1, h2 {
+  color: #35495E; /* 모던한 다크 블루 색상 */
   margin-bottom: 10px;
 }
 
-/* 버튼 및 검색 필드 스타일 */
-.button-group button,
-.search-button {
+/* 탐색 버튼 그룹 스타일 */
+.navigation-buttons .nav-btn {
   padding: 10px 20px;
   margin: 5px;
   border: none;
   color: white;
-  background-color: #007bff;
-  /* 밝은 파란색 */
+  background-color: #007bff; /* 밝은 파란색 */
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* 버튼에 그림자 효과 추가 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 버튼에 그림자 효과 추가 */
 }
 
-.button-group button:disabled,
-.search-button:disabled {
+.navigation-buttons .nav-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-.search-select,
-.search-input {
+.navigation-buttons .nav-btn:hover {
+  background-color: #0056b3; /* 어두운 파란색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 강화 */
+}
+
+/* 검색 필터 스타일 */
+.search-section .search-select,
+.search-section .search-input {
   padding: 10px;
   margin-right: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  /* 검색 필드에 그림자 효과 추가 */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* 검색 필드에 그림자 효과 추가 */
+}
+
+.search-section .search-button {
+  padding: 10px 15px;
+  background-color: #27ae60; /* 녹색 계열 */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-section .search-button:hover {
+  background-color: #229954; /* 어두운 녹색 */
 }
 
 /* 테이블 스타일 */
@@ -181,29 +193,28 @@ h2 {
   margin-top: 20px;
 }
 
-.data-table th,
-.data-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
+.data-table th, .data-table td {
+  padding: 8px;
   text-align: left;
+  border: 1px solid #ddd;
 }
 
 .data-table th {
   background-color: #f0f0f0;
 }
 
-/* 페이지네이션 */
-.pagination span {
+/* 페이지네이션 스타일 */
+.pagination .page-number {
   padding: 5px 10px;
   margin-right: 5px;
   border: 1px solid #ddd;
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition: background-color 0.3s;
 }
 
-.pagination span:hover {
+.pagination .page-number:hover {
   background-color: #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  /* 호버 시 그림자 효과 강화 */
-}</style>
+}
+</style>

@@ -1,4 +1,3 @@
-<!-- 표준 용어 데이터 맵 사용자 이력 조회 버튼 디자인 미적용 -->
 <template>
   <div class="admin-page">
     <h1 class="page-title">관리자 페이지</h1>
@@ -78,30 +77,31 @@ body {
   background-color: #f4f4f4;
 }
 
-h1,
-h2 {
-  color: #35495E;
-  /* 모던한 다크 블루 색상 */
+.page-title, .sub-title {
+  color: #35495E; /* 모던한 다크 블루 색상 */
   margin-bottom: 10px;
 }
 
-.button-group button {
+.navigation-buttons .nav-btn {
   padding: 10px 20px;
   margin: 5px;
   border: none;
   color: white;
-  background-color: #007bff;
-  /* 밝은 파란색 */
+  background-color: #007bff; /* 밝은 파란색 */
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* 버튼에 그림자 효과 추가 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 버튼에 그림자 효과 추가 */
 }
 
-.button-group button:disabled {
+.navigation-buttons .nav-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.navigation-buttons .nav-btn:hover {
+  background-color: #0056b3; /* 어두운 파란색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 강화 */
 }
 
 .table-container {
@@ -116,13 +116,11 @@ h2 {
 }
 
 .user-history-table thead {
-  background-color: #35495E;
-  /* 헤더 디자인과 일치하는 색상 */
+  background-color: #35495E; /* 헤더 디자인과 일치하는 색상 */
   color: #fff;
 }
 
-.user-history-table th,
-.user-history-table td {
+.user-history-table th, .user-history-table td {
   padding: 12px 15px;
   border: 1px solid #ddd;
   text-align: left;
@@ -156,4 +154,5 @@ h2 {
 .user-history-table td:hover::after {
   transform: scaleX(1);
   transform-origin: bottom left;
-}</style>
+}
+</style>

@@ -1,4 +1,3 @@
-<!-- CSS 코드가 잘못된 거 같음 -->
 <template>
   <div>
     <div class="page-button-group">
@@ -322,88 +321,81 @@ export default {
 </script>
   
 <style scoped>
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  background-color: #35495E;
-  /* 모던한 다크 블루 */
-  color: #FFFFFF;
+.page-title {
+  text-align: center;
+  color: #35495E; /* 모던한 다크 블루 색상 */
+  margin-bottom: 20px;
 }
 
-.left-section {
-  display: flex;
-  align-items: center;
-}
-
-.logo-img {
-  width: 60px;
-  /* 로고 크기 조정 */
-  height: auto;
-  margin-right: 20px;
-}
-
-.title-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.title {
-  font-size: 24px;
-  /* 적당한 크기의 제목 폰트 */
-  font-weight: bold;
-  /* 볼드체로 강조 */
-  margin: 0;
-}
-
-.subtitle {
-  font-size: 16px;
-  /* 서브타이틀 폰트 크기 */
-  opacity: 0.9;
-  /* 약간 투명도 조정 */
-}
-
-.navbar-section {
-  display: flex;
-  align-items: center;
-}
-
-.username-text {
-  margin-right: 20px;
-  font-size: 18px;
-  /* 사용자 이름 폰트 크기 */
-  font-weight: medium;
-  white-space: nowrap;
-}
-
-.nav-btn {
+.page-button-group .page-nav-button {
   padding: 10px 20px;
-  margin-left: 10px;
-  background-color: transparent;
-  border: 2px solid #FFFFFF;
-  /* 흰색 테두리 */
-  border-radius: 5px;
+  margin: 5px;
+  border: none;
+  color: white;
+  background-color: #007bff; /* 밝은 파란색 */
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 16px;
-  color: #FFFFFF;
+  border-radius: 5px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.nav-btn:hover {
-  background-color: #4A6FA5;
-  /* 버튼 호버 색상 */
-  color: #FFFFFF;
+.page-button-group .page-nav-button.active {
+  background-color: #0056b3; /* 어두운 파란색 */
 }
 
-.logout-btn {
-  border-color: #FF5252;
-  /* 로그아웃 버튼 테두리 색상 */
-  color: #FF5252;
+.page-button-group .page-nav-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.logout-btn:hover {
-  background-color: #FF5252;
-  /* 로그아웃 버튼 호버 색상 */
-  color: #FFFFFF;
-}</style>
+.toggle-button-group .toggle-button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  color: white;
+  background-color: #28a745; /* 녹색 계열 */
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.toggle-button-group .toggle-button:hover {
+  background-color: #218838; /* 어두운 녹색 */
+}
+
+.table-list-section, .terminology-list-section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  color: #34495e;
+  margin-bottom: 10px;
+}
+
+.table-list, .terminology-list {
+  list-style: none;
+  padding: 0;
+}
+
+.table-list-item, .terminology-list-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.table-list-item:hover, .terminology-list-item:hover {
+  background-color: #f2f2f2;
+}
+
+.chart-container {
+  width: 100%;
+  height: 1000px;
+  margin-top: 20px;
+}
+</style>
