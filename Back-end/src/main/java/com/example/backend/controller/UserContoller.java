@@ -9,6 +9,7 @@ import com.example.backend.service.*;
 import com.example.backend.security.JwtProvider;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "*")
@@ -84,6 +86,8 @@ public class UserContoller {
 
     @PostMapping("/modify")
     public ResponseDto<Object> modify(@RequestBody UserDto userDto) throws Exception {
+
+        log.info("Modify userDto : " + userDto.toString());
 
         String message = userService.modifyUser(userDto);
         return ResponseDto.builder().ok("ok").message(message).build();
