@@ -56,7 +56,7 @@ public class TableController {
 
         List<HashMap<String,String>> table = tableService.findTableByPhysicalName(physicalName);
         
-        //NO 제외하기
+        //NO 제외
         for(HashMap<String,String> hashMap : table){
             hashMap.remove("No");
         }
