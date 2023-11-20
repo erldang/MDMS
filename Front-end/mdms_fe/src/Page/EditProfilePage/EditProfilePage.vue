@@ -41,16 +41,24 @@ export default {
   methods: {
     async submitForm() {
       const token = localStorage.getItem('token');
+
       try {
         const response = await fetch('http://localhost:3001/user/modify', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
+          headers: { 'Authorization': `Bearer ${token}`  ,
+                    'Content-Type': 'application/json'},
           body: JSON.stringify(this.user)
+          // body : {
+          //   "email" : this.user.email,
+          //   "name" : this.user.name,
+          //   "password" : this.user.password,
+          //   "phone" : this.user.phone
+          // }
         });
         if (response.ok) {
           const result = await response.json();
           this.message = result.message; // "유저 정보 변경 완료"
-          this.router.push('/profile');
+          //this.router.push('/profile');
         } else {
           this.message = '오류가 발생했습니다.';
         }
