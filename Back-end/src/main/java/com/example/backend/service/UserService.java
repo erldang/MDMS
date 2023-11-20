@@ -5,6 +5,7 @@ import com.example.backend.dto.EmailCodeDto;
 import com.example.backend.dto.UserDto;
 import com.example.backend.entity.User;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.security.AESEncryptionUtil;
 import com.example.backend.security.JwtProvider;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
@@ -44,25 +45,36 @@ public class UserService {
     @Autowired
     JwtProvider jwtProvider;
 
+
+
+    //AESEncryptionUtil aesEncryptionUtil;
     //@Autowired
     //private RedisTemplate redisTemplate;
-    private final RedisTemplate<String, String> redisTemplate;
-
-    public List<UserDto> getAllUsers(){
+//    private final RedisTemplate<String, String> redisTemplate;
+//
+    public List<UserDto> getAllUsers() throws Exception {
 
         List<User> userList = userRepository.findAll();
         List<UserDto> userDtoList = new ArrayList<UserDto>();
         for(User u : userList){
-            userDtoList.add(new UserDto(u));
+            UserDto tmp = new UserDto(u);
+            //String decodedPassword = AESEncryptionUtil.decrypt(tmp.getPassword());
+            //tmp.setPassword(decodedPassword);
+            userDtoList.add(tmp);
+
         }
         return userDtoList;
     }
 
 
-    public String signUpUser( UserDto userDto){
+    public String signUpUser( UserDto userDto) throws Exception {
 
 
         User user = new User(userDto);
+
+        String encodePassword = AESEncryptionUtil.encrypt(user.getPassword());
+
+        user.setPassword(encodePassword);
 
         userRepository.save(user);
 
@@ -118,7 +130,8 @@ public class UserService {
         }
 
         else{
-            if(!userDto.getPassword().equals(user.getPassword())){
+            String decodedPassword = AESEncryptionUtil.decrypt(user.getPassword());
+            if(!userDto.getPassword().equals(decodedPassword)){
                 return "비밀번호를 다시 확인해 주세요";
             }
 
@@ -142,14 +155,15 @@ public class UserService {
 //        return "로그아웃 완료";
 //    }
 
-    public String modifyUser(UserDto userDto){
+    public String modifyUser(UserDto userDto) throws Exception {
 
        // String test = (String) redisTemplate.opsForValue().get(userDto.getEmail());
         User user = userRepository.findById(userDto.getEmail()).get();
 
         user.setName(userDto.getName());
         user.setPhone(userDto.getPhone());
-        user.setPassword(userDto.getPassword());
+        String encodedPassword = AESEncryptionUtil.encrypt(userDto.getPassword());
+        user.setPassword(encodedPassword);
 
         userRepository.save(user);
 
@@ -164,10 +178,14 @@ public class UserService {
         return "삭제완료";
     }
 
-    public UserDto findByEmail(UserDto userDto){
+    public UserDto findByEmail(UserDto userDto) throws Exception {
         String email = userDto.getEmail();
 
         UserDto u = new UserDto(userRepository.findById(email).get());
+
+        String decodedPassword = AESEncryptionUtil.decrypt(u.getPassword());
+        u.setPassword(decodedPassword);
+
         return u;
     }
 
@@ -206,10 +224,12 @@ public class UserService {
 
     }
 
-    public UserDto findPassword(UserDto userDto) {
+    public UserDto findPassword(UserDto userDto) throws Exception {
 
         User user = userRepository.findPassword(userDto.getEmail(),userDto.getName(),userDto.getPhone());
-
+        System.out.println(user.toString());
+        String decodedPassword = AESEncryptionUtil.decrypt(user.getPassword());
+        user.setPassword(decodedPassword);
 
         return  new UserDto(user);
     }

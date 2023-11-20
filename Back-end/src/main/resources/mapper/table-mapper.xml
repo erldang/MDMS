@@ -33,6 +33,11 @@
         select COUNT(*) from ${tableName}
     </select>
 
+    <select id="dropTable">
+        drop table ${physicalTableName}
+    </select>
+
+
     <select id="getTableSize" resultType="HashMap">
 
 

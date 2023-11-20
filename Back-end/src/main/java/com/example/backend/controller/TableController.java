@@ -55,6 +55,11 @@ public class TableController {
     public ResponseDto<Object> findTableByPhysicalName(@RequestParam("physicalName") String physicalName){
 
         List<HashMap<String,String>> table = tableService.findTableByPhysicalName(physicalName);
+        
+        //NO 제외하기
+        for(HashMap<String,String> hashMap : table){
+            hashMap.remove("No");
+        }
 
         //여기다가 용량 조회
         BigDecimal tableSize = tableService.getTableSize(physicalName);

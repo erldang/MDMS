@@ -23,4 +23,6 @@ public interface TableMapper {
     Integer countTable(String tableName);
 
     HashMap<String, BigDecimal>  getTableSize(String tableName);
+
+    void dropTable(String physicalTableName);
 }
