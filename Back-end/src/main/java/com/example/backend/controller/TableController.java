@@ -56,10 +56,6 @@ public class TableController {
 
         List<HashMap<String,String>> table = tableService.findTableByPhysicalName(physicalName);
 
-        for(HashMap<String,String> hashMap : table){
-            hashMap.remove("No");
-        }
-
         //여기다가 용량 조회
         BigDecimal tableSize = tableService.getTableSize(physicalName);
 
