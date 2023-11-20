@@ -154,7 +154,7 @@ export default {
       }
     },
 
-    // 차트 생성 메소드
+    // 테이블 차트 생성 메소드
     async createChart(tableData) {
       if (this.chart) {
         am5.array.each(am5.registry.rootElements, (re, index) => {
@@ -178,8 +178,8 @@ export default {
           tableData.stdTerminologyList.map(async (term) => {
             const usageData = await this.fetchTerminologyUsage(term);
             const filteredUsageData = usageData.filter(
-              (u) => u.logicalTableName !== tableData.tableName
-            ); // 최상위 테이블 제외
+              (u) => u.tableName !== tableData.logicalTableName
+            );
             return {
               name: term,
               children: filteredUsageData.map((table) => ({
@@ -193,6 +193,7 @@ export default {
         const data = {
           name: tableData.logicalTableName,
           children: children,
+          value: parseInt(tableData.num, 10),
         };
 
         let series = container.children.push(

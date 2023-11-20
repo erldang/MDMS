@@ -2,13 +2,20 @@
   <div>
     <div class="page-button-group">
       <!-- 데이터 목록 페이지로 이동하는 버튼 -->
-      <button class="page-nav-button" :class="{ active: isCurrentPage('/') }" @click="navigateTo('/')">
+      <button
+        class="page-nav-button"
+        :class="{ active: isCurrentPage('/') }"
+        @click="navigateTo('/')"
+      >
         데이터 목록
       </button>
       <!-- 데이터 맵 페이지로 이동하는 버튼 -->
-      <button class="page-nav-button" :class="{ active: isCurrentPage('/user-data-map') }"
-        @click="navigateTo('/user-data-map')">
-        데이터 맵 
+      <button
+        class="page-nav-button"
+        :class="{ active: isCurrentPage('/user-data-map') }"
+        @click="navigateTo('/user-data-map')"
+      >
+        데이터 맵
       </button>
     </div>
     <!-- 페이지 제목 -->
@@ -22,14 +29,18 @@
 
     <div class="flex-container">
       <!-- 왼쪽에 고정된 너비의 섹션 -->
-      <div class="fixed-section" style="width: 10%;">
+      <div class="fixed-section" style="width: 10%">
         <!-- 테이블 목록을 표시하는 섹션 -->
         <div v-if="showTableList" class="table-list-section">
           <h3 class="section-title">테이블 목록</h3>
           <ul class="table-list">
             <!-- 테이블 목록의 각 항목 -->
-            <li class="table-list-item" v-for="table in tableList" :key="table.no"
-              @click="handleTableClick(table.logicalTableName)">
+            <li
+              class="table-list-item"
+              v-for="table in tableList"
+              :key="table.no"
+              @click="handleTableClick(table.logicalTableName)"
+            >
               {{ table.logicalTableName }}
             </li>
           </ul>
@@ -40,8 +51,12 @@
           <h3 class="section-title">용어 목록</h3>
           <ul class="terminology-list">
             <!-- 용어 목록의 각 항목 -->
-            <li class="terminology-list-item" v-for="term in terminologyList" :key="term"
-              @click="handleTerminologyClick(term)">
+            <li
+              class="terminology-list-item"
+              v-for="term in terminologyList"
+              :key="term"
+              @click="handleTerminologyClick(term)"
+            >
               {{ term }}
             </li>
           </ul>
@@ -50,8 +65,12 @@
 
       <!-- 오른쪽에 차트를 표시하는 섹션 -->
       <div class="flex-item">
-        <div v-show="showTableList || showTerminologyList" class="chart-container" ref="chartdiv"
-          style="width: 100%; height: 1000px"></div>
+        <div
+          v-show="showTableList || showTerminologyList"
+          class="chart-container"
+          ref="chartdiv"
+          style="width: 100%; height: 1000px"
+        ></div>
       </div>
     </div>
   </div>
@@ -145,6 +164,7 @@ export default {
       );
       if (selectedTable) {
         this.createChart(selectedTable);
+        console.log(selectedTable);
       }
     },
 
@@ -171,7 +191,7 @@ export default {
       }
     },
 
-    // 차트 생성 메소드
+    // 테이블 차트 생성 메소드
     async createChart(tableData) {
       if (this.chart) {
         am5.array.each(am5.registry.rootElements, (re, index) => {
@@ -195,8 +215,8 @@ export default {
           tableData.stdTerminologyList.map(async (term) => {
             const usageData = await this.fetchTerminologyUsage(term);
             const filteredUsageData = usageData.filter(
-              (u) => u.logicalTableName !== tableData.tableName
-            ); // 최상위 테이블 제외
+              (u) => u.tableName !== tableData.logicalTableName
+            );
             return {
               name: term,
               children: filteredUsageData.map((table) => ({
@@ -210,6 +230,7 @@ export default {
         const data = {
           name: tableData.logicalTableName,
           children: children,
+          value: parseInt(tableData.num, 10),
         };
 
         let series = container.children.push(
@@ -247,6 +268,7 @@ export default {
         this.displayErrorMessage("용어 데이터를 가져오는 데 실패했습니다.");
       }
     },
+    // 용어 데이터 맵 차트 생성 함수
     createTerminologyChart(terminologyData) {
       if (this.chart) {
         am5.array.each(am5.registry.rootElements, (re, index) => {
@@ -287,10 +309,15 @@ export default {
           };
         });
 
+        const totalFirstLevelValue = children.reduce(
+          (acc, child) => acc + child.value,
+          0
+        );
+
         const data = {
-          name: terminologyData.standardTerminology, // 최상위 노드: 선택된 용어
+          name: terminologyData.standardTerminology,
           children: children,
-          value: parseInt(terminologyData.num, 10),
+          value: totalFirstLevelValue, // Assign the calculated sum to data.value
         };
 
         // 차트 생성 및 설정
@@ -331,7 +358,7 @@ export default {
 .page-title {
   display: inline-block;
   margin-right: 20px;
-  color: #35495E; /* 모던한 다크 블루 색상 */
+  color: #35495e; /* 모던한 다크 블루 색상 */
 }
 
 /* 페이지 네비게이션 버튼 */
