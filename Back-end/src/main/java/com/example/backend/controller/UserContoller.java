@@ -2,12 +2,11 @@ package com.example.backend.controller;
 
 
 import com.example.backend.dto.EmailCodeDto;
+import com.example.backend.dto.HistoryDto;
 import com.example.backend.dto.ResponseDto;
 import com.example.backend.dto.UserDto;
-import com.example.backend.service.EmailService;
+import com.example.backend.service.*;
 import com.example.backend.security.JwtProvider;
-import com.example.backend.service.HistoryService;
-import com.example.backend.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +34,19 @@ public class UserContoller {
     @Autowired
     HistoryService historyService;
 
+    @Autowired
+    TableService tableService;
+
+    @Autowired
+    TableInfoService tableInfoService;
+
     //일반사용자가입
     @PostMapping("/signup")
-    public ResponseDto<Object> signUpUser(@RequestBody UserDto userDto) {
+    public ResponseDto<Object> signUpUser(@RequestBody UserDto userDto) throws Exception {
 
         userDto.setAdmin(false);
         String response = userService.signUpUser(userDto);
+
 
         return ResponseDto.builder().message(response).ok("ok").build();
 
@@ -56,15 +62,6 @@ public class UserContoller {
 
     }
 
-//    @PostMapping("/authentication/check")
-//    public ResponseDto<Object> AuthenticationRequestCheck(HttpSession session,
-//                                             @RequestBody EmailCodeDto emailCodeDto) throws MessagingException {
-//
-//        String response =  userService.AuthenticationRequestCheck(session, emailCodeDto);
-//
-//        return ResponseDto.builder().message(response).ok("ok").build();
-//
-//    }
 
     @PostMapping("/login")
     public ResponseDto<Object> logIn( @RequestBody UserDto userDto) throws Exception {
@@ -86,7 +83,7 @@ public class UserContoller {
     }
 
     @PostMapping("/modify")
-    public ResponseDto<Object> modify(@RequestBody UserDto userDto){
+    public ResponseDto<Object> modify(@RequestBody UserDto userDto) throws Exception {
 
         String message = userService.modifyUser(userDto);
         return ResponseDto.builder().ok("ok").message(message).build();
@@ -114,7 +111,26 @@ public class UserContoller {
     @DeleteMapping("/delete")
     public ResponseDto<Object> delete(@RequestBody UserDto userDto){
 
+
+        //history를 조회에서 이 유저가 만들었던 table들 삭제
+        //tableInfo에서 table들 물리명기준 삭제
+
+        List<HistoryDto> historyDtoList = historyService.findHistoryByEmail(userDto.getEmail());
+        for(HistoryDto historyDto : historyDtoList){
+            tableService.dropTable(historyDto.getPhysicalTableName());
+            tableInfoService.deleteByPhysicalTableName(historyDto.getPhysicalTableName());
+
+
+        }
+
+
+
+
+        historyService.deleteHistoryByEmail(userDto.getEmail());
+
+
         String message = userService.delete(userDto);
+
 
 
 
@@ -123,7 +139,7 @@ public class UserContoller {
     }
 
     @GetMapping
-    public ResponseDto<Object> getAllUsers(){
+    public ResponseDto<Object> getAllUsers() throws Exception {
 
         //userService.getAllUsers();
         return ResponseDto.builder().ok("ok").data(userService.getAllUsers()).build();
@@ -131,7 +147,7 @@ public class UserContoller {
 
 
     @GetMapping("/specific")
-    public ResponseDto<Object> getSpecifyUser(@RequestParam("token") String token){
+    public ResponseDto<Object> getSpecifyUser(@RequestParam("token") String token) throws Exception {
 
         String email = jwtProvider.getEmailFromToken(token);
 
@@ -155,7 +171,7 @@ public class UserContoller {
     }
 
     @PostMapping("/findPwd")
-    public ResponseDto<Object> findPwd(@RequestBody UserDto userDto){
+    public ResponseDto<Object> findPwd(@RequestBody UserDto userDto) throws Exception {
 
         UserDto user = userService.findPassword(userDto);
 

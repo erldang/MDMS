@@ -45,4 +45,11 @@ public class HistoryService {
         return historyDtoList;
 
     }
+
+    public void deleteHistoryByEmail(String email) {
+
+        historyRepository.deleteHistoryByEmail(email);
+
+
+    }
 }
