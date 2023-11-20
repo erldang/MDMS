@@ -116,6 +116,8 @@ export default {
       })
         .then(response => {
           console.log(response, "데이터 등록 성공");
+          alert("커스텀 용어 등록 완료");
+          this.$router.push('/data-register');
         })
         .catch(error => {
           console.error(error);

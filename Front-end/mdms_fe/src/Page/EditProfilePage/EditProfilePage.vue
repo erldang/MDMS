@@ -45,15 +45,10 @@ export default {
       try {
         const response = await fetch('http://localhost:3001/user/modify', {
           method: 'POST',
-<<<<<<< HEAD
-          headers: { 'Authorization': `Bearer ${token}`  ,
-                    'Content-Type': 'application/json'},
-=======
           headers: { 
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
          },
->>>>>>> 5b5fdebd9641d7f9b1dbd7588d296808affb794c
           body: JSON.stringify(this.user)
           // body : {
           //   "email" : this.user.email,
@@ -65,11 +60,6 @@ export default {
         if (response.ok) {
           const result = await response.json();
           this.message = result.message; // "유저 정보 변경 완료"
-<<<<<<< HEAD
-          //this.router.push('/profile');
-=======
-          // this.router.push('/profile');
->>>>>>> 5b5fdebd9641d7f9b1dbd7588d296808affb794c
         } else {
           this.message = '오류가 발생했습니다.';
         }

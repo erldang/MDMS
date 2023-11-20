@@ -36,6 +36,7 @@
 
       <!-- 액션 버튼들 -->
       <div class="action-buttons">
+        <button type="button" class="generate-ddl-btn" @click="$router.push('/register-custom-term')">커스텀 표준 용어 등록</button>
         <button type="button" class="generate-ddl-btn" @click="generateCreateStatement" :disabled="!tableName">SQL DDL 생성</button>
         <button type="submit" class="register-btn" :disabled="!tableName || !logicalTableName || columns.length === 0">등록하기</button>
         <button class="cancel-btn" @click="this.$router.push('/');">취소</button>
