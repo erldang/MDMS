@@ -118,22 +118,22 @@ MDMS는 행정안전부 표준 용어 및 단어에 맞춘 데이터베이스 �
 
 ## 프로젝트 실행 화면 
 
-1. 메인 화면
+1. 메인 화면 <br>
 ![image](https://github.com/erldang/MDMS/assets/101244968/73891d0d-5d59-4424-873d-9edd3e2be73f)
 
-2. 테이블 등록 페이지
+2. 테이블 등록 페이지<br>
 ![image](https://github.com/erldang/MDMS/assets/101244968/8e19a8d6-82be-4d7c-bb4f-db1d5b2ea446)
 
-3. 표준 용어 DB 검색 및 컬럼명 선택
+3. 표준 용어 DB 검색 및 컬럼명 선택<br>
 ![image](https://github.com/erldang/MDMS/assets/101244968/dbb03e3f-aff9-49b4-b585-825a05b71bb7)
 
-4. 등록 테이블 SQL DDL 쿼리 생성
+4. 등록 테이블 SQL DDL 쿼리 생성<br>
 ![image](https://github.com/erldang/MDMS/assets/101244968/eea24fb3-69e6-4438-b0d4-abec0132a2ef)
 
-5. 테이블 메타 데이터 확인, 테이블 상세 정보 페이지
+5. 테이블 메타 데이터 확인, 테이블 상세 정보 페이지<br>
 ![image](https://github.com/erldang/MDMS/assets/101244968/2f7c3af2-edec-471d-b220-3a733f24e1eb)
 
-6. 데이터 맵 생성 화면
+6. 데이터 맵 생성 화면<br>
 ![image](https://github.com/erldang/MDMS/assets/101244968/b5066319-a705-4e40-ab77-faafe967b03c)
 
 ## 프로젝트 결과 
